@@ -57,7 +57,7 @@ const FormDokumenUsahaBadanUsaha = () => {
             setNpwpId(e.target.value)
         } else {
             setAlertMinNpwpId(false)
-            setNpwpId(e.target.value)
+            setNpwpId((e.target.value).slice(0, 16))
         }
     }
 
@@ -365,35 +365,25 @@ const FormDokumenUsahaBadanUsaha = () => {
             }
             const getData = await axios.post(BaseURL + "/QRIS/AddBussinessFileDocument", formData, { headers: headers })
             if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token === null) {
-                if (profileId === 0) {
-                    if (step === 200) {
-                        history.push(`/pengaturan-merchant`)
-                    } else {
-                        setIsLoadingDokumenUsaha(false)
-                        history.push(`/daftar-merchant-qris`)
-                    }
+                if (step === 200) {
+                    history.push(`/pengaturan-merchant/${profileId}/101/${businessType}`)
+                } else if (step === 3) {
+                    setIsLoadingDokumenUsaha(false)
+                    history.push(`/daftar-merchant-qris`)
                 } else {
-                    if (step === 200) {
-                        history.push(`/pengaturan-merchant/${profileId}/101/${businessType}`)
-                    } else {
-                        setIsLoadingDokumenUsaha(false)
-                        history.push(`/daftar-merchant-qris`)
-                    }
+                    history.push(`/form-info-usaha-badan-usaha/${profileId === undefined ? 0 : profileId}`)
+                    window.location.reload()
                 }
             } else if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token !== null) {
                 setUserSession(getData.data.response_new_token)
-                if (profileId === 0) {
-                    if (step === 200) {
-                        history.push(`/pengaturan-merchant`)
-                    } else {
-                        history.push(`/daftar-merchant-qris`)
-                    }
+                if (step === 200) {
+                    history.push(`/pengaturan-merchant/${profileId}/101/${businessType}`)
+                } else if (step === 3) {
+                    setIsLoadingDokumenUsaha(false)
+                    history.push(`/daftar-merchant-qris`)
                 } else {
-                    if (step === 200) {
-                        history.push(`/pengaturan-merchant/${profileId}/101/${businessType}`)
-                    } else {
-                        history.push(`/daftar-merchant-qris`)
-                    }
+                    history.push(`/form-info-usaha-badan-usaha/${profileId === undefined ? 0 : profileId}`)
+                    window.location.reload()
                 }
             }
         } catch (error) {
@@ -404,11 +394,6 @@ const FormDokumenUsahaBadanUsaha = () => {
 
     function backPage () {
         setShowModalSimpanData(true)
-    }
-
-    function buttonBackHandler () {
-        history.push(`/form-info-usaha-badan-usaha/${profileId === undefined ? 0 : profileId}`)
-        window.location.reload()
     }
 
     useEffect(() => {
@@ -759,7 +744,8 @@ const FormDokumenUsahaBadanUsaha = () => {
                     <div className='d-flex justify-content-between align-items-center mt-4 pb-4' >
                         <button 
                             className='btn-prev-info-usaha me-2'
-                            onClick={() => buttonBackHandler()}
+                            // onClick={() => buttonBackHandler()}
+                            onClick={() => formDataThirdStepBusenessDocument(profileId === undefined ? 0 : profileId, 1, npwpId, 2, imageNpwp, imageNib, imageAktaPerusahaan, imageSkKementrian)}
                         >
                             Sebelumnya
                         </button>

@@ -381,9 +381,11 @@ const FormInfoUsaha = () => {
                     if (Number(businessType) === 1) {
                         if (step === 3) {
                             history.push(`/form-dokumen-usaha-brand-badan-usaha/${getData.data.response_data.results.mprofbus_mprofile_id}`)
-                        } else {
+                        } else if (step === 2) {
                             setIsLoadingInfoUsaha(false)
                             history.push('/daftar-merchant-qris')
+                        } else {
+                            history.push(`/formulir-info-pemilik-brand/${profileId === undefined ? 0 : profileId}`)
                         }
                     } else {
                         if (step === 200) {
@@ -392,9 +394,11 @@ const FormInfoUsaha = () => {
                             history.push(`/form-info-rekening-brand/${settleGroup}/${getData.data.response_data.results.mprofile_merchant_id}/${getData.data.response_data.results.mprofile_outlet_nou}/${profileId}`)
                         } else if (step === 300) {
                             history.push(`/detail-merchant-brand/${profileId}`)
-                        } else {
+                        } else if (step === 2) {
                             setIsLoadingInfoUsaha(false)
                             history.push('/daftar-merchant-qris')
+                        } else {
+                            history.push(`/formulir-info-pemilik-brand/${profileId === undefined ? 0 : profileId}`)
                         }
                     }
                 } else {
@@ -406,9 +410,11 @@ const FormInfoUsaha = () => {
                     if (Number(businessType) === 1) {
                         if (step === 3) {
                             history.push(`/form-dokumen-usaha-brand-badan-usaha/${getData.data.response_data.results.mprofbus_mprofile_id}`)
-                        } else {
+                        } else if (step === 2) {
                             setIsLoadingInfoUsaha(false)
                             history.push('/daftar-merchant-qris')
+                        } else {
+                            history.push(`/formulir-info-pemilik-brand/${profileId === undefined ? 0 : profileId}`)
                         }
                     } else {
                         if (step === 200) {
@@ -417,9 +423,11 @@ const FormInfoUsaha = () => {
                             history.push(`/form-info-rekening-brand/${settleGroup}/${getData.data.response_data.results.mprofile_merchant_id}/${getData.data.response_data.results.mprofile_outlet_nou}/${profileId}`)
                         } else if (step === 300) {
                             history.push(`/detail-merchant-brand/${profileId}`)
-                        } else {
+                        } else if (step === 2) {
                             setIsLoadingInfoUsaha(false)
                             history.push('/daftar-merchant-qris')
+                        } else {
+                            history.push(`/formulir-info-pemilik-brand/${profileId === undefined ? 0 : profileId}`)
                         }
                     }
                 } else {
@@ -929,7 +937,7 @@ const FormInfoUsaha = () => {
                    <div className='d-flex justify-content-between align-items-center mt-4 pb-4' >
                         <button 
                             className='btn-prev-info-usaha me-2'
-                            onClick={() => history.push(`/formulir-info-pemilik-brand/${profileId === undefined ? 0 : profileId}`)}
+                            onClick={() => formDataSecondStepInfoUsahaBadanUsaha(0, inputHandle.businessType, 102, profileId === undefined ? 0 : profileId, inputHandle.namaPerusahaan, inputHandle.bentukPerusahaan, inputHandle.bentukPerusahaanLainnya, inputHandle.emailPerusahaan, inputHandle.namaBrand, inputHandle.namaYangDicetakQris, selectedDataKategoriUsaha.length !== 0 ? selectedDataKategoriUsaha[0].value : 0, Number(inputHandle.jumlahKasir) > 1500 ? 0 : inputHandle.jumlahKasir, inputHandle.pendapatanPertahun, inputHandle.alamatUsaha, inputHandle.kodePos, dataKodePos.mprovince_name === undefined ? "" : dataKodePos.mprovince_name, dataKodePos.mcity_name === undefined ? "" : dataKodePos.mcity_name, dataKodePos.mdistrict_name === undefined ? "" : dataKodePos.mdistrict_name, dataKodePos.mvillage_name === undefined ? "" : dataKodePos.mvillage_name, jenisToko.join(), inputHandle.kepunyaanQris, imageFileTempatUsaha, inputHandle.nmid, inputHandle.onlineShopUrl, 1)}
                         >
                             Sebelumnya
                         </button>

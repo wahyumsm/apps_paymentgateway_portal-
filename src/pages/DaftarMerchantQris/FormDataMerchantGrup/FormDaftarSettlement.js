@@ -37,7 +37,7 @@ const FormDaftarSettlement = () => {
             setShowModalPemilikRek(true)
         } else {
             setShowModalPemilikRek(false)
-            addFormDaftarSettlementHandler(dataMerchantSettlement?.mprofile_id === null ? id : dataMerchantSettlement?.mprofile_id, settleGroup, merchantNou, userNou, selectedDataBank.length !== 0 ? selectedDataBank[0].value : 0, noRek, namaPemilikRek, dataMerchantSettlement?.mprofdtl_email === null ? "" : dataMerchantSettlement?.mprofdtl_email, dataMerchantSettlement?.mqrismerchsettle_id === null ? 0 : dataMerchantSettlement?.mqrismerchsettle_id, step)
+            addFormDaftarSettlementHandler(dataMerchantSettlement?.mprofile_id === null ? id : dataMerchantSettlement?.mprofile_id, settleGroup, merchantNou, userNou, selectedDataBank.length !== 0 ? selectedDataBank[0].value : 0, noRek, namaPemilikRek, dataMerchantSettlement?.mprofdtl_email === null ? "" : dataMerchantSettlement?.mprofdtl_email, dataMerchantSettlement?.mqrismerchsettle_id === null ? 0 : dataMerchantSettlement?.mqrismerchsettle_id, step, dataMerchantSettlement?.mprofdtl_bustype)
         }
     }
 
@@ -133,7 +133,7 @@ const FormDaftarSettlement = () => {
         }
     }
 
-    async function addFormDaftarSettlementHandler(profileId, settleGroupId, merchantNou, userNou, bankId, noRek, namaPemilikRek, email, merchSettleId, step) {
+    async function addFormDaftarSettlementHandler(profileId, settleGroupId, merchantNou, userNou, bankId, noRek, namaPemilikRek, email, merchSettleId, step, businessType) {
         try {
             setIsLoadingInfoRekeningGrup(true)
             const auth = "Bearer " + getToken()
@@ -149,6 +149,8 @@ const FormDaftarSettlement = () => {
                     history.push(`/daftar-merchant-qris`)
                 } else if (step === 300) {
                     history.push(`/detail-merchant-grup/${profileId}`)
+                } else {
+                    history.push(`/pengaturan-merchant/${profileId}/${101}/${businessType}`)
                 }
             } else if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token !== null) {
                 setUserSession(getData.data.response_new_token)
@@ -157,6 +159,8 @@ const FormDaftarSettlement = () => {
                     history.push(`/daftar-merchant-qris`)
                 } else if (step === 300) {
                     history.push(`/detail-merchant-grup/${profileId}`)
+                } else {
+                    history.push(`/pengaturan-merchant/${profileId}/${101}/${businessType}`)
                 }
             }
         } catch (error) {
@@ -229,7 +233,8 @@ const FormDaftarSettlement = () => {
                     <div className='d-flex justify-content-between align-items-center mt-4 pb-4' >
                         <button 
                             className='btn-prev-info-usaha me-2'
-                            onClick={() => history.push(`/pengaturan-merchant/${id}/${101}/${dataMerchantSettlement?.mprofdtl_bustype}`)}
+                            // onClick={() => history.push(`/pengaturan-merchant/${id}/${101}/${dataMerchantSettlement?.mprofdtl_bustype}`)}
+                            onClick={() => addFormDaftarSettlementHandler(dataMerchantSettlement?.mprofile_id === null ? id : dataMerchantSettlement?.mprofile_id, settleGroup, merchantNou, userNou, selectedDataBank.length !== 0 ? selectedDataBank[0].value : 0, inputHandle.noRek, inputHandle.namaPemilikRek, dataMerchantSettlement?.mprofdtl_email === null ? "" : dataMerchantSettlement?.mprofdtl_email, dataMerchantSettlement?.mqrismerchsettle_id === null ? 0 : dataMerchantSettlement?.mqrismerchsettle_id, 300, dataMerchantSettlement?.mprofdtl_bustype)}
                         >
                             Sebelumnya
                         </button>
@@ -268,7 +273,7 @@ const FormDaftarSettlement = () => {
                         </Button>
                         <Button 
                             style={{ fontFamily: "Exo", color: "black", background: "var(--palet-gradient-gold, linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%))", maxHeight: 45, width: "100%", height: "100%", fontWeight: 700, border: "0.6px solid var(--palet-pengembangan-shades-hitam-80, #383838)" }}
-                            onClick={() => addFormDaftarSettlementHandler(dataMerchantSettlement?.mprofile_id === null ? id : dataMerchantSettlement?.mprofile_id, settleGroup, merchantNou, userNou, selectedDataBank.length !== 0 ? selectedDataBank[0].value : 0, inputHandle.noRek, inputHandle.namaPemilikRek, dataMerchantSettlement?.mprofdtl_email === null ? "" : dataMerchantSettlement?.mprofdtl_email, dataMerchantSettlement?.mqrismerchsettle_id === null ? 0 : dataMerchantSettlement?.mqrismerchsettle_id, 300)}
+                            onClick={() => addFormDaftarSettlementHandler(dataMerchantSettlement?.mprofile_id === null ? id : dataMerchantSettlement?.mprofile_id, settleGroup, merchantNou, userNou, selectedDataBank.length !== 0 ? selectedDataBank[0].value : 0, inputHandle.noRek, inputHandle.namaPemilikRek, dataMerchantSettlement?.mprofdtl_email === null ? "" : dataMerchantSettlement?.mprofdtl_email, dataMerchantSettlement?.mqrismerchsettle_id === null ? 0 : dataMerchantSettlement?.mqrismerchsettle_id, 300, dataMerchantSettlement?.mprofdtl_bustype)}
                         >
                             Ya, Lanjutkan
                         </Button>
@@ -315,7 +320,7 @@ const FormDaftarSettlement = () => {
                     </div>             
                     <div className="d-flex justify-content-center mt-2 mb-3">
                         <Button onClick={() => setShowModalSimpanData(false)} style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;", borderColor: "#EBEBEB",  fontWeight: 700 }} className="mx-2">Kembali</Button>
-                        <Button onClick={() => addFormDaftarSettlementHandler(dataMerchantSettlement?.mprofile_id === null ? id : dataMerchantSettlement?.mprofile_id, settleGroup, merchantNou, userNou, selectedDataBank.length !== 0 ? selectedDataBank[0].value : 0, inputHandle.noRek, inputHandle.namaPemilikRek, dataMerchantSettlement?.mprofdtl_email === null ? "" : dataMerchantSettlement?.mprofdtl_email, dataMerchantSettlement?.mqrismerchsettle_id === null ? 0 : dataMerchantSettlement?.mqrismerchsettle_id, 201)} style={{ fontFamily: "Exo", color: "black", background: "var(--palet-gradient-gold, linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%))", maxHeight: 45, width: "100%", height: "100%", fontWeight: 700, border: "0.6px solid var(--palet-pengembangan-shades-hitam-80, #383838)" }}>
+                        <Button onClick={() => addFormDaftarSettlementHandler(dataMerchantSettlement?.mprofile_id === null ? id : dataMerchantSettlement?.mprofile_id, settleGroup, merchantNou, userNou, selectedDataBank.length !== 0 ? selectedDataBank[0].value : 0, inputHandle.noRek, inputHandle.namaPemilikRek, dataMerchantSettlement?.mprofdtl_email === null ? "" : dataMerchantSettlement?.mprofdtl_email, dataMerchantSettlement?.mqrismerchsettle_id === null ? 0 : dataMerchantSettlement?.mqrismerchsettle_id, 201, dataMerchantSettlement?.mprofdtl_bustype)} style={{ fontFamily: "Exo", color: "black", background: "var(--palet-gradient-gold, linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%))", maxHeight: 45, width: "100%", height: "100%", fontWeight: 700, border: "0.6px solid var(--palet-pengembangan-shades-hitam-80, #383838)" }}>
                             {isLoadingInfoRekeningGrup ? (<>Mohon tunggu... <FontAwesomeIcon icon={faSpinner} spin /></>) : `Simpan`}
                         </Button>
                     </div>

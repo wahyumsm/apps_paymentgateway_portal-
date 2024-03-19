@@ -18,7 +18,6 @@ import CurrencyInput from 'react-currency-input-field'
 const PengaturanMerchant = () => {
     const { idProfile, level, type } = useParams()
     const history = useHistory()
-    const [getDataPengaturanMerchant, setGetDataPengaturanMerchant] = useState({})
     const [showModalSimpanData, setShowModalSimpanData] = useState(false)
     const [isLoadingPengaturanMerchant, setIsLoadingPengaturanMerchant] = useState(false)
     const [expandedProgramAffiliator, setExpandedProgramAffiliator] = useState()
@@ -183,15 +182,15 @@ const PengaturanMerchant = () => {
                 })
             }
         } else {
-            if (Number(e) > 100) {
-                setInputHandle({
-                    ...inputHandle,
-                    jumlahFeeSettlement: 100
-                })
-            } else if (e === undefined || e === "") {
+            if (e === undefined || e === "") {
                 setInputHandle({
                     ...inputHandle,
                     jumlahFeeSettlement: 0
+                })
+            } else if (Number(e) > 100 || Number(e.replaceAll(',', '.')) > 100 || e === "100,") {
+                setInputHandle({
+                    ...inputHandle,
+                    jumlahFeeSettlement: 100
                 })
             } else {
                 setInputHandle({
@@ -216,15 +215,15 @@ const PengaturanMerchant = () => {
                 })
             }
         } else {
-            if (Number(e) > 100) {
-                setInputHandle({
-                    ...inputHandle,
-                    jumlahKomisi: 100
-                })
-            } else if (e === undefined || e === "") {
+            if (e === undefined || e === "") {
                 setInputHandle({
                     ...inputHandle,
                     jumlahKomisi: 0
+                })
+            } else if (Number(e) > 100 || Number(e.replaceAll(',', '.')) > 100 || e === "100,") {
+                setInputHandle({
+                    ...inputHandle,
+                    jumlahKomisi: 100
                 })
             } else {
                 setInputHandle({
@@ -249,15 +248,15 @@ const PengaturanMerchant = () => {
                 })
             }
         } else {
-            if (Number(e) > 100) {
-                setInputHandle({
-                    ...inputHandle,
-                    jumlahCashback: 100
-                })
-            } else if (e === undefined || e === "") {
+            if (e === undefined || e === "") {
                 setInputHandle({
                     ...inputHandle,
                     jumlahCashback: 0
+                })
+            } else if (Number(e) > 100 || Number(e.replaceAll(',', '.')) > 100 || e === "100,") {
+                setInputHandle({
+                    ...inputHandle,
+                    jumlahCashback: 100
                 })
             } else {
                 setInputHandle({
@@ -282,17 +281,17 @@ const PengaturanMerchant = () => {
                 })
             }
         } else {
-            if (Number(e) > 100) {
-                setInputHandle({
-                    ...inputHandle,
-                    jumlahAdditionalFee: 100
-                })
-            } else if (e === undefined || e === "") {
+            if (e === undefined || e === "") {
                 setInputHandle({
                     ...inputHandle,
                     jumlahAdditionalFee: 0
                 })
-            } else {
+            } else if (Number(e) > 100 || Number(e.replaceAll(',', '.')) > 100 || e === "100,") {
+                setInputHandle({
+                    ...inputHandle,
+                    jumlahAdditionalFee: 100
+                })
+            }  else {
                 setInputHandle({
                     ...inputHandle,
                     jumlahAdditionalFee: e
@@ -416,7 +415,6 @@ const PengaturanMerchant = () => {
                 newArrAgenKomisi.push(objAgenKomisi)
                 setSelectedDataKomisiAgen((objAgenKomisi.value === null || objAgenKomisi.value === "") ? [] : newArrAgenKomisi)
                 getDataAgenHandler (getDataConfig.mmerchant_id === null ? "" : getDataConfig.mmerchant_id)
-                setGetDataPengaturanMerchant(getDataConfig)
             } else if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token !== null) {
                 setUserSession(getData.data.response_new_token)
                 const getDataConfig = getData.data.response_data.results;
@@ -455,7 +453,6 @@ const PengaturanMerchant = () => {
                 newArrAgenKomisi.push(objAgenKomisi)
                 setSelectedDataKomisiAgen(((objAgenKomisi.value === null || objAgenKomisi.value === "") || objAgenKomisi.value === "") ? [] : newArrAgenKomisi)
                 getDataAgenHandler (getDataConfig.mmerchant_id === null ? "" : getDataConfig.mmerchant_id)
-                setGetDataPengaturanMerchant(getDataConfig)
             }
         } catch (error) {
             // console.log(error)
@@ -463,7 +460,7 @@ const PengaturanMerchant = () => {
         }
     }
 
-    async function savePengaturanTambahMerchantBrandHandler(businesLevel, merchantId, brandNou, outletNou, settleTypeId, settleDikirmKemana, menerimaPembayaran, integrasiApi, subPartnerId, idProfile, merchantCode, additionalFee, additionalFeeType, adakanAdditionalFee, affiliationFee, affiliationFeeType, komisiAgen, cashBackFee, cashBackFeeType, adakanCashback, settleFee, settleFeeType, refferalCode, step, position) {
+    async function savePengaturanTambahMerchantBrandHandler(businesLevel, merchantId, brandNou, outletNou, settleTypeId, settleDikirmKemana, menerimaPembayaran, integrasiApi, subPartnerId, idProfile, merchantCode, additionalFee, additionalFeeType, adakanAdditionalFee, affiliationFee, affiliationFeeType, komisiAgen, cashBackFee, cashBackFeeType, adakanCashback, settleFee, settleFeeType, refferalCode, step, position, type) {
         try {
             setIsLoadingPengaturanMerchant(true)
             const auth = "Bearer " + getToken()
@@ -492,9 +489,31 @@ const PengaturanMerchant = () => {
                             history.push(`/form-info-rekening-outlet/${settleDikirmKemana}/${merchantId}/${outletNou}/${idProfile}`)
                         } 
                     }
-                } else {
+                } else if (position === "backList") {
                     setIsLoadingPengaturanMerchant(false)
                     history.push('/daftar-merchant-qris')
+                } else {
+                    if (businesLevel === 101) {
+                        if (Number(type) === 1) {
+                            history.push(`/form-dokumen-usaha-badan-usaha/${idProfile === undefined ? 0 : idProfile}`)
+                        } else if (Number(type) === 2) {
+                            history.push(`/form-info-usaha-perorangan/${idProfile === undefined ? 0 : idProfile}`)
+                        } else {
+                            history.push(`/form-tidak-berbadan-hukum/${idProfile === undefined ? 0 : idProfile}`)
+                        }
+                    } else if (businesLevel === 102) {
+                        if (Number(type) === 1) {
+                            history.push(`/form-dokumen-usaha-brand-badan-usaha/${idProfile === undefined ? 0 : idProfile}`)
+                        } else {
+                            history.push(`/formulir-info-usaha-brand/${idProfile === undefined ? 0 : idProfile}`)
+                        }
+                    } else {
+                        if (Number(type) === 1) {
+                            history.push(`/form-dokumen-usaha-outlet/${idProfile === undefined ? 0 : idProfile}`)
+                        } else {
+                            history.push(`/formulir-info-usaha-outlet/${idProfile === undefined ? 0 : idProfile}`)
+                        }
+                    }
                 }
             } else if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token !== null) {
                 setUserSession(getData.data.response_new_token)
@@ -516,9 +535,31 @@ const PengaturanMerchant = () => {
                             history.push(`/form-info-rekening-outlet/${settleDikirmKemana}/${merchantId}/${outletNou}/${idProfile}`)
                         } 
                     }
-                } else {
+                } else if (position === "backList") {
                     setIsLoadingPengaturanMerchant(false)
                     history.push('/daftar-merchant-qris')
+                } else {
+                    if (businesLevel === 101) {
+                        if (Number(type) === 1) {
+                            history.push(`/form-dokumen-usaha-badan-usaha/${idProfile === undefined ? 0 : idProfile}`)
+                        } else if (Number(type) === 2) {
+                            history.push(`/form-info-usaha-perorangan/${idProfile === undefined ? 0 : idProfile}`)
+                        } else {
+                            history.push(`/form-tidak-berbadan-hukum/${idProfile === undefined ? 0 : idProfile}`)
+                        }
+                    } else if (businesLevel === 102) {
+                        if (Number(type) === 1) {
+                            history.push(`/form-dokumen-usaha-brand-badan-usaha/${idProfile === undefined ? 0 : idProfile}`)
+                        } else {
+                            history.push(`/formulir-info-usaha-brand/${idProfile === undefined ? 0 : idProfile}`)
+                        }
+                    } else {
+                        if (Number(type) === 1) {
+                            history.push(`/form-dokumen-usaha-outlet/${idProfile === undefined ? 0 : idProfile}`)
+                        } else {
+                            history.push(`/formulir-info-usaha-outlet/${idProfile === undefined ? 0 : idProfile}`)
+                        }
+                    }
                 }
             }
         } catch (error) {
@@ -686,7 +727,7 @@ const PengaturanMerchant = () => {
                                         placeholder='Rp 0'
                                         groupSeparator={"."}
                                         decimalSeparator={','}
-                                        allowDecimals={inputHandle.jenisFeeSettlement === 1 ? true : false}
+                                        allowDecimals={true}
                                         prefix={inputHandle.jenisFeeSettlement === 1 ? "Rp " : ""}
                                         suffix={inputHandle.jenisFeeSettlement === 2 ? " %" : ""}
                                         onKeyDown={(evt) => ["e", "E", "+", "-", ".", "b", "B", "k", "K", "m", "M"].includes(evt.key) && evt.preventDefault()}
@@ -940,7 +981,7 @@ const PengaturanMerchant = () => {
                                                 placeholder='Rp 0'
                                                 groupSeparator={"."}
                                                 decimalSeparator={','}
-                                                allowDecimals={inputHandle.jenisKomisi === 1 ? true : false}
+                                                allowDecimals={true}
                                                 prefix={inputHandle.jenisKomisi === 1 ? "Rp " : ""}
                                                 suffix={inputHandle.jenisKomisi === 2 ? " %" : ""}
                                                 onKeyDown={(evt) => ["e", "E", "+", "-", ".", "b", "B", "k", "K", "m", "M"].includes(evt.key) && evt.preventDefault()}
@@ -1057,7 +1098,7 @@ const PengaturanMerchant = () => {
                                                 placeholder='Rp 0'
                                                 groupSeparator={"."}
                                                 decimalSeparator={','}
-                                                allowDecimals={inputHandle.jenisCashback === 1 ? true : false}
+                                                allowDecimals={true}
                                                 prefix={inputHandle.jenisCashback === 1 ? "Rp " : ""}
                                                 suffix={inputHandle.jenisCashback === 2 ? " %" : ""}
                                                 onKeyDown={(evt) => ["e", "E", "+", "-", ".", "b", "B", "k", "K", "m", "M"].includes(evt.key) && evt.preventDefault()}
@@ -1174,7 +1215,7 @@ const PengaturanMerchant = () => {
                                                 placeholder='Rp 0'
                                                 groupSeparator={"."}
                                                 decimalSeparator={','}
-                                                allowDecimals={inputHandle.jenisAdditionalFee === 1 ? true : false}
+                                                allowDecimals={true}
                                                 prefix={inputHandle.jenisAdditionalFee === 1 ? "Rp " : ""}
                                                 suffix={inputHandle.jenisAdditionalFee === 2 ? " %" : ""}
                                                 onKeyDown={(evt) => ["e", "E", "+", "-", ".", "b", "B", "k", "K", "m", "M"].includes(evt.key) && evt.preventDefault()}
@@ -1200,8 +1241,35 @@ const PengaturanMerchant = () => {
                     <div className='d-flex justify-content-between align-items-center mt-4 pb-4' >
                         <button 
                             className='btn-prev-info-usaha me-2'
-                            onClick={
-                                level === "101" ? (type === "1" ? () => history.push(`/form-dokumen-usaha-badan-usaha/${idProfile === undefined ? 0 : idProfile}`) : type === "2" ? () => history.push(`/form-info-usaha-perorangan/${idProfile === undefined ? 0 : idProfile}`) : () => history.push(`/form-tidak-berbadan-hukum/${idProfile === undefined ? 0 : idProfile}`)) : Number(level) === "102" ? ((type === "1" ? () => history.push(`/form-dokumen-usaha-brand-badan-usaha/${idProfile === undefined ? 0 : idProfile}`) : () => history.push(`/formulir-info-usaha-brand/${idProfile === undefined ? 0 : idProfile}`) )) : ((type === "1" ? () => history.push(`/form-dokumen-usaha-outlet/${idProfile === undefined ? 0 : idProfile}`) : () => history.push(`/formulir-info-usaha-outlet/${idProfile === undefined ? 0 : idProfile}`) ))
+                            onClick={() => 
+                                savePengaturanTambahMerchantBrandHandler(
+                                    Number(level),
+                                    inputHandle.merchantId,
+                                    inputHandle.brandNou,
+                                    inputHandle.outletNou,
+                                    inputHandle.jenisSettlement, 
+                                    inputHandle.settlementDikirimkan, 
+                                    inputHandle.menerimaPembayaran, 
+                                    inputHandle.integrasiApi, 
+                                    selectedDataListPartner.length !== 0 ? selectedDataListPartner[0].value : "",
+                                    idProfile === undefined ? 0 : idProfile, 
+                                    inputHandle.merchantCode, 
+                                    typeof inputHandle.jumlahAdditionalFee === "string" ? ((inputHandle.jumlahAdditionalFee).includes(',') === true ? Number((inputHandle.jumlahAdditionalFee).replaceAll(',', '.')) : Number(inputHandle.jumlahAdditionalFee)) : Number(inputHandle.jumlahAdditionalFee),
+                                    inputHandle.jenisAdditionalFee, 
+                                    inputHandle.adakanAdditionalFee === 2 ? 0 : inputHandle.adakanAdditionalFee, 
+                                    typeof inputHandle.jumlahKomisi === "string" ? ((inputHandle.jumlahKomisi).includes(',') === true ? Number((inputHandle.jumlahKomisi).replaceAll(',', '.')) : Number(inputHandle.jumlahKomisi)) : Number(inputHandle.jumlahKomisi),
+                                    inputHandle.jenisKomisi, 
+                                    selectedDataKomisiAgen.length !== 0 ? selectedDataKomisiAgen[0].value : "",
+                                    typeof inputHandle.jumlahCashback === "string" ? ((inputHandle.jumlahCashback).includes(',') === true ? Number((inputHandle.jumlahCashback).replaceAll(',', '.')) : Number(inputHandle.jumlahCashback)) : Number(inputHandle.jumlahCashback),
+                                    inputHandle.jenisCashback, 
+                                    inputHandle.adakanProgramCashbackMdr === 2 ? 0 : inputHandle.adakanProgramCashbackMdr, 
+                                    typeof inputHandle.jumlahFeeSettlement === "string" ?((inputHandle.jumlahFeeSettlement).includes(',') === true ? Number((inputHandle.jumlahFeeSettlement).replaceAll(',', '.')) : Number(inputHandle.jumlahFeeSettlement)) : Number(inputHandle.jumlahFeeSettlement), 
+                                    inputHandle.jenisFeeSettlement, 
+                                    inputHandle.kodeRefferal,
+                                    Number(level) === 101 ? (type === "1" ? 3 : type === "2" ? 2 : 1) : (type === "1" ? 3 : 2),
+                                    "back",
+                                    type
+                                )
                             }
                         >
                             Sebelumnya
@@ -1250,7 +1318,8 @@ const PengaturanMerchant = () => {
                                     inputHandle.jenisFeeSettlement, 
                                     inputHandle.kodeRefferal,
                                     Number(level) === 101 ? (inputHandle.settlementDikirimkan === 101 ? 201 : 300) : Number(level) === 102 ? (inputHandle.settlementDikirimkan === 102 ? 201 : 300) : (inputHandle.settlementDikirimkan === 103 ? 201 : 300),
-                                    "next"
+                                    "next",
+                                    type
                                 )
                             }
                         >
@@ -1305,7 +1374,8 @@ const PengaturanMerchant = () => {
                                     inputHandle.jenisFeeSettlement, 
                                     inputHandle.kodeRefferal,
                                     200,
-                                    "back"
+                                    "backList", 
+                                    type
                                 )
                             }
                         >

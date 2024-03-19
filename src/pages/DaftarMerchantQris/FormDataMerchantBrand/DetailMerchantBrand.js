@@ -5,7 +5,6 @@ import { Button, Col, Image, Modal, OverlayTrigger, Row, Tooltip } from '@themes
 import DataTable from 'react-data-table-component';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
-import { agenLists } from '../../../data/tables';
 import { FilterComponentQrisOutletDetail } from '../../../components/FilterComponentQris';
 import loadingEzeelink from "../../../assets/img/technologies/Double Ring-1s-303px.svg"
 import { useHistory, useParams } from 'react-router-dom';
@@ -14,6 +13,7 @@ import encryptData from '../../../function/encryptData';
 import axios from 'axios';
 import ReactSelect, { components } from 'react-select';
 import Pagination from 'react-js-pagination';
+import noteIconRed from "../../../assets/icon/note_icon_red.svg";
 
 const DetailMerchantBrand = () => {
     const history = useHistory()
@@ -25,6 +25,7 @@ const DetailMerchantBrand = () => {
     const [getDataKategoriUsaha, setgetDataKategoriUsaha] = useState([])
     const [selectedDataKategoriUsaha, setSelectedDataKategoriUsaha] = useState([])
     const [dataKodePos, setDataKodePos] = useState({})
+    const [alertMaxJumlahKasir, setAlertMaxJumlahKasir] = useState(false)
     const [inputHandle, setInputHandle] = useState({
         namaKepalaOutlet: "",
         nikKepalaOutlet: "",
@@ -32,6 +33,8 @@ const DetailMerchantBrand = () => {
         namaBrand: "",
         cabang: "",
         namaYangDicetakQris: "",
+        pendapatanPertahun: "",
+        jumlahKasir: 0,
         alamat: "",
         kodePos: "",
         nomorRek: "",
@@ -63,6 +66,13 @@ const DetailMerchantBrand = () => {
                     [e.target.name]: e.target.value
                 })
             }
+        } else if (e.target.name === "pendapatanPertahun") {
+            setSelectedDataKategoriUsaha([])
+            getDataKategoriUsahaHnadler(e.target.value)
+            setInputHandle({
+                ...inputHandle,
+                [e.target.name]: Number(e.target.value)
+            })
         } else if (e.target.name === "kodePos") {
             if (e.target.value.length > 5) {
                 getDataPostalCodeHandler((e.target.value).slice(0,5))
@@ -77,6 +87,16 @@ const DetailMerchantBrand = () => {
                     [e.target.name]: e.target.value
                 })
             }
+        } else if (e.target.name === "jumlahKasir") {
+            if (Number(e.target.value) > 1500) {
+                setAlertMaxJumlahKasir(true)
+            } else {
+                setAlertMaxJumlahKasir(false)
+            }
+            setInputHandle({
+                ...inputHandle,
+                [e.target.name]: Number(e.target.value).toString()
+            })
         } else {
             setInputHandle({
                 ...inputHandle,
@@ -345,10 +365,10 @@ const DetailMerchantBrand = () => {
         }
     }
 
-    async function addFormTambahOutletHandler(email, alamat, bank, cabang, kategoriUsaha, kodePos, namaBrand, namaKepalaOutlet, namaPemilikRek, namaYangDicetakQris, nikKepalaOutlet, nomorRek, profileId, step) {
+    async function addFormTambahOutletHandler(pendapatanPerTahun, jumlahKasir, email, alamat, bank, cabang, kategoriUsaha, kodePos, namaBrand, namaKepalaOutlet, namaPemilikRek, namaYangDicetakQris, nikKepalaOutlet, nomorRek, profileId, step) {
         try {
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{"email": "${email}", "alamat_outlet": "${alamat}", "Bank": ${bank}, "cabang": "${cabang}", "kategori_usaha": ${kategoriUsaha}, "kode_pos": "${kodePos}", "namaBrand": "${namaBrand}", "nama_kepala_outlet": "${namaKepalaOutlet}", "nama_pemilik_rekening": "${namaPemilikRek}", "nama_yang_dicetak_QRIS": "${namaYangDicetakQris}", "nik": "${nikKepalaOutlet}", "nomor_rekening": "${nomorRek}", "profile_id": ${profileId}, "step" : ${step}}`)
+            const dataParams = encryptData(`{"business_income": "${pendapatanPerTahun}", "jumlah_kasir": ${jumlahKasir}, "email": "${email}", "alamat_outlet": "${alamat}", "Bank": ${bank}, "cabang": "${cabang}", "kategori_usaha": ${kategoriUsaha}, "kode_pos": "${kodePos}", "namaBrand": "${namaBrand}", "nama_kepala_outlet": "${namaKepalaOutlet}", "nama_pemilik_rekening": "${namaPemilikRek}", "nama_yang_dicetak_QRIS": "${namaYangDicetakQris}", "nik": "${nikKepalaOutlet}", "nomor_rekening": "${nomorRek}", "profile_id": ${profileId}, "step" : ${step}}`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
@@ -408,7 +428,6 @@ const DetailMerchantBrand = () => {
 
     useEffect(() => {
         getListDataDetailBrandQrisHandler(profileId)
-        getDataKategoriUsahaHnadler(0)
         getBankListHandler()
     }, [])
 
@@ -521,19 +540,6 @@ const DetailMerchantBrand = () => {
                         <div className='pt-2 d-flex justify-content-end align-items-center position-relative'>
                             <input name="nikKepalaOutlet" value={inputHandle.nikKepalaOutlet} onChange={(e) => handleChange(e)} className='input-text-form' type="number" onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()} placeholder='Masukan NIK Kepala Outlet Sesuai e-KTP' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
                         </div>
-                        <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Kategori Usaha</div>
-                        <div className="dropdown dropSaldoPartner pt-2">
-                            <ReactSelect
-                                closeMenuOnSelect={true}
-                                hideSelectedOptions={false}
-                                options={getDataKategoriUsaha}
-                                value={selectedDataKategoriUsaha}
-                                onChange={(selected) => setSelectedDataKategoriUsaha([selected])}
-                                placeholder="Pilih Kategori Usaha"
-                                components={{ Option }}
-                                styles={customStylesSelectedOption}
-                            />
-                        </div>
                         <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>E-mail</div>
                         <div className='pt-2 d-flex justify-content-end align-items-center position-relative'>
                             <input name="email" value={inputHandle.email} onChange={(e) => handleChange(e)} className='input-text-form' type="text" placeholder='Masukan E-mail' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
@@ -550,6 +556,107 @@ const DetailMerchantBrand = () => {
                         <div className='pt-2 d-flex justify-content-end align-items-center position-relative'>
                             <input name="namaYangDicetakQris" value={inputHandle.namaYangDicetakQris} onChange={(e) => handleChange(e)} className='input-text-form' type="text" placeholder='Masukan Nama yang dicetak dalam QRIS' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
                         </div>
+                        <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Pendapatan pertahun</div>
+                        <Row className='py-2' style={{ marginLeft: "unset", marginRight: "unset" }}>
+                            <Col xs={3} className="form-check form-check-inline">
+                                <input
+                                    className="form-check-input"
+                                    type="radio"
+                                    id="inputA"
+                                    name='pendapatanPertahun'
+                                    value={1}
+                                    checked={inputHandle.pendapatanPertahun === 1 && true}
+                                    onChange={(e) => handleChange(e)}
+                                />
+                                <label
+                                    className="form-check-label"
+                                    style={{ fontFamily: "Nunito", fontWeight: 700, fontSize: 14 }}
+                                    for="inputA"
+                                >
+                                    {`< Rp 300 juta`}
+                                </label>
+                            </Col>
+                            <Col xs={3} className="form-check form-check-inline">
+                                <input
+                                    className="form-check-input"
+                                    type="radio"
+                                    id="inputB"
+                                    name='pendapatanPertahun'
+                                    value={2}
+                                    checked={inputHandle.pendapatanPertahun === 2 && true}
+                                    onChange={(e) => handleChange(e)}
+                                />
+                                <label
+                                    className="form-check-label"
+                                    style={{ fontFamily: "Nunito", fontWeight: 700, fontSize: 14 }}
+                                    for="inputB"
+                                >
+                                    Rp 300 juta - Rp 2,5 miliar
+                                </label>
+                            </Col>
+                        </Row>
+                        <Row className='py-2' style={{ marginLeft: "unset", marginRight: "unset" }}>
+                            <Col xs={3} className="form-check form-check-inline">
+                                <input
+                                    className="form-check-input"
+                                    type="radio"
+                                    id="inputC"
+                                    name='pendapatanPertahun'
+                                    value={3}
+                                    checked={inputHandle.pendapatanPertahun === 3 && true}
+                                    onChange={(e) => handleChange(e)}
+                                />
+                                <label
+                                    className="form-check-label"
+                                    style={{ fontFamily: "Nunito", fontWeight: 700, fontSize: 14 }}
+                                    for="inputC"
+                                >
+                                    Rp 2,5 miliar - Rp 50 miliar
+                                </label>
+                            </Col>
+                            <Col xs={3} className="form-check form-check-inline">
+                                <input
+                                    className="form-check-input"
+                                    type="radio"
+                                    id="inputD"
+                                    name='pendapatanPertahun'
+                                    value={4}
+                                    checked={inputHandle.pendapatanPertahun === 4 && true}
+                                    onChange={(e) => handleChange(e)}
+                                />
+                                <label
+                                    className="form-check-label"
+                                    style={{ fontFamily: "Nunito", fontWeight: 700, fontSize: 14 }}
+                                    for="inputD"
+                                >
+                                    {`> Rp 50 miliar`}
+                                </label>
+                            </Col>
+                        </Row>
+                        <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Kategori Usaha</div>
+                        <div className="dropdown dropSaldoPartner pt-2">
+                            <ReactSelect
+                                closeMenuOnSelect={true}
+                                hideSelectedOptions={false}
+                                options={getDataKategoriUsaha}
+                                value={selectedDataKategoriUsaha}
+                                onChange={(selected) => setSelectedDataKategoriUsaha([selected])}
+                                placeholder="Pilih Kategori Usaha"
+                                components={{ Option }}
+                                styles={customStylesSelectedOption}
+                            />
+                        </div>
+                        <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Jumlah kasir (counter pembayaran)</div>
+                        <div className='pt-2 d-flex justify-content-end align-items-center' style={{ width:"7%" }}>
+                            <input name="jumlahKasir" value={inputHandle.jumlahKasir} onChange={(e) => handleChange(e)} className='input-text-form' placeholder='0' type='number' min={0} max={2500} onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()} style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838", height: 45 }} /*placeholder='Masukkan Nama Perusahaan'*/ />
+                        </div>
+                        {
+                            alertMaxJumlahKasir ? 
+                            <div className='mt-2 d-flex justify-content-start align-items-center' style={{ color: "#B9121B", fontSize: 12, fontFamily: "nUNITO" }}>
+                                <img src={noteIconRed} className="me-2" alt="icon notice" />
+                                <div>Jumlah kasir tidak boleh lebih dari 1500</div>
+                            </div> : ""
+                        }
                         <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Alamat Outlet</div>
                         <div className='pt-2 d-flex justify-content-end align-items-center'>
                             <textarea name="alamat" value={inputHandle.alamat} onChange={(e) => handleChange(e)} className='input-text-form' placeholder='cth: jln. nama jalan no.01 RT.001 RW 002' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838", height: 100, padding: 12 }} /*placeholder='Masukkan Nama Perusahaan'*/ />
@@ -637,6 +744,10 @@ const DetailMerchantBrand = () => {
                                 selectedDataKategoriUsaha.length !== 0 &&
                                 inputHandle.email.length !== 0 &&
                                 inputHandle.namaBrand.length !== 0 && 
+                                inputHandle.pendapatanPertahun !== 0 && 
+                                Number(inputHandle.jumlahKasir) !== 0 && 
+                                inputHandle.jumlahKasir !== undefined && 
+                                Number(inputHandle.jumlahKasir) <= 1500 &&
                                 inputHandle.cabang.length !== 0 && 
                                 inputHandle.namaYangDicetakQris.length !== 0 &&
                                 inputHandle.alamat.length !== 0 &&
@@ -651,6 +762,10 @@ const DetailMerchantBrand = () => {
                                 selectedDataKategoriUsaha.length === 0 ||
                                 inputHandle.email.length === 0 ||
                                 inputHandle.namaBrand.length === 0 || 
+                                inputHandle.pendapatanPertahun === 0 || 
+                                Number(inputHandle.jumlahKasir) === 0 || 
+                                inputHandle.jumlahKasir === undefined || 
+                                Number(inputHandle.jumlahKasir) > 1500 ||
                                 inputHandle.cabang.length === 0 || 
                                 inputHandle.namaYangDicetakQris.length === 0 ||
                                 inputHandle.alamat.length === 0 ||
@@ -659,7 +774,7 @@ const DetailMerchantBrand = () => {
                                 (inputHandle.kodePos.length === 5 && Object.keys(dataKodePos).length === 0) 
                                 // ((selectedDataBank.length === 0 || inputHandle.namaPemiliRek.length === 0 || inputHandle.nomorRek.length === 0))
                             )}
-                            onClick={() => addFormTambahOutletHandler(inputHandle.email, inputHandle.alamat, selectedDataBank.length !== 0 ? selectedDataBank[0].value : 0, inputHandle.cabang, selectedDataKategoriUsaha.length !== 0 ? selectedDataKategoriUsaha[0].value : 0, inputHandle.kodePos, inputHandle.namaBrand, inputHandle.namaKepalaOutlet, inputHandle.namaPemiliRek, inputHandle.namaYangDicetakQris, inputHandle.nikKepalaOutlet, inputHandle.nomorRek, profileId, 300)}
+                            onClick={() => addFormTambahOutletHandler(inputHandle.pendapatanPertahun, inputHandle.jumlahKasir, inputHandle.email, inputHandle.alamat, selectedDataBank.length !== 0 ? selectedDataBank[0].value : 0, inputHandle.cabang, selectedDataKategoriUsaha.length !== 0 ? selectedDataKategoriUsaha[0].value : 0, inputHandle.kodePos, inputHandle.namaBrand, inputHandle.namaKepalaOutlet, inputHandle.namaPemiliRek, inputHandle.namaYangDicetakQris, inputHandle.nikKepalaOutlet, inputHandle.nomorRek, profileId, 300)}
                         >
                             Simpan
                         </button>

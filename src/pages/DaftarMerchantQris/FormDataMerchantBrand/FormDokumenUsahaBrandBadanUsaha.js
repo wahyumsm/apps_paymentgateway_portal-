@@ -56,7 +56,7 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
             setNpwpId(e.target.value)
         } else {
             setAlertMinNpwpId(false)
-            setNpwpId(e.target.value)
+            setNpwpId((e.target.value).slice(0, 16))
         }
     }
 
@@ -369,8 +369,10 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
                     history.push(`/pengaturan-merchant/${profileId}/${businesLevel}/${businessType}`)
                 } else if (step === 201) {
                     history.push(`/form-info-rekening-brand/${settleGroup}/${getData.data.response_data.results.merchant_nou}/${getData.data.response_data.results.outlet_nou}/${profileId}`)
-                } else {
+                } else if (step === 300) {
                     history.push(`/detail-merchant-brand/${profileId}`)
+                } else {
+                    history.push(`/formulir-info-usaha-brand/${profileId === undefined ? 0 : profileId}`)
                 }
             } else if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token !== null) {
                 setUserSession(getData.data.response_new_token)
@@ -381,8 +383,10 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
                     history.push(`/pengaturan-merchant/${profileId}/${businesLevel}/${businessType}`)
                 } else if (step === 201) {
                     history.push(`/form-info-rekening-brand/${settleGroup}/${getData.data.response_data.results.merchant_nou}/${getData.data.response_data.results.outlet_nou}/${profileId}`)
-                } else {
+                } else if (step === 300) {
                     history.push(`/detail-merchant-brand/${profileId}`)
+                } else {
+                    history.push(`/formulir-info-usaha-brand/${profileId === undefined ? 0 : profileId}`)
                 }
             }
         } catch (error) {
@@ -780,7 +784,8 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
                     <div className='d-flex justify-content-between align-items-center mt-4 pb-4' >
                         <button 
                             className='btn-prev-info-usaha me-2'
-                            onClick={() => history.push(`/formulir-info-usaha-brand/${profileId === undefined ? 0 : profileId}`)}
+                            // onClick={() => history.push(`/formulir-info-usaha-brand/${profileId === undefined ? 0 : profileId}`)}
+                            onClick={() => formDataThirdStepBusenessDocument(0, 102, profileId === undefined ? 0 : profileId, 1, 2, imageNpwp, imageNib, imageAktaPerusahaan, imageSkKementrian, npwpId)}
                         >
                             Sebelumnya
                         </button>

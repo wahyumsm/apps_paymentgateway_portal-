@@ -359,6 +359,8 @@ const FormInfoUsahaPerseorangan = () => {
                     history.push(`/pengaturan-merchant/${profileId}/101/2`)
                 } else if (step === 2) {
                     history.push('/daftar-merchant-qris')
+                } else {
+                    history.push(`/form-info-pemilik-perorangan/${profileId === undefined ? 0 : profileId}`)
                 }
             } else if ((getData.status === 200 || getData.status === 202) && getData.data.response_code === 200 && getData.data.response_new_token !== null) {
                 setUserSession(getData.data.response_new_token)
@@ -366,6 +368,8 @@ const FormInfoUsahaPerseorangan = () => {
                     history.push(`/pengaturan-merchant/${profileId}/101/2`)
                 } else if (step === 2) {
                     history.push('/daftar-merchant-qris')
+                } else {
+                    history.push(`/form-info-pemilik-perorangan/${profileId === undefined ? 0 : profileId}`)
                 }
             }
         } catch (error) {
@@ -733,7 +737,7 @@ const FormInfoUsahaPerseorangan = () => {
                    <div className='d-flex justify-content-between align-items-center mt-4 pb-4' >
                         <button 
                             className='btn-prev-info-usaha me-2'
-                            onClick={() => history.push(`/form-info-pemilik-perorangan/${profileId === undefined ? 0 : profileId}`)}
+                            onClick={() => formDataSecondStepInfoUsahaPerorangan(101, profileId === undefined ? 0 : profileId, inputHandle.namaPerusahaan, inputHandle.bentukPerusahaan, inputHandle.bentukPerusahaanLainnya, inputHandle.emailPerusahaan, inputHandle.namaBrand, selectedDataKategoriUsaha.length !== 0 ? selectedDataKategoriUsaha[0].value : 0, inputHandle.jumlahKasir, inputHandle.pendapatanPertahun, inputHandle.alamatUsaha, inputHandle.kodePos, dataKodePos.mprovince_name === undefined ? "" : dataKodePos.mprovince_name, dataKodePos.mcity_name === undefined ? "" : dataKodePos.mcity_name, dataKodePos.mdistrict_name === undefined ? "" : dataKodePos.mdistrict_name, dataKodePos.mvillage_name === undefined ? "" : dataKodePos.mvillage_name, jenisToko.join(), inputHandle.kepunyaanQris, imageFileTempatUsaha, inputHandle.nmid, inputHandle.onlineShopUrl, 1)}
                         >
                             Sebelumnya
                         </button>
