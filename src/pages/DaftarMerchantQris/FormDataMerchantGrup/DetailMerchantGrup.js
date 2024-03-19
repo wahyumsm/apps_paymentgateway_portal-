@@ -489,34 +489,26 @@ const DetailMerchantGrup = () => {
                             </Row>
                             <Row className='mt-1'>
                                 <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofbus_name}</Col>
-                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofbus_company_type_name}</Col>
+                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofbus_company_type_name === "" ? "-" : dataDetailGrup?.mprofbus_company_type_name}</Col>
                             </Row>
                             <Row className='mt-3'>
                                 <Col xs={6} className='sub-title-detail-merchant'>Kategori usaha</Col>
-                                <Col xs={6} className='sub-title-detail-merchant'>Jumlah kasir (counter pembayaran)</Col>
-                            </Row>
-                            <Row className='mt-1'>
-                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mbuscat_name}</Col>
-                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofbus_cashier_count}</Col>
-                            </Row>
-                            <Row className='mt-3'>
-                                <Col xs={6} className='sub-title-detail-merchant'>Pendapatan pertahun</Col>
                                 <Col xs={6} className='sub-title-detail-merchant'>Alamat usaha</Col>
                             </Row>
                             <Row className='mt-1'>
-                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mbusinc_desc}</Col>
+                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mbuscat_name}</Col>
                                 <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofbus_address}</Col>
                             </Row>
                             <Row className='mt-3'>
-                                <Col xs={6} className='sub-title-detail-merchant'>Kode pos</Col>
+                                <Col xs={6} className='sub-title-detail-merchant'>Pendapatan pertahun</Col>
                                 <Col xs={6} className='sub-title-detail-merchant'>Jenis toko</Col>
                             </Row>
                             <Row className='mt-1'>
-                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofbus_postal_code}</Col>
+                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mbusinc_desc}</Col>
                                 <Col xs={6} className='isi-content-detail-merchant'>{(dataDetailGrup?.mprofbus_shop_type_id === "2,1" || dataDetailGrup?.mprofbus_shop_type_id === "1,2") ? "Toko Fisik & Toko Online" : (dataDetailGrup?.mprofbus_shop_type_id === "1") ? "Toko Fisik" : "Toko Online"}</Col>
                             </Row>
                             <Row className='mt-3'>
-                                <Col xs={6} className='sub-title-detail-merchant'>Sudah pernah mendaftar QRIS ?</Col>
+                                <Col xs={6} className='sub-title-detail-merchant'>Kode pos</Col>
                                 {
                                     dataDetailGrup?.mprofbus_shop_type_id !== null && (
                                         <Col xs={6} className='sub-title-detail-merchant'>Foto tempat usaha</Col>
@@ -524,7 +516,7 @@ const DetailMerchantGrup = () => {
                                 }
                             </Row>
                             <Row className='mt-1'>
-                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofbus_is_have_QRIS === false ? `Tidak` : `Ya`}</Col>
+                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofbus_postal_code}</Col>
                                 {
                                     dataDetailGrup?.mprofbus_shop_type_id !== null && (
                                         <Col xs={6} className='d-flex justify-content-start align-items-center'>
@@ -544,20 +536,27 @@ const DetailMerchantGrup = () => {
                                 }
                             </Row>
                             <Row className='mt-3'>
-                                <Col xs={6} className='sub-title-detail-merchant'>Kode refferal</Col>
+                                <Col xs={6} className='sub-title-detail-merchant'>Sudah pernah mendaftar QRIS ?</Col>
                                 {
                                     dataDetailGrup?.mprofbus_shop_type_id !== null && (
                                         <Col xs={6} className='sub-title-detail-merchant'>Link / Website toko</Col>
                                     )
                                 }
+                                
                             </Row>
                             <Row className='mt-1'>
-                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofilefee_user_referal_code}</Col>
+                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofbus_is_have_QRIS === false ? `Tidak` : `Ya`}</Col>
                                 {
                                     dataDetailGrup?.mprofbus_shop_type_id !== null && (
                                         <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofbus_online_shop_url }</Col>
                                     )
                                 }
+                            </Row>
+                            <Row className='mt-3'>
+                                <Col xs={6} className='sub-title-detail-merchant'>Kode refferal</Col>
+                            </Row>
+                            <Row className='mt-1'>
+                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofilefee_user_referal_code}</Col>
                             </Row>
                             <hr/>
                             <div className='title-sub-content-detail-merchant'>Dokumen usaha</div>
@@ -636,34 +635,26 @@ const DetailMerchantGrup = () => {
                             </Row>
                             <Row className='mt-1'>
                                 <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofbus_name}</Col>
-                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofbus_company_type_name}</Col>
+                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofbus_company_type_name === "" ? "-" : dataDetailGrup?.mprofbus_company_type_name}</Col>
                             </Row>
                             <Row className='mt-3'>
                                 <Col xs={6} className='sub-title-detail-merchant'>Kategori usaha</Col>
-                                <Col xs={6} className='sub-title-detail-merchant'>Jumlah kasir (counter pembayaran)</Col>
-                            </Row>
-                            <Row className='mt-1'>
-                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mbuscat_name}</Col>
-                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofbus_cashier_count}</Col>
-                            </Row>
-                            <Row className='mt-3'>
-                                <Col xs={6} className='sub-title-detail-merchant'>Pendapatan pertahun</Col>
                                 <Col xs={6} className='sub-title-detail-merchant'>Alamat usaha</Col>
                             </Row>
                             <Row className='mt-1'>
-                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mbusinc_desc}</Col>
+                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mbuscat_name}</Col>
                                 <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofbus_address}</Col>
                             </Row>
                             <Row className='mt-3'>
-                                <Col xs={6} className='sub-title-detail-merchant'>Kode pos</Col>
+                                <Col xs={6} className='sub-title-detail-merchant'>Pendapatan pertahun</Col>
                                 <Col xs={6} className='sub-title-detail-merchant'>Jenis toko</Col>
                             </Row>
                             <Row className='mt-1'>
-                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofbus_postal_code}</Col>
+                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mbusinc_desc}</Col>
                                 <Col xs={6} className='isi-content-detail-merchant'>{(dataDetailGrup?.mprofbus_shop_type_id === "2,1" || dataDetailGrup?.mprofbus_shop_type_id === "1,2") ? "Toko Fisik & Toko Online" : (dataDetailGrup?.mprofbus_shop_type_id === "1") ? "Toko Fisik" : "Toko Online"}</Col>
                             </Row>
                             <Row className='mt-3'>
-                                <Col xs={6} className='sub-title-detail-merchant'>Sudah pernah mendaftar QRIS ?</Col>
+                                <Col xs={6} className='sub-title-detail-merchant'>Kode pos</Col>
                                 {
                                     dataDetailGrup?.mprofbus_shop_type_id !== null && (
                                         <Col xs={6} className='sub-title-detail-merchant'>Foto tempat usaha</Col>
@@ -671,7 +662,7 @@ const DetailMerchantGrup = () => {
                                 }
                             </Row>
                             <Row className='mt-1'>
-                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofbus_is_have_QRIS === false ? `Tidak` : `Ya`}</Col>
+                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofbus_postal_code}</Col>
                                 {
                                     dataDetailGrup?.mprofbus_shop_type_id !== null && (
                                         <Col xs={6} className='d-flex justify-content-start align-items-center'>
@@ -691,20 +682,26 @@ const DetailMerchantGrup = () => {
                                 }
                             </Row>
                             <Row className='mt-3'>
-                                <Col xs={6} className='sub-title-detail-merchant'>Kode refferal</Col>
+                                <Col xs={6} className='sub-title-detail-merchant'>Sudah pernah mendaftar QRIS ?</Col>
                                 {
                                     dataDetailGrup?.mprofbus_shop_type_id !== null && (
                                         <Col xs={6} className='sub-title-detail-merchant'>Link / Website toko</Col>
                                     )
                                 }
                             </Row>
-                            <Row className='mt-1 pb-5'>
-                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofilefee_user_referal_code}</Col>
+                            <Row className='mt-1'>
+                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofbus_is_have_QRIS === false ? `Tidak` : `Ya`}</Col>
                                 {
                                     dataDetailGrup?.mprofbus_shop_type_id !== null && (
                                         <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofbus_online_shop_url }</Col>
                                     )
                                 }
+                            </Row>
+                            <Row className='mt-3'>
+                                <Col xs={6} className='sub-title-detail-merchant'>Kode refferal</Col>
+                            </Row>
+                            <Row className='mt-1 pb-5'>
+                                <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofilefee_user_referal_code}</Col>
                             </Row>
                             {/* <div className='text-end mt-3 pb-4'>
                                 <button className='button-ubah-info-merchant-detail'>
