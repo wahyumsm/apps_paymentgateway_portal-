@@ -609,7 +609,7 @@ const DaftarMerchantQris = () => {
                         <FontAwesomeIcon onClick={() => getPageRegisterQrisOutlet(row.mprofile_id, row.step, row.business_type_id, row.mqrissettlegroup_id, row.merchant_nou, row.mstore_nou, row.status_id)} icon={(row.status_id === 106 || row.status_id === 107) ? faPencilAlt : faEye} className="me-2" style={{cursor: "pointer"}} />
                     </OverlayTrigger> 
                     <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip ><div className="text-center">{(row.status_id === 108) && "Download QRIS"}</div></Tooltip>}>
-                        <a href={row.mprofqris_url} download className='ms-3'><FontAwesomeIcon icon={(row.status_id === 108) && faDownload} className="me-2" style={{cursor: "pointer"}} /></a>
+                        <a href={row.qris_url} download className='ms-3'><FontAwesomeIcon icon={(row.status_id === 108) && faDownload} className="me-2" style={{cursor: "pointer"}} /></a>
                     </OverlayTrigger> 
                 </div>
             ),
