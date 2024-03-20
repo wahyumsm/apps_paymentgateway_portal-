@@ -93,6 +93,11 @@ const ReportLogRintis = () => {
             wrap: "true"
         },
         {
+            name: 'Invoice Number',
+            selector: row => row.log_inv_numb,
+            width: "190px"
+        },
+        {
             name: 'Trans Date',
             selector: row => row.log_transdate,
             width: "170px"
