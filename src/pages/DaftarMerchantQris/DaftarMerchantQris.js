@@ -3,7 +3,7 @@ import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg";
 import $ from 'jquery'
 import DataTable from 'react-data-table-component';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
+import { faDownload, faEye, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import { Image, OverlayTrigger, Tooltip } from '@themesberg/react-bootstrap';
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
 import { FilterComponentQrisGrup, FilterComponentQris } from '../../components/FilterComponentQris';
@@ -604,9 +604,14 @@ const DaftarMerchantQris = () => {
             name: 'Aksi',
             width: "170px",
             cell: (row) => (
-                <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip ><div className="text-center">{(row.status_id === 106 || row.status_id === 107) ? 'Lanjutkan daftar' : 'Lihat'}</div></Tooltip>}>
-                    <FontAwesomeIcon onClick={() => getPageRegisterQrisOutlet(row.mprofile_id, row.step, row.business_type_id, row.mqrissettlegroup_id, row.merchant_nou, row.mstore_nou, row.status_id)} icon={(row.status_id === 106 || row.status_id === 107) ? faPencilAlt : faEye} className="me-2" style={{cursor: "pointer"}} />
-                </OverlayTrigger> 
+                <div className='d-flex justify-content-center align-items-center'>
+                    <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip ><div className="text-center">{(row.status_id === 106 || row.status_id === 107) ? 'Lanjutkan daftar' : 'Lihat'}</div></Tooltip>}>
+                        <FontAwesomeIcon onClick={() => getPageRegisterQrisOutlet(row.mprofile_id, row.step, row.business_type_id, row.mqrissettlegroup_id, row.merchant_nou, row.mstore_nou, row.status_id)} icon={(row.status_id === 106 || row.status_id === 107) ? faPencilAlt : faEye} className="me-2" style={{cursor: "pointer"}} />
+                    </OverlayTrigger> 
+                    <OverlayTrigger placement="top" trigger={["hover", "focus"]} overlay={ <Tooltip ><div className="text-center">{(row.status_id === 108) && "Download QRIS"}</div></Tooltip>}>
+                        <a href={row.qris_url} download className='ms-3'><FontAwesomeIcon icon={(row.status_id === 108) && faDownload} className="me-2" style={{cursor: "pointer"}} /></a>
+                    </OverlayTrigger> 
+                </div>
             ),
         },
     ];

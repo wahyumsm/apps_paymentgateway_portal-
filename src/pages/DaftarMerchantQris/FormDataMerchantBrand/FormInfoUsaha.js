@@ -381,9 +381,11 @@ const FormInfoUsaha = () => {
                     if (Number(businessType) === 1) {
                         if (step === 3) {
                             history.push(`/form-dokumen-usaha-brand-badan-usaha/${getData.data.response_data.results.mprofbus_mprofile_id}`)
-                        } else {
+                        } else if (step === 2) {
                             setIsLoadingInfoUsaha(false)
                             history.push('/daftar-merchant-qris')
+                        } else {
+                            history.push(`/formulir-info-pemilik-brand/${profileId === undefined ? 0 : profileId}`)
                         }
                     } else {
                         if (step === 200) {
@@ -392,9 +394,11 @@ const FormInfoUsaha = () => {
                             history.push(`/form-info-rekening-brand/${settleGroup}/${getData.data.response_data.results.mprofile_merchant_id}/${getData.data.response_data.results.mprofile_outlet_nou}/${profileId}`)
                         } else if (step === 300) {
                             history.push(`/detail-merchant-brand/${profileId}`)
-                        } else {
+                        } else if (step === 2) {
                             setIsLoadingInfoUsaha(false)
                             history.push('/daftar-merchant-qris')
+                        } else {
+                            history.push(`/formulir-info-pemilik-brand/${profileId === undefined ? 0 : profileId}`)
                         }
                     }
                 } else {
@@ -406,9 +410,11 @@ const FormInfoUsaha = () => {
                     if (Number(businessType) === 1) {
                         if (step === 3) {
                             history.push(`/form-dokumen-usaha-brand-badan-usaha/${getData.data.response_data.results.mprofbus_mprofile_id}`)
-                        } else {
+                        } else if (step === 2) {
                             setIsLoadingInfoUsaha(false)
                             history.push('/daftar-merchant-qris')
+                        } else {
+                            history.push(`/formulir-info-pemilik-brand/${profileId === undefined ? 0 : profileId}`)
                         }
                     } else {
                         if (step === 200) {
@@ -417,9 +423,11 @@ const FormInfoUsaha = () => {
                             history.push(`/form-info-rekening-brand/${settleGroup}/${getData.data.response_data.results.mprofile_merchant_id}/${getData.data.response_data.results.mprofile_outlet_nou}/${profileId}`)
                         } else if (step === 300) {
                             history.push(`/detail-merchant-brand/${profileId}`)
-                        } else {
+                        } else if (step === 2) {
                             setIsLoadingInfoUsaha(false)
                             history.push('/daftar-merchant-qris')
+                        } else {
+                            history.push(`/formulir-info-pemilik-brand/${profileId === undefined ? 0 : profileId}`)
                         }
                     }
                 } else {
@@ -621,20 +629,26 @@ const FormInfoUsaha = () => {
                     <div className='pt-2 d-flex justify-content-end align-items-center'>
                         <input name="namaBrand" value={inputHandle.namaBrand} onChange={(e) => handleChange(e)} className='input-text-form' placeholder='Masukkan nama brand / toko' type='text' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838", height: 45 }} /*placeholder='Masukkan Nama Perusahaan'*/ />
                     </div>
-                    <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Nama yang dicetak dalam QRIS</div>
-                    <div className='pt-2 d-flex justify-content-end align-items-center'>
-                        <input name="namaYangDicetakQris" value={inputHandle.namaYangDicetakQris} onChange={(e) => handleChange(e)} className='input-text-form' placeholder='Masukkan nama yang dicetak dalam QRIS' type='text' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838", height: 45 }} /*placeholder='Masukkan Nama Perusahaan'*/ />
-                    </div>
-                    <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Jumlah kasir (counter pembayaran)</div>
-                    <div className='pt-2 d-flex justify-content-end align-items-center' style={{ width:"7%" }}>
-                        <input name="jumlahKasir" value={inputHandle.jumlahKasir} onChange={(e) => handleChange(e)} className='input-text-form' placeholder='0' type='number' min={0} max={2500} onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()} style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838", height: 45 }} /*placeholder='Masukkan Nama Perusahaan'*/ />
-                    </div>
                     {
-                        alertMaxJumlahKasir ?
-                        <div className='mt-2 d-flex justify-content-start align-items-center' style={{ color: "#B9121B", fontSize: 12, fontFamily: "nUNITO" }}>
-                            <img src={noteIconRed} className="me-2" alt="icon notice" />
-                            <div>Jumlah kasir tidak boleh lebih dari 1500</div>
-                        </div> : ""
+                        (inputHandle.businessType === 2) && (
+                            <>
+                                <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Nama yang dicetak dalam QRIS</div>
+                                <div className='pt-2 d-flex justify-content-end align-items-center'>
+                                    <input name="namaYangDicetakQris" value={inputHandle.namaYangDicetakQris} onChange={(e) => handleChange(e)} className='input-text-form' placeholder='Masukkan nama yang dicetak dalam QRIS' type='text' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838", height: 45 }} /*placeholder='Masukkan Nama Perusahaan'*/ />
+                                </div>
+                                <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Jumlah kasir (counter pembayaran)</div>
+                                <div className='pt-2 d-flex justify-content-end align-items-center' style={{ width:"7%" }}>
+                                    <input name="jumlahKasir" value={inputHandle.jumlahKasir} onChange={(e) => handleChange(e)} className='input-text-form' placeholder='0' type='number' min={0} max={2500} onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()} style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838", height: 45 }} /*placeholder='Masukkan Nama Perusahaan'*/ />
+                                </div>
+                                {
+                                    alertMaxJumlahKasir ?
+                                    <div className='mt-2 d-flex justify-content-start align-items-center' style={{ color: "#B9121B", fontSize: 12, fontFamily: "nUNITO" }}>
+                                        <img src={noteIconRed} className="me-2" alt="icon notice" />
+                                        <div>Jumlah kasir tidak boleh lebih dari 1500</div>
+                                    </div> : ""
+                                }
+                            </>
+                        )
                     }
                     <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Pendapatan pertahun</div>
                     <Row className='py-2' style={{ marginLeft: "unset", marginRight: "unset" }}>
@@ -904,7 +918,7 @@ const FormInfoUsaha = () => {
                             <>
                                 <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>NMID</div>
                                 <div className='pt-2 d-flex justify-content-end align-items-center position-relative'>
-                                    <input name="nmid" value={inputHandle.nmid} onChange={(e) => handleChange(e)} className='input-text-form' placeholder='Masukan NMID' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
+                                    <input name="nmid" value={inputHandle.nmid} onChange={(e) => handleChange(e)} className='input-text-form' type='number' onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()} placeholder='Masukan NMID' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
                                 </div>
                                 {
                                     alertMinNmid === true ? (
@@ -923,20 +937,16 @@ const FormInfoUsaha = () => {
                    <div className='d-flex justify-content-between align-items-center mt-4 pb-4' >
                         <button
                             className='btn-prev-info-usaha me-2'
-                            onClick={() => history.push(`/formulir-info-pemilik-brand/${profileId === undefined ? 0 : profileId}`)}
+                            onClick={() => formDataSecondStepInfoUsahaBadanUsaha(0, inputHandle.businessType, 102, profileId === undefined ? 0 : profileId, inputHandle.namaPerusahaan, inputHandle.bentukPerusahaan, inputHandle.bentukPerusahaanLainnya, inputHandle.emailPerusahaan, inputHandle.namaBrand, inputHandle.namaYangDicetakQris, selectedDataKategoriUsaha.length !== 0 ? selectedDataKategoriUsaha[0].value : 0, Number(inputHandle.jumlahKasir) > 1500 ? 0 : inputHandle.jumlahKasir, inputHandle.pendapatanPertahun, inputHandle.alamatUsaha, inputHandle.kodePos, dataKodePos.mprovince_name === undefined ? "" : dataKodePos.mprovince_name, dataKodePos.mcity_name === undefined ? "" : dataKodePos.mcity_name, dataKodePos.mdistrict_name === undefined ? "" : dataKodePos.mdistrict_name, dataKodePos.mvillage_name === undefined ? "" : dataKodePos.mvillage_name, jenisToko.join(), inputHandle.kepunyaanQris, imageFileTempatUsaha, inputHandle.nmid, inputHandle.onlineShopUrl, 1)}
                         >
                             Sebelumnya
                         </button>
                         <button
                             className={(
                                 inputHandle.namaPerusahaan.length !== 0 &&
-                                ((inputHandle.businessType === 1 && (inputHandle.bentukPerusahaan === 1 || inputHandle.bentukPerusahaan === 2 || (inputHandle.bentukPerusahaan === 3 && inputHandle.bentukPerusahaanLainnya.length !== 0))) || inputHandle.businessType === 2) &&
+                                ((inputHandle.businessType === 1 && (inputHandle.bentukPerusahaan === 1 || inputHandle.bentukPerusahaan === 2 || (inputHandle.bentukPerusahaan === 3 && inputHandle.bentukPerusahaanLainnya.length !== 0))) || (inputHandle.businessType === 2 && ((inputHandle.namaYangDicetakQris.length !== 0) && (Number(inputHandle.jumlahKasir) !== 0 && inputHandle.jumlahKasir !== undefined && Number(inputHandle.jumlahKasir) <= 1500)))) &&
                                 inputHandle.emailPerusahaan.length !== 0 &&
                                 inputHandle.namaBrand.length !== 0 &&
-                                inputHandle.namaYangDicetakQris.length !== 0 &&
-                                Number(inputHandle.jumlahKasir) !== 0 &&
-                                inputHandle.jumlahKasir !== undefined &&
-                                Number(inputHandle.jumlahKasir) <= 1500 &&
                                 inputHandle.pendapatanPertahun !== 0 &&
                                 selectedDataKategoriUsaha.length !== 0 &&
                                 inputHandle.alamatUsaha.length !== 0 &&
@@ -951,10 +961,8 @@ const FormInfoUsaha = () => {
                                 ((inputHandle.businessType === 1 && ((inputHandle.bentukPerusahaan === 3 && inputHandle.bentukPerusahaanLainnya.length === 0)))) ||
                                 inputHandle.emailPerusahaan.length === 0 ||
                                 inputHandle.namaBrand.length === 0 ||
-                                inputHandle.namaYangDicetakQris.length === 0 ||
-                                Number(inputHandle.jumlahKasir) === 0 ||
-                                inputHandle.jumlahKasir === undefined ||
-                                Number(inputHandle.jumlahKasir) > 1500 ||
+                                (inputHandle.businessType === 2 && inputHandle.namaYangDicetakQris.length === 0) ||
+                                (inputHandle.businessType === 2 && (Number(inputHandle.jumlahKasir) === 0 || inputHandle.jumlahKasir === undefined || Number(inputHandle.jumlahKasir) > 1500)) ||
                                 inputHandle.pendapatanPertahun === 0 ||
                                 selectedDataKategoriUsaha.length === 0 ||
                                 inputHandle.alamatUsaha.length === 0 ||

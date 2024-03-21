@@ -93,6 +93,11 @@ const ReportLogRintis = () => {
             wrap: "true"
         },
         {
+            name: 'Invoice Number',
+            selector: row => row.log_inv_numb,
+            width: "190px"
+        },
+        {
             name: 'Trans Date',
             selector: row => row.log_transdate,
             width: "170px"
@@ -106,6 +111,24 @@ const ReportLogRintis = () => {
         {
             name: 'Code',
             selector: row => row.log_code,
+            wrap: true,
+            width: "130px"
+        },
+        {
+            name: 'MPAN',
+            selector: row => row.log_merchant_pan,
+            wrap: true,
+            width: "150px"
+        },
+        {
+            name: 'CPAN',
+            selector: row => row.log_cardnumber,
+            wrap: true,
+            width: "150px"
+        },
+        {
+            name: 'Terminal_loc',
+            selector: row => row.log_terminal_loc,
             wrap: true,
             width: "150px"
         },
@@ -186,6 +209,7 @@ const ReportLogRintis = () => {
     }
 
     function resetButtonReportLogRintis () {
+        getListRiwayatLogRintisHandler(activePageReportLogRintis)
         setInputHandleReportLogRintis({
             ...inputHandleReportLogRintis,
             type: "",

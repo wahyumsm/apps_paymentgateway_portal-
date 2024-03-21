@@ -149,6 +149,10 @@ const FormInfoRekeningBrand = () => {
                     history.push(`/daftar-merchant-qris`)
                 } else if (step === 300) {
                     history.push(`/detail-merchant-brand/${profileId}`)
+                } else if (step === 2) {
+                    history.push(`/formulir-info-usaha-brand/${profileId}`)
+                } else {
+                    history.push(`/form-dokumen-usaha-brand-badan-usaha/${profileId}`)
                 }
             } else if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token !== null) {
                 setUserSession(getData.data.response_new_token)
@@ -157,6 +161,10 @@ const FormInfoRekeningBrand = () => {
                     history.push(`/daftar-merchant-qris`)
                 } else if (step === 300) {
                     history.push(`/detail-merchant-brand/${profileId}`)
+                } else if (step === 2) {
+                    history.push(`/formulir-info-usaha-brand/${profileId}`)
+                } else {
+                    history.push(`/form-dokumen-usaha-brand-badan-usaha/${profileId}`)
                 }
             }
         } catch (error) {
@@ -230,12 +238,7 @@ const FormInfoRekeningBrand = () => {
                     <div className='d-flex justify-content-between align-items-center mt-4 pb-4' >
                         <button 
                             className='btn-prev-info-usaha me-2'
-                            onClick={
-                                dataMerchantSettlement?.mprofdtl_bustype === 1 ?
-                                () => history.push(`/form-dokumen-usaha-brand-badan-usaha/${dataMerchantSettlement?.mprofile_id === null ? id : dataMerchantSettlement?.mprofile_id}`) :
-                                dataMerchantSettlement?.mprofdtl_bustype === 2 ?
-                                () => history.push(`/formulir-info-usaha-brand/${dataMerchantSettlement?.mprofile_id === null ? id : dataMerchantSettlement?.mprofile_id}`) : ""
-                            }
+                            onClick={() => addFormDaftarSettlementHandler(dataMerchantSettlement?.mprofile_id === null ? id : dataMerchantSettlement?.mprofile_id, settleGroup, merchantNou, userNou, selectedDataBank.length !== 0 ? selectedDataBank[0].value : 0, inputHandle.noRek, inputHandle.namaPemilikRek, dataMerchantSettlement?.mprofdtl_email === null ? "" : dataMerchantSettlement?.mprofdtl_email, dataMerchantSettlement?.mqrismerchsettle_id === null ? 0 : dataMerchantSettlement?.mqrismerchsettle_id, dataMerchantSettlement?.mprofdtl_bustype === 1 ? 3 : 2)}
                         >
                             Sebelumnya
                         </button>
