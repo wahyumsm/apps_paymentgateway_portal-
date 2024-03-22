@@ -84,7 +84,7 @@ const ReNotifyQris = () => {
     async function submitReNotify(noQris, rrn) {
         try {
             const auth = 'Bearer ' + getToken();
-            const dataParams = encryptData(`{"transaction_code": "${noQris}", "rrn": "${rrn}"}`)
+            const dataParams = encryptData(`{"transaction_code": "${noQris}", "rrn": "${rrn.length === 0 ? 0 : rrn}"}`)
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': auth
