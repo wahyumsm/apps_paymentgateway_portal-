@@ -334,13 +334,13 @@ const TransaksiQrisApi = () => {
                         let dataExcel = []
                         if (role === "102") {
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].trans_id, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "Waktu Request": data[i].qris_request, "Waktu Bayar": data[i].qris_paid, "Channel Pembayaran": data[i].payment_channel_name, "RRN": data[i].rrn, "Tipe QR": data[i].qr_type, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partner_name, "Nama Brand": data[i].brand_name, "Nama Outlet": data[i].outlet_name, "ID Kasir": data[i].terminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].mdr, "Pendapatan": data[i].partner_income, "Status": data[i].status})
-                                // dataExcel.push({ No: i + 1, "ID Transaksi": data[i].trans_id, "Waktu Request": data[i].qris_request, "Waktu Bayar": data[i].qris_paid, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "RRN": data[i].rrn, "Tipe QR": data[i].qr_type, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partner_name, "Nama Brand": data[i].brand_name, "Nama Outlet": data[i].outlet_name, "ID Kasir": data[i].terminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].mdr, "Pendapatan": data[i].partner_income, "Status": data[i].status})
+                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].pay_trans_code, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "RRN": data[i].rrn !== null ? data[i].rrn : "-", "Channel Pembayaran": data[i].payment_channel_name, "Tipe QR": data[i].qr_type, "Waktu Request": data[i].qris_request, "Waktu Bayar": data[i].qris_paid, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partner_name, "Nama Brand": data[i].brand_name, "Nama Outlet": data[i].outlet_name, "ID Kasir": data[i].terminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].mdr, "Pendapatan": data[i].partner_income, "Status": data[i].status})
+                                // dataExcel.push({ No: i + 1, "ID Transaksi": data[i].pay_trans_code, "Waktu Request": data[i].qris_request, "Waktu Bayar": data[i].qris_paid, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "RRN": data[i].rrn, "Tipe QR": data[i].qr_type, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partner_name, "Nama Brand": data[i].brand_name, "Nama Outlet": data[i].outlet_name, "ID Kasir": data[i].terminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].mdr, "Pendapatan": data[i].partner_income, "Status": data[i].status})
                             }
                         } else {
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].trans_id, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "Waktu Request": data[i].qris_request, "Waktu Bayar": data[i].qris_paid, "Channel Pembayaran": data[i].payment_channel_name, "RRN": data[i].rrn, "Tipe QR": data[i].qr_type, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partner_name, "Nama Brand": data[i].brand_name, "Nama Outlet": data[i].outlet_name, "ID Kasir": data[i].terminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].mdr, "Pendapatan Ezee": data[i].ezee_income, "Pendapatan Partner": data[i].partner_income, "Status": data[i].status})
-                                // dataExcel.push({ No: i + 1, "ID Transaksi": data[i].trans_id, "Waktu Request": data[i].qris_request, "Waktu Bayar": data[i].qris_paid, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "RRN": data[i].rrn, "Tipe QR": data[i].qr_type, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partner_name, "Nama Brand": data[i].brand_name, "Nama Outlet": data[i].outlet_name, "ID Kasir": data[i].terminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].mdr, "Pendapatan Ezee": data[i].ezee_income, "Pendapatan Partner": data[i].partner_income, "Status": data[i].status})
+                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].pay_trans_code, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "RRN": data[i].rrn !== null ? data[i].rrn : "-", "Channel Pembayaran": data[i].payment_channel_name, "Tipe QR": data[i].qr_type, "Waktu Request": data[i].qris_request, "Waktu Bayar": data[i].qris_paid, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partner_name, "Nama Brand": data[i].brand_name, "Nama Outlet": data[i].outlet_name, "ID Kasir": data[i].terminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].mdr, "Pendapatan Ezee": data[i].ezee_income, "Pendapatan Partner": data[i].partner_income, "Status": data[i].status})
+                                // dataExcel.push({ No: i + 1, "ID Transaksi": data[i].pay_trans_code, "Waktu Request": data[i].qris_request, "Waktu Bayar": data[i].qris_paid, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "RRN": data[i].rrn, "Tipe QR": data[i].qr_type, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partner_name, "Nama Brand": data[i].brand_name, "Nama Outlet": data[i].outlet_name, "ID Kasir": data[i].terminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].mdr, "Pendapatan Ezee": data[i].ezee_income, "Pendapatan Partner": data[i].partner_income, "Status": data[i].status})
                             }
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
@@ -353,13 +353,13 @@ const TransaksiQrisApi = () => {
                         let dataExcel = []
                         if (role === "102") {
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].trans_id, "Waktu Request": data[i].qris_request, "Waktu Bayar": data[i].qris_paid, "Channel Pembayaran": data[i].payment_channel_name, "RRN": data[i].rrn, "Tipe QR": data[i].qr_type, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partner_name, "Nama Brand": data[i].brand_name, "Nama Outlet": data[i].outlet_name, "ID Kasir": data[i].terminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].mdr, "Pendapatan": data[i].partner_income, "Status": data[i].status})
-                                // dataExcel.push({ No: i + 1, "ID Transaksi": data[i].trans_id, "Waktu Request": data[i].qris_request, "Waktu Bayar": data[i].qris_paid, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "RRN": data[i].rrn, "Tipe QR": data[i].qr_type, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partner_name, "Nama Brand": data[i].brand_name, "Nama Outlet": data[i].outlet_name, "ID Kasir": data[i].terminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].mdr, "Pendapatan": data[i].partner_income, "Status": data[i].status})
+                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].pay_trans_code, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "RRN": data[i].rrn !== null ? data[i].rrn : "-", "Channel Pembayaran": data[i].payment_channel_name, "Tipe QR": data[i].qr_type, "Waktu Request": data[i].qris_request, "Waktu Bayar": data[i].qris_paid, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partner_name, "Nama Brand": data[i].brand_name, "Nama Outlet": data[i].outlet_name, "ID Kasir": data[i].terminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].mdr, "Pendapatan": data[i].partner_income, "Status": data[i].status})
+                                // dataExcel.push({ No: i + 1, "ID Transaksi": data[i].pay_trans_code, "Waktu Request": data[i].qris_request, "Waktu Bayar": data[i].qris_paid, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "RRN": data[i].rrn, "Tipe QR": data[i].qr_type, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partner_name, "Nama Brand": data[i].brand_name, "Nama Outlet": data[i].outlet_name, "ID Kasir": data[i].terminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].mdr, "Pendapatan": data[i].partner_income, "Status": data[i].status})
                             }
                         } else {
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].trans_id, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "Waktu Request": data[i].qris_request, "Waktu Bayar": data[i].qris_paid, "Channel Pembayaran": data[i].payment_channel_name, "RRN": data[i].rrn, "Tipe QR": data[i].qr_type, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partner_name, "Nama Brand": data[i].brand_name, "Nama Outlet": data[i].outlet_name, "ID Kasir": data[i].terminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].mdr, "Pendapatan Ezee": data[i].ezee_income, "Pendapatan Partner": data[i].partner_income, "Status": data[i].status})
-                                // dataExcel.push({ No: i + 1, "ID Transaksi": data[i].trans_id, "Waktu Request": data[i].qris_request, "Waktu Bayar": data[i].qris_paid, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "RRN": data[i].rrn, "Tipe QR": data[i].qr_type, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partner_name, "Nama Brand": data[i].brand_name, "Nama Outlet": data[i].outlet_name, "ID Kasir": data[i].terminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].mdr, "Pendapatan Ezee": data[i].ezee_income, "Pendapatan Partner": data[i].partner_income, "Status": data[i].status})
+                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].pay_trans_code, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "RRN": data[i].rrn !== null ? data[i].rrn : "-", "Channel Pembayaran": data[i].payment_channel_name, "Tipe QR": data[i].qr_type, "Waktu Request": data[i].qris_request, "Waktu Bayar": data[i].qris_paid, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partner_name, "Nama Brand": data[i].brand_name, "Nama Outlet": data[i].outlet_name, "ID Kasir": data[i].terminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].mdr, "Pendapatan Ezee": data[i].ezee_income, "Pendapatan Partner": data[i].partner_income, "Status": data[i].status})
+                                // dataExcel.push({ No: i + 1, "ID Transaksi": data[i].pay_trans_code, "Waktu Request": data[i].qris_request, "Waktu Bayar": data[i].qris_paid, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "RRN": data[i].rrn, "Tipe QR": data[i].qr_type, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partner_name, "Nama Brand": data[i].brand_name, "Nama Outlet": data[i].outlet_name, "ID Kasir": data[i].terminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].mdr, "Pendapatan Ezee": data[i].ezee_income, "Pendapatan Partner": data[i].partner_income, "Status": data[i].status})
                             }
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
@@ -389,13 +389,13 @@ const TransaksiQrisApi = () => {
                         let dataExcel = []
                         if (role === "102") {
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].trans_id, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "Waktu Request": data[i].qris_request, "Waktu Bayar": data[i].qris_paid, "Channel Pembayaran": data[i].payment_channel_name, "RRN": data[i].rrn, "Tipe QR": data[i].qr_type, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partner_name, "Nama Brand": data[i].brand_name, "Nama Outlet": data[i].outlet_name, "ID Kasir": data[i].terminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].mdr, "Pendapatan": data[i].partner_income, "Status": data[i].status})
-                                // dataExcel.push({ No: i + 1, "ID Transaksi": data[i].trans_id, "Waktu Request": data[i].qris_request, "Waktu Bayar": data[i].qris_paid, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "RRN": data[i].rrn, "Tipe QR": data[i].qr_type, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partner_name, "Nama Brand": data[i].brand_name, "Nama Outlet": data[i].outlet_name, "ID Kasir": data[i].terminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].mdr, "Pendapatan": data[i].partner_income, "Status": data[i].status})
+                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].pay_trans_code, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "RRN": data[i].rrn !== null ? data[i].rrn : "-", "Channel Pembayaran": data[i].payment_channel_name, "Tipe QR": data[i].qr_type, "Waktu Request": data[i].qris_request, "Waktu Bayar": data[i].qris_paid, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partner_name, "Nama Brand": data[i].brand_name, "Nama Outlet": data[i].outlet_name, "ID Kasir": data[i].terminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].mdr, "Pendapatan": data[i].partner_income, "Status": data[i].status})
+                                // dataExcel.push({ No: i + 1, "ID Transaksi": data[i].pay_trans_code, "Waktu Request": data[i].qris_request, "Waktu Bayar": data[i].qris_paid, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "RRN": data[i].rrn, "Tipe QR": data[i].qr_type, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partner_name, "Nama Brand": data[i].brand_name, "Nama Outlet": data[i].outlet_name, "ID Kasir": data[i].terminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].mdr, "Pendapatan": data[i].partner_income, "Status": data[i].status})
                             }
                         } else {
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].trans_id, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "Waktu Request": data[i].qris_request, "Waktu Bayar": data[i].qris_paid, "Channel Pembayaran": data[i].payment_channel_name, "RRN": data[i].rrn, "Tipe QR": data[i].qr_type, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partner_name, "Nama Brand": data[i].brand_name, "Nama Outlet": data[i].outlet_name, "ID Kasir": data[i].terminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].mdr, "Pendapatan Ezee": data[i].ezee_income, "Pendapatan Partner": data[i].partner_income, "Status": data[i].status})
-                                // dataExcel.push({ No: i + 1, "ID Transaksi": data[i].trans_id, "Waktu Request": data[i].qris_request, "Waktu Bayar": data[i].qris_paid, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "RRN": data[i].rrn, "Tipe QR": data[i].qr_type, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partner_name, "Nama Brand": data[i].brand_name, "Nama Outlet": data[i].outlet_name, "ID Kasir": data[i].terminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].mdr, "Pendapatan Ezee": data[i].ezee_income, "Pendapatan Partner": data[i].partner_income, "Status": data[i].status})
+                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].pay_trans_code, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "RRN": data[i].rrn !== null ? data[i].rrn : "-", "Channel Pembayaran": data[i].payment_channel_name, "Tipe QR": data[i].qr_type, "Waktu Request": data[i].qris_request, "Waktu Bayar": data[i].qris_paid, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partner_name, "Nama Brand": data[i].brand_name, "Nama Outlet": data[i].outlet_name, "ID Kasir": data[i].terminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].mdr, "Pendapatan Ezee": data[i].ezee_income, "Pendapatan Partner": data[i].partner_income, "Status": data[i].status})
+                                // dataExcel.push({ No: i + 1, "ID Transaksi": data[i].pay_trans_code, "Waktu Request": data[i].qris_request, "Waktu Bayar": data[i].qris_paid, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "RRN": data[i].rrn, "Tipe QR": data[i].qr_type, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partner_name, "Nama Brand": data[i].brand_name, "Nama Outlet": data[i].outlet_name, "ID Kasir": data[i].terminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].mdr, "Pendapatan Ezee": data[i].ezee_income, "Pendapatan Partner": data[i].partner_income, "Status": data[i].status})
                             }
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
@@ -408,13 +408,13 @@ const TransaksiQrisApi = () => {
                         let dataExcel = []
                         if (role === "102") {
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].trans_id, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "Waktu Request": data[i].qris_request, "Waktu Bayar": data[i].qris_paid, "Channel Pembayaran": data[i].payment_channel_name, "RRN": data[i].rrn, "Tipe QR": data[i].qr_type, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partner_name, "Nama Brand": data[i].brand_name, "Nama Outlet": data[i].outlet_name, "ID Kasir": data[i].terminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].mdr, "Pendapatan": data[i].partner_income, "Status": data[i].status})
-                                // dataExcel.push({ No: i + 1, "ID Transaksi": data[i].trans_id, "Waktu Request": data[i].qris_request, "Waktu Bayar": data[i].qris_paid, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "RRN": data[i].rrn, "Tipe QR": data[i].qr_type, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partner_name, "Nama Brand": data[i].brand_name, "Nama Outlet": data[i].outlet_name, "ID Kasir": data[i].terminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].mdr, "Pendapatan": data[i].partner_income, "Status": data[i].status})
+                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].pay_trans_code, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "RRN": data[i].rrn !== null ? data[i].rrn : "-", "Channel Pembayaran": data[i].payment_channel_name, "Tipe QR": data[i].qr_type, "Waktu Request": data[i].qris_request, "Waktu Bayar": data[i].qris_paid, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partner_name, "Nama Brand": data[i].brand_name, "Nama Outlet": data[i].outlet_name, "ID Kasir": data[i].terminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].mdr, "Pendapatan": data[i].partner_income, "Status": data[i].status})
+                                // dataExcel.push({ No: i + 1, "ID Transaksi": data[i].pay_trans_code, "Waktu Request": data[i].qris_request, "Waktu Bayar": data[i].qris_paid, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "RRN": data[i].rrn, "Tipe QR": data[i].qr_type, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partner_name, "Nama Brand": data[i].brand_name, "Nama Outlet": data[i].outlet_name, "ID Kasir": data[i].terminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].mdr, "Pendapatan": data[i].partner_income, "Status": data[i].status})
                             }
                         } else {
                             for (let i = 0; i < data.length; i++) {
-                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].trans_id, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "Waktu Request": data[i].qris_request, "Waktu Bayar": data[i].qris_paid, "Channel Pembayaran": data[i].payment_channel_name, "RRN": data[i].rrn, "Tipe QR": data[i].qr_type, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partner_name, "Nama Brand": data[i].brand_name, "Nama Outlet": data[i].outlet_name, "ID Kasir": data[i].terminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].mdr, "Pendapatan Ezee": data[i].ezee_income, "Pendapatan Partner": data[i].partner_income, "Status": data[i].status})
-                                // dataExcel.push({ No: i + 1, "ID Transaksi": data[i].trans_id, "Waktu Request": data[i].qris_request, "Waktu Bayar": data[i].qris_paid, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "RRN": data[i].rrn, "Tipe QR": data[i].qr_type, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partner_name, "Nama Brand": data[i].brand_name, "Nama Outlet": data[i].outlet_name, "ID Kasir": data[i].terminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].mdr, "Pendapatan Ezee": data[i].ezee_income, "Pendapatan Partner": data[i].partner_income, "Status": data[i].status})
+                                dataExcel.push({ No: i + 1, "ID Transaksi": data[i].pay_trans_code, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "RRN": data[i].rrn !== null ? data[i].rrn : "-", "Channel Pembayaran": data[i].payment_channel_name, "Tipe QR": data[i].qr_type, "Waktu Request": data[i].qris_request, "Waktu Bayar": data[i].qris_paid, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partner_name, "Nama Brand": data[i].brand_name, "Nama Outlet": data[i].outlet_name, "ID Kasir": data[i].terminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].mdr, "Pendapatan Ezee": data[i].ezee_income, "Pendapatan Partner": data[i].partner_income, "Status": data[i].status})
+                                // dataExcel.push({ No: i + 1, "ID Transaksi": data[i].pay_trans_code, "Waktu Request": data[i].qris_request, "Waktu Bayar": data[i].qris_paid, "No. Referensi": data[i].reference_label !== null ? data[i].reference_label : "-", "RRN": data[i].rrn, "Tipe QR": data[i].qr_type, "Partner Trans ID": data[i].partner_trans_id, "Nama Partner": data[i].partner_name, "Nama Brand": data[i].brand_name, "Nama Outlet": data[i].outlet_name, "ID Kasir": data[i].terminal_name, "Nominal Transaksi": data[i].amount, "Potongan MDR": data[i].mdr, "Pendapatan Ezee": data[i].ezee_income, "Pendapatan Partner": data[i].partner_income, "Status": data[i].status})
                             }
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
@@ -670,13 +670,9 @@ const TransaksiQrisApi = () => {
             width: "150px"
         },
         {
-            name: 'Waktu Request',
-            selector: row => row.qris_request,
-            width: "150px"
-        },
-        {
-            name: 'Waktu Bayar',
-            selector: row => row.qris_paid,
+            name: 'RRN',
+            selector: row => row.rrn !== null ? row.rrn : "-",
+            wrap: true,
             width: "150px"
         },
         {
@@ -685,15 +681,19 @@ const TransaksiQrisApi = () => {
             width: "200px"
         },
         {
-            name: 'RRN',
-            selector: row => row.rrn !== null ? row.rrn : "-",
-            wrap: true,
-            width: "150px"
-        },
-        {
             name: 'Tipe QR',
             selector: row => row.qr_type,
             width: "140px"
+        },
+        {
+            name: 'Waktu Request',
+            selector: row => row.qris_request,
+            width: "150px"
+        },
+        {
+            name: 'Waktu Bayar',
+            selector: row => row.qris_paid,
+            width: "150px"
         },
         {
             name: 'Partner Trans ID',
@@ -748,6 +748,7 @@ const TransaksiQrisApi = () => {
             name: 'Status',
             selector: row => row.status,
             style: { display: "flex", justifyContent: "center", alignItem: "center", padding: "6px 10px", margin: "6px 20px", borderRadius: 4 },
+            center: true,
             conditionalCellStyles: [
                 {
                     when: row => row.status_id === 9 || row.status_id === 5 || row.status_id === 3,
@@ -784,13 +785,9 @@ const TransaksiQrisApi = () => {
             width: "150px"
         },
         {
-            name: 'Waktu Request',
-            selector: row => row.qris_request,
-            width: "150px"
-        },
-        {
-            name: 'Waktu Bayar',
-            selector: row => row.qris_paid,
+            name: 'RRN',
+            selector: row => row.rrn !== null ? row.rrn : "-",
+            wrap: true,
             width: "150px"
         },
         {
@@ -799,15 +796,19 @@ const TransaksiQrisApi = () => {
             width: "200px"
         },
         {
-            name: 'RRN',
-            selector: row => row.rrn !== null ? row.rrn : "-",
-            wrap: true,
-            width: "150px"
-        },
-        {
             name: 'Tipe QR',
             selector: row => row.qr_type,
             width: "140px"
+        },
+        {
+            name: 'Waktu Request',
+            selector: row => row.qris_request,
+            width: "150px"
+        },
+        {
+            name: 'Waktu Bayar',
+            selector: row => row.qris_paid,
+            width: "150px"
         },
         {
             name: 'Partner Trans ID',

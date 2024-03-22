@@ -352,16 +352,18 @@ function QrisIssuer() {
         {
             name: 'Nominal Transaksi',
             selector: row => convertToRupiah(row.nominal_trans, true, 2),
+            right: true,
             width: "180px"
         },
-        {
-            name: '% MDR Ezee',
-            selector: row => row.MDR,
-            width: "150px"
-        },
+        // {
+        //     name: '% MDR Ezee',
+        //     selector: row => row.MDR,
+        //     width: "150px"
+        // },
         {
             name: 'Pendapatan Ezee',
             selector: row => convertToRupiah(row.pendapatan_ezee, true, 2),
+            right: true,
             width: "200px"
         },
         {
