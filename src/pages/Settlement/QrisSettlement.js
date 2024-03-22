@@ -599,25 +599,6 @@ const QrisSettlement = () => {
         },
         {
             name: 'Cashback',
-            // name:
-            // <>
-            //     <OverlayTrigger
-            //         placement="top"
-            //         trigger={["hover"]}
-            //         overlay={
-            //             <Tooltip>Cashback = 0.05% x (Jumlah Transaksi WeChat Pay + Alipay)</Tooltip>
-            //         }
-            //     >
-            //         <div>
-            //             Cashback
-            //             <img
-            //                 src={circleInfo}
-            //                 alt="circle_info"
-            //                 style={{ marginTop: -3, marginLeft: 3 }}
-            //             />
-            //         </div>
-            //     </OverlayTrigger>
-            // </>,
             selector: row => convertToRupiah(row?.cashback, true, 2),
             width: "140px"
         },
@@ -786,11 +767,49 @@ const QrisSettlement = () => {
         },
         {
             name: 'MDR WeChat Pay',
+            // name:
+            // <>
+            //     <OverlayTrigger
+            //         placement="top"
+            //         trigger={["hover"]}
+            //         overlay={
+            //             <Tooltip>MDR WeChat Pay = 0.05% x (Jumlah Transaksi WeChat Pay)</Tooltip>
+            //         }
+            //     >
+            //         <div>
+            //             MDR WeChat Pay
+            //             <img
+            //                 src={circleInfo}
+            //                 alt="circle_info"
+            //                 style={{ marginTop: -3, marginLeft: 3 }}
+            //             />
+            //         </div>
+            //     </OverlayTrigger>
+            // </>,
             selector: row => convertToRupiah(row.tqrissettl_total_mdr_wechatpay, true, 2),
             width: "180px"
         },
         {
             name: 'MDR Alipay',
+            // name:
+            // <>
+            //     <OverlayTrigger
+            //         placement="top"
+            //         trigger={["hover"]}
+            //         overlay={
+            //             <Tooltip>MDR Alipay = 0.05% x (Jumlah Transaksi Alipay)</Tooltip>
+            //         }
+            //     >
+            //         <div>
+            //             MDR Alipay
+            //             <img
+            //                 src={circleInfo}
+            //                 alt="circle_info"
+            //                 style={{ marginTop: -3, marginLeft: 3 }}
+            //             />
+            //         </div>
+            //     </OverlayTrigger>
+            // </>,
             selector: row => convertToRupiah(row.tqrissettl_total_mdr_alipay, true, 2),
             width: "140px"
         },
@@ -811,6 +830,25 @@ const QrisSettlement = () => {
         },
         {
             name: 'Cashback',
+            // name:
+            // <>
+            //     <OverlayTrigger
+            //         placement="top"
+            //         trigger={["hover"]}
+            //         overlay={
+            //             <Tooltip>Cashback = 0.05% x (Jumlah Transaksi WeChat Pay + Alipay)</Tooltip>
+            //         }
+            //     >
+            //         <div>
+            //             Cashback
+            //             <img
+            //                 src={circleInfo}
+            //                 alt="circle_info"
+            //                 style={{ marginTop: -3, marginLeft: 3 }}
+            //             />
+            //         </div>
+            //     </OverlayTrigger>
+            // </>,
             selector: row => convertToRupiah(row.cashback, true, 2),
             width: "140px"
         },
@@ -821,6 +859,25 @@ const QrisSettlement = () => {
         },
         {
             name: 'Biaya Tambahan',
+            // name:
+            // <>
+            //     <OverlayTrigger
+            //         placement="top"
+            //         trigger={["hover"]}
+            //         overlay={
+            //             <Tooltip>Biaya Tambahan = 0.05% x (Total Transaksi Keseluruhan)</Tooltip>
+            //         }
+            //     >
+            //         <div>
+            //             Biaya Tambahan
+            //             <img
+            //                 src={circleInfo}
+            //                 alt="circle_info"
+            //                 style={{ marginTop: -3, marginLeft: 3 }}
+            //             />
+            //         </div>
+            //     </OverlayTrigger>
+            // </>,
             selector: row => convertToRupiah(row.biaya_tambahan, true, 2),
             width: "200px"
         },
