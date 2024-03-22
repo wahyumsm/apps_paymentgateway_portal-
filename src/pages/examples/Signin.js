@@ -240,6 +240,9 @@ export default () => {
             case 31:
               history.push("/disbursement")
             break;
+            case 37:
+              history.push("/daftar-merchant-qris")
+            break;
           }
         }
       }
