@@ -131,7 +131,7 @@ function QrisIssuer() {
                 'Authorization' : auth
             }
             const dataNNS = await axios.post(BaseURL + "/QRIS/QrisNNSGet", {data: ""}, {headers: headers})
-            console.log(dataNNS, 'dataNNS');
+            // console.log(dataNNS, 'dataNNS');
             if (dataNNS.status === 200 && dataNNS.data.response_code === 200 && dataNNS.data.response_new_token === null) {
                 let newArr = []
                 dataNNS.data.response_data.forEach(e => {
@@ -232,12 +232,12 @@ function QrisIssuer() {
                         'Authorization' : auth
                     }
                     const dataExportFilter = await axios.post(BaseURL + "/QRIS/QrisTransactionReportIssuer", {data: dataParams}, {headers: headers})
-                    console.log(dataExportFilter, 'dataExportFilter filter');
+                    // console.log(dataExportFilter, 'dataExportFilter filter');
                     if (dataExportFilter.status === 200 && dataExportFilter.data.response_code === 200 && dataExportFilter.data.response_new_token === null) {
                         const data = dataExportFilter.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].id_trans, "Waktu Transaksi": data[i].waktu_trans, "Jenis Transaksi": data[i].jenis_trans, "Nama Penerbit QR": data[i].nama_penerbit, "Nominal Transaksi": data[i].nominal_trans, "% MDR Ezee": data[i].MDR, "Pendapatan Ezee": data[i].pendapatan_ezee, "Kirim ke RINTIS": data[i].pendapatan_rintis, "Status Ezee": data[i].status_ezee, "Status RINTIS": data[i].status_rintis })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].id_trans, "Waktu Transaksi": data[i].waktu_trans, "Jenis Transaksi": data[i].jenis_trans, "Nama Penerbit QR": data[i].nama_penerbit, "Nominal Transaksi": data[i].nominal_trans, "Pendapatan Ezee": data[i].pendapatan_ezee, "Kirim ke RINTIS": data[i].pendapatan_rintis, "Status Ezee": data[i].status_ezee, "Status RINTIS": data[i].status_rintis })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -248,7 +248,7 @@ function QrisIssuer() {
                         const data = dataExportFilter.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].id_trans, "Waktu Transaksi": data[i].waktu_trans, "Jenis Transaksi": data[i].jenis_trans, "Nama Penerbit QR": data[i].nama_penerbit, "Nominal Transaksi": data[i].nominal_trans, "% MDR Ezee": data[i].MDR, "Pendapatan Ezee": data[i].pendapatan_ezee, "Kirim ke RINTIS": data[i].pendapatan_rintis, "Status Ezee": data[i].status_ezee, "Status RINTIS": data[i].status_rintis })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].id_trans, "Waktu Transaksi": data[i].waktu_trans, "Jenis Transaksi": data[i].jenis_trans, "Nama Penerbit QR": data[i].nama_penerbit, "Nominal Transaksi": data[i].nominal_trans, "Pendapatan Ezee": data[i].pendapatan_ezee, "Kirim ke RINTIS": data[i].pendapatan_rintis, "Status Ezee": data[i].status_ezee, "Status RINTIS": data[i].status_rintis })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -271,12 +271,12 @@ function QrisIssuer() {
                         'Authorization' : auth
                     }
                     const dataExport = await axios.post(BaseURL + "/QRIS/QrisTransactionReportIssuer", {data: dataParams}, {headers: headers})
-                    console.log(dataExport, 'dataExport non filter');
+                    // console.log(dataExport, 'dataExport non filter');
                     if (dataExport.status === 200 && dataExport.data.response_code === 200 && dataExport.data.response_new_token === null) {
                         const data = dataExport.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].id_trans, "Waktu Transaksi": data[i].waktu_trans, "Jenis Transaksi": data[i].jenis_trans, "Nama Penerbit QR": data[i].nama_penerbit, "Nominal Transaksi": data[i].nominal_trans, "% MDR Ezee": data[i].MDR, "Pendapatan Ezee": data[i].pendapatan_ezee, "Kirim ke RINTIS": data[i].pendapatan_rintis, "Status Ezee": data[i].status_ezee, "Status RINTIS": data[i].status_rintis })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].id_trans, "Waktu Transaksi": data[i].waktu_trans, "Jenis Transaksi": data[i].jenis_trans, "Nama Penerbit QR": data[i].nama_penerbit, "Nominal Transaksi": data[i].nominal_trans, "Pendapatan Ezee": data[i].pendapatan_ezee, "Kirim ke RINTIS": data[i].pendapatan_rintis, "Status Ezee": data[i].status_ezee, "Status RINTIS": data[i].status_rintis })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -287,7 +287,7 @@ function QrisIssuer() {
                         const data = dataExport.data.response_data.results
                         let dataExcel = []
                         for (let i = 0; i < data.length; i++) {
-                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].id_trans, "Waktu Transaksi": data[i].waktu_trans, "Jenis Transaksi": data[i].jenis_trans, "Nama Penerbit QR": data[i].nama_penerbit, "Nominal Transaksi": data[i].nominal_trans, "% MDR Ezee": data[i].MDR, "Pendapatan Ezee": data[i].pendapatan_ezee, "Kirim ke RINTIS": data[i].pendapatan_rintis, "Status Ezee": data[i].status_ezee, "Status RINTIS": data[i].status_rintis })
+                            dataExcel.push({ No: i + 1, "ID Transaksi": data[i].id_trans, "Waktu Transaksi": data[i].waktu_trans, "Jenis Transaksi": data[i].jenis_trans, "Nama Penerbit QR": data[i].nama_penerbit, "Nominal Transaksi": data[i].nominal_trans, "Pendapatan Ezee": data[i].pendapatan_ezee, "Kirim ke RINTIS": data[i].pendapatan_rintis, "Status Ezee": data[i].status_ezee, "Status RINTIS": data[i].status_rintis })
                         }
                         let workSheet = XLSX.utils.json_to_sheet(dataExcel);
                         let workBook = XLSX.utils.book_new();
@@ -307,7 +307,8 @@ function QrisIssuer() {
         if (!access_token) {
             history.push('/login');
         }
-        if (user_role === "100" && user_role === "101" && user_role === "103" && user_role === "105" && user_role === "109" && user_role === "110") {
+        // if (user_role !== "100" && user_role !== "101" && user_role !== "103" && user_role !== "105" && user_role !== "109" && user_role !== "110") {
+        if (user_role === "102" && user_role === "104" && user_role === "106" && user_role === "107" && user_role === "108") {
             history.push('/404');
         }
         getNNSdata()
