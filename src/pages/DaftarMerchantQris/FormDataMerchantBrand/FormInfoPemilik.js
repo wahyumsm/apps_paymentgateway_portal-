@@ -231,8 +231,15 @@ const FormInfoPemilik = (props) => {
                     kewarganegaraan: getData.data.response_data.results.mprofdtl_identity_type_id, 
                     noTelp: getData.data.response_data.results.mprofdtl_mobile
                 })
-                setImageFileKtp(getData.data.response_data.results.mprofdtl_identity_url)
-                setNameImageKtp(getData.data.response_data.results.mprofdtl_identity_file_name)
+                if (getData.data.response_data.results.mprofdtl_identity_url.slice(-3) === "pdf") {
+                    setImageFileKtp(null)
+                    setUploadPdfKtp(true)
+                    setNameImageKtp(getData.data.response_data.results.mprofdtl_identity_file_name)
+                } else {
+                    setUploadPdfKtp(false)
+                    setImageFileKtp(getData.data.response_data.results.mprofdtl_identity_url)
+                    setNameImageKtp(getData.data.response_data.results.mprofdtl_identity_file_name)
+                }
                 setImageFileSelfieKtp(getData.data.response_data.results.mprofdtl_selfie_identity_url)
                 setNameImageSelfieKtp(getData.data.response_data.results.mprofdtl_selfie_identity_file_name)
                 let newArrDataGrup = []
@@ -252,8 +259,15 @@ const FormInfoPemilik = (props) => {
                     kewarganegaraan: getData.data.response_data.results.mprofdtl_identity_type_id, 
                     noTelp: getData.data.response_data.results.mprofdtl_mobile
                 })
-                setImageFileKtp(getData.data.response_data.results.mprofdtl_identity_url)
-                setNameImageKtp(getData.data.response_data.results.mprofdtl_identity_file_name)
+                if (getData.data.response_data.results.mprofdtl_identity_url.slice(-3) === "pdf") {
+                    setImageFileKtp(null)
+                    setUploadPdfKtp(true)
+                    setNameImageKtp(getData.data.response_data.results.mprofdtl_identity_file_name)
+                } else {
+                    setUploadPdfKtp(false)
+                    setImageFileKtp(getData.data.response_data.results.mprofdtl_identity_url)
+                    setNameImageKtp(getData.data.response_data.results.mprofdtl_identity_file_name)
+                }
                 setImageFileSelfieKtp(getData.data.response_data.results.mprofdtl_selfie_identity_url)
                 setNameImageSelfieKtp(getData.data.response_data.results.mprofdtl_selfie_identity_file_name)
                 let newArrDataGrup = []

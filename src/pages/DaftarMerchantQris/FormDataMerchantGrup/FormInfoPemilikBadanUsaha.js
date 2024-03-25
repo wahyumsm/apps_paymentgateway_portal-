@@ -141,6 +141,15 @@ const FormInfoPemilikBadanUsaha = () => {
                 })
                 setImageFileKtp(getData.data.response_data.results.mprofdtl_identity_url)
                 setNameImageKtp(getData.data.response_data.results.mprofdtl_identity_file_name)
+                if (getData.data.response_data.results.mprofdtl_identity_url.slice(-3) === "pdf") {
+                    setImageFileKtp(null)
+                    setUploadPdfKtp(true)
+                    setNameImageKtp(getData.data.response_data.results.mprofdtl_identity_file_name)
+                } else {
+                    setUploadPdfKtp(false)
+                    setImageFileKtp(getData.data.response_data.results.mprofdtl_identity_url)
+                    setNameImageKtp(getData.data.response_data.results.mprofdtl_identity_file_name)
+                }
             } else if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token !== null) {
                 setUserSession(getData.data.response_new_token)
                 setInputHandle({
@@ -154,6 +163,15 @@ const FormInfoPemilikBadanUsaha = () => {
                 })
                 setImageFileKtp(getData.data.response_data.results.mprofdtl_identity_url)
                 setNameImageKtp(getData.data.response_data.results.mprofdtl_identity_file_name)
+                if (getData.data.response_data.results.mprofdtl_identity_url.slice(-3) === "pdf") {
+                    setImageFileKtp(null)
+                    setUploadPdfKtp(true)
+                    setNameImageKtp(getData.data.response_data.results.mprofdtl_identity_file_name)
+                } else {
+                    setUploadPdfKtp(false)
+                    setImageFileKtp(getData.data.response_data.results.mprofdtl_identity_url)
+                    setNameImageKtp(getData.data.response_data.results.mprofdtl_identity_file_name)
+                }
             }
         } catch (error) {
             // console.log(error)
