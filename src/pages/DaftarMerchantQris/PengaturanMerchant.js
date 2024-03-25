@@ -1242,34 +1242,8 @@ const PengaturanMerchant = () => {
                         <button
                             className='btn-prev-info-usaha me-2'
                             onClick={() =>
-                                savePengaturanTambahMerchantBrandHandler(
-                                    Number(level),
-                                    inputHandle.merchantId,
-                                    inputHandle.brandNou,
-                                    inputHandle.outletNou,
-                                    inputHandle.jenisSettlement,
-                                    inputHandle.settlementDikirimkan,
-                                    inputHandle.menerimaPembayaran,
-                                    inputHandle.integrasiApi,
-                                    selectedDataListPartner.length !== 0 ? selectedDataListPartner[0].value : "",
-                                    idProfile === undefined ? 0 : idProfile,
-                                    inputHandle.merchantCode,
-                                    typeof inputHandle.jumlahAdditionalFee === "string" ? ((inputHandle.jumlahAdditionalFee).includes(',') === true ? Number((inputHandle.jumlahAdditionalFee).replaceAll(',', '.')) : Number(inputHandle.jumlahAdditionalFee)) : Number(inputHandle.jumlahAdditionalFee),
-                                    inputHandle.jenisAdditionalFee,
-                                    inputHandle.adakanAdditionalFee === 2 ? 0 : inputHandle.adakanAdditionalFee,
-                                    typeof inputHandle.jumlahKomisi === "string" ? ((inputHandle.jumlahKomisi).includes(',') === true ? Number((inputHandle.jumlahKomisi).replaceAll(',', '.')) : Number(inputHandle.jumlahKomisi)) : Number(inputHandle.jumlahKomisi),
-                                    inputHandle.jenisKomisi,
-                                    selectedDataKomisiAgen.length !== 0 ? selectedDataKomisiAgen[0].value : "",
-                                    typeof inputHandle.jumlahCashback === "string" ? ((inputHandle.jumlahCashback).includes(',') === true ? Number((inputHandle.jumlahCashback).replaceAll(',', '.')) : Number(inputHandle.jumlahCashback)) : Number(inputHandle.jumlahCashback),
-                                    inputHandle.jenisCashback,
-                                    inputHandle.adakanProgramCashbackMdr === 2 ? 0 : inputHandle.adakanProgramCashbackMdr,
-                                    typeof inputHandle.jumlahFeeSettlement === "string" ?((inputHandle.jumlahFeeSettlement).includes(',') === true ? Number((inputHandle.jumlahFeeSettlement).replaceAll(',', '.')) : Number(inputHandle.jumlahFeeSettlement)) : Number(inputHandle.jumlahFeeSettlement),
-                                    inputHandle.jenisFeeSettlement,
-                                    inputHandle.kodeRefferal,
-                                    Number(level) === 101 ? (type === "1" ? 3 : type === "2" ? 2 : 1) : (type === "1" ? 3 : 2),
-                                    "back",
-                                    type
-                                )
+                                Number(level) === 101 ? (type === "1" ? history.push(`/form-dokumen-usaha-badan-usaha/${idProfile}`) : type === "2" ? history.push(`/form-info-usaha-perorangan/${idProfile}`) : history.push(`/form-tidak-berbadan-hukum/${idProfile}`)) : Number(level) === 102 ? (type === "1" ? history.push(`/form-dokumen-usaha-brand-badan-usaha/${idProfile}`) : history.push(`/formulir-info-usaha-brand/${idProfile}`)) : (type === "1" ? history.push(`/form-dokumen-usaha-outlet/${idProfile}`) : history.push(`/formulir-info-usaha-outlet/${idProfile}`))
+    
                             }
                         >
                             Sebelumnya
