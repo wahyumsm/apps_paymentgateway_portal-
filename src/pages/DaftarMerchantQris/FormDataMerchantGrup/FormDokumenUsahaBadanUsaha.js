@@ -686,7 +686,7 @@ const FormDokumenUsahaBadanUsaha = () => {
                                 <input
                                     type="file"
                                     onChange={(e) => handleFileChange(e, "skKementrian")}
-                                    accept="jpg, .pdf"
+                                    accept=".jpg, .pdf"
                                     style={{ display: "none" }}
                                     ref={hiddenFileInputSkKementrian}
                                     id="image"
