@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import breadcrumbsIcon from "../../assets/icon/breadcrumbs_icon.svg"
 import { Col, Form, Image, Row } from '@themesberg/react-bootstrap'
 import DateRangePicker from '@wojtekmaj/react-daterange-picker/dist/DateRangePicker'
 import DataTable, { defaultThemes } from 'react-data-table-component'
 import Pagination from 'react-js-pagination'
 import loadingEzeelink from "../../assets/img/technologies/Double Ring-1s-303px.svg"
+import noteIconRed from "../../assets/icon/note_icon_red.svg";
+import fileCsv from "../../assets/img/download.png";
 import { BaseURL, convertToRupiah, errorCatch, getToken, setUserSession } from '../../function/helpers'
 import encryptData from '../../function/encryptData'
 import axios from 'axios'
@@ -29,6 +31,11 @@ const ReportLogRintis = () => {
         statusLog: "",
         periode: 0
     })
+    const hiddenFileInputCsv = useRef(null)
+    const [imageFileCsv, setImageFileCsv] = useState(null)
+    const [imageCsv, setImageCsv] = useState(null)
+    const [nameImageCsv, setNameImageCsv] = useState("")
+    const [fileSizeCsv, setFileSizeCsv] = useState(false)
 
     function handleChangeReportLogRintis(e) {
         setInputHandleReportLogRintis({
@@ -73,6 +80,33 @@ const ReportLogRintis = () => {
             getListRiwayatLogRintisHandler(page)
         }
     }
+
+    const handleClickCsv = () => {
+        hiddenFileInputCsv.current.click();
+    };
+
+    const handleFileChangeCsv = (event) => {
+        if(event.target.files[0]) {
+            setImageCsv(event.target.files[0])
+            if (parseFloat(event.target.files[0].size / 1024).toFixed(2) > 500) {
+                setFileSizeCsv(true)
+                setImageFileCsv(null)
+                setNameImageCsv("")
+            }
+            else {
+                setNameImageCsv(event.target.files[0].name)
+                setFileSizeCsv(false)
+                const reader = new FileReader()
+                reader.addEventListener("load", () => {
+                    setImageFileCsv(reader.result)
+                })
+                reader.readAsDataURL(event.target.files[0])
+            }
+        }       
+    }
+
+    console.log(imageFileCsv, "imageFileCsv");
+    console.log(imageCsv, "imageCsv");
 
     const columnsAdmin = [
         {
@@ -144,6 +178,31 @@ const ReportLogRintis = () => {
             // style: { display: "flex", justifyContent: "center", alignItem: "center", padding: "6px 10px", margin: "6px 20px", borderRadius: 4 },
         },
     ];
+
+    async function uploadFileCsvHandler(fileCsv) {
+        try {
+            const auth = "Bearer " + getToken()
+            const formData = new FormData()
+            const headers = {
+                'Content-Type':'multipart/form-data',
+                'Authorization' : auth
+            }
+            formData.append('file', fileCsv)
+            const dataUploadFile = await axios.post(BaseURL + "/QRIS/UploadRintisSuspendTransaction", formData, { headers: headers })
+            // console.log(dataUploadFile, "ini data riwayat");
+            if (dataUploadFile.data.response_code === 200 && dataUploadFile.status === 200 && dataUploadFile.data.response_new_token === null) {
+                alert(dataUploadFile.data.response_data.results)
+                window.location.reload()
+            } else if (dataUploadFile.data.response_code === 200 && dataUploadFile.status === 200 && dataUploadFile.data.response_new_token !== null) {
+                setUserSession(dataUploadFile.data.response_new_token)
+                alert(dataUploadFile.data.response_data.results)
+                window.location.reload()
+            }
+        } catch (error) {
+          // console.log(error)
+          history.push(errorCatch(error.response.status))
+        }
+    }
 
     async function getListRiwayatLogRintisHandler(currentPage) {
         try {
@@ -262,6 +321,71 @@ const ReportLogRintis = () => {
             <span className='breadcrumbs-span'><span style={{ cursor: "pointer" }}> Beranda </span> &nbsp;<img alt="" src={breadcrumbsIcon} />  &nbsp;Log Rintis</span>
             <div className="head-title">
                 <div className="mt-4 mb-4" style={{ fontFamily: 'Exo', fontSize: 18, fontWeight: 700 }}>Riwayat Log Rintis</div>
+            </div>
+            <div className='base-content mt-3'>
+                <span className="font-weight-bold mb-4" style={{ fontWeight: 700, fontFamily: "Exo", fontSize: 16 }}>
+                    File CSV
+                </span>
+                <div className='viewDragDrop mt-3 mb-3' onClick={handleClickCsv}  style={{cursor: "pointer"}}>
+                    {
+                        !imageFileCsv && fileSizeCsv === false ? 
+                        <>
+                            <div className='pt-4 text-center'>Masukkan File CSV.</div>
+                            <input
+                                type="file"
+                                onChange={(e) => handleFileChangeCsv(e)}
+                                accept=".csv"
+                                style={{ display: "none" }}
+                                ref={hiddenFileInputCsv}
+                                id="image"
+                                name="image"
+                            />
+                            <div className='pt-3 text-center'>Maks ukuran satu file: 500kb, Format: .csv</div>
+                            <div className='d-flex justify-content-center align-items-center mt-2 pb-4 text-center'><div className='upload-file-qris'>Upload file</div></div>
+                        </> : (fileSizeCsv === true) ?
+                        <>
+                            <div className='mt-4 d-flex justify-content-center align-items-center' style={{ color: "#B9121B", fontSize: 12, fontFamily: "Nunito" }}>
+                                <img src={noteIconRed} className="me-2" alt="icon notice" />
+                                <div>File lebih dari 500kb</div>
+                            </div>
+                            <input
+                                type="file"
+                                onChange={(e) => handleFileChangeCsv(e)}
+                                accept=".csv"
+                                style={{ display: "none" }}
+                                ref={hiddenFileInputCsv}
+                                id="image"
+                                name="image"
+                            />
+                            <div className='pt-3 text-center'>Maks ukuran satu file: 500kb, Format: .csv</div>
+                            <div className='d-flex justify-content-center align-items-center mt-2 pb-4 text-center'><div className='upload-file-qris'>Upload file</div></div>
+                        </> :
+                        <>
+                            <img src={fileCsv} alt="alt" width="auto" height="120px" className='pt-4 ms-4 text-start' />
+                            <input
+                                type="file"
+                                onChange={(e) => handleFileChangeCsv(e)}
+                                accept=".csv"
+                                style={{ display: "none" }}
+                                ref={hiddenFileInputCsv}
+                                id="image"
+                                name="image"
+                            />
+                            <div className='mt-2 ms-4'>{nameImageCsv}</div>
+                            <div className='pt-3 text-center'>Maks ukuran satu file: 500kb, Format: .csv</div>
+                            <div className='d-flex justify-content-center align-items-center mt-2 pb-4 text-center'><div className='upload-file-qris'>Upload file</div></div>
+                        </>
+                    }
+                </div>
+                <div className='d-flex justify-content-end align-items-center mt-3 pb-3'>
+                    <button
+                        className='btn-ez-on'
+                        style={{ width: "20%" }}
+                        onClick={() => uploadFileCsvHandler(imageCsv)}
+                    >
+                        Submit
+                    </button>
+                </div>
             </div>
             <div className="base-content mt-3">
                 <span className="font-weight-bold mb-4" style={{ fontWeight: 700, fontFamily: "Exo", fontSize: 16 }}>

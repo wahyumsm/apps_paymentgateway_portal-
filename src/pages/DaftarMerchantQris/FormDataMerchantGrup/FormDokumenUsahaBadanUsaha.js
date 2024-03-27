@@ -88,7 +88,7 @@ const FormDokumenUsahaBadanUsaha = () => {
                 }
             } else {
                 setUploadPdfNpwp(false)
-                if ((event.target.files[0].name).slice(-3) === "JPG" || (event.target.files[0].name).slice(-3) === "jpg") {
+                if ((event.target.files[0].name).slice(-3) === "JPG" || (event.target.files[0].name).slice(-3) === "jpg" || (event.target.files[0].name).slice(-3) === "png") {
                     setFormatJpgNpwp(false)
                     if(event.target.files[0]) {
                         setImageNpwp(event.target.files[0])
@@ -130,7 +130,7 @@ const FormDokumenUsahaBadanUsaha = () => {
                 }
             } else {
                 setUploadPdfNib(false)
-                if ((event.target.files[0].name).slice(-3) === "JPG" || (event.target.files[0].name).slice(-3) === "jpg") {
+                if ((event.target.files[0].name).slice(-3) === "JPG" || (event.target.files[0].name).slice(-3) === "jpg" || (event.target.files[0].name).slice(-3) === "png") {
                     setFormatJpgNib(false)
                     if(event.target.files[0]) {
                         setImageNib(event.target.files[0])
@@ -171,7 +171,7 @@ const FormDokumenUsahaBadanUsaha = () => {
                 }
             } else {
                 setUploadPdfAktaPerusahaan(false)
-                if ((event.target.files[0].name).slice(-3) === "JPG" || (event.target.files[0].name).slice(-3) === "jpg") {
+                if ((event.target.files[0].name).slice(-3) === "JPG" || (event.target.files[0].name).slice(-3) === "jpg" || (event.target.files[0].name).slice(-3) === "png") {
                     setFormatJpgAktaPerusahaan(false)
                     if(event.target.files[0]) {
                         setImageAktaPerusahaan(event.target.files[0])
@@ -212,7 +212,7 @@ const FormDokumenUsahaBadanUsaha = () => {
                 }
             } else {
                 setUploadPdfSkKementrian(false)
-                if ((event.target.files[0].name).slice(-3) === "JPG" || (event.target.files[0].name).slice(-3) === "jpg") {
+                if ((event.target.files[0].name).slice(-3) === "JPG" || (event.target.files[0].name).slice(-3) === "jpg" || (event.target.files[0].name).slice(-3) === "png") {
                     setFormatJpgSkKementrian(false)
                     if(event.target.files[0]) {
                         setImageSkKementrian(event.target.files[0])
@@ -432,7 +432,7 @@ const FormDokumenUsahaBadanUsaha = () => {
                                 <input
                                     type="file"
                                     onChange={(e) => handleFileChange(e, "npwp")}
-                                    accept=".jpg, .pdf"
+                                    accept=".jpg, .pdf, .png"
                                     style={{ display: "none" }}
                                     ref={hiddenFileInputNpwp}
                                     id="image"
@@ -444,7 +444,7 @@ const FormDokumenUsahaBadanUsaha = () => {
                                 <input
                                     type="file"
                                     onChange={(e) => handleFileChange(e, "npwp")}
-                                    accept=".jpg, .pdf"
+                                    accept=".jpg, .pdf, .png"
                                     style={{ display: "none" }}
                                     ref={hiddenFileInputNpwp}
                                     id="image"
@@ -457,7 +457,7 @@ const FormDokumenUsahaBadanUsaha = () => {
                                 <input
                                     type="file"
                                     onChange={(e) => handleFileChange(e, "npwp")}
-                                    accept=".jpg, .pdf"
+                                    accept=".jpg, .pdf, .png"
                                     style={{ display: "none" }}
                                     ref={hiddenFileInputNpwp}
                                     id="image"
@@ -473,7 +473,7 @@ const FormDokumenUsahaBadanUsaha = () => {
                                 <input
                                     type="file"
                                     onChange={(e) => handleFileChange(e, "npwp")}
-                                    accept=".jpg, .pdf"
+                                    accept=".jpg, .pdf, .png"
                                     style={{ display: "none" }}
                                     ref={hiddenFileInputNpwp}
                                     id="image"
@@ -483,12 +483,12 @@ const FormDokumenUsahaBadanUsaha = () => {
                             <>
                                 <div className='mt-4 d-flex justify-content-center align-items-center' style={{ color: "#B9121B", fontSize: 12, fontFamily: "Nunito" }}>
                                     <img src={noteIconRed} className="me-2" alt="icon notice" />
-                                    <div>Format harus .jpg atau .pdf</div>
+                                    <div>Format harus .jpg, .pdf atau .png</div>
                                 </div>
                                 <input
                                     type="file"
                                     onChange={(e) => handleFileChange(e, "npwp")}
-                                    accept=".jpg, .pdf"
+                                    accept=".jpg, .pdf, .png"
                                     style={{ display: "none" }}
                                     ref={hiddenFileInputNpwp}
                                     id="image"
@@ -522,7 +522,7 @@ const FormDokumenUsahaBadanUsaha = () => {
                                 <input
                                     type="file"
                                     onChange={(e) => handleFileChange(e, "nib")}
-                                    accept=".jpg, .pdf"
+                                    accept=".jpg, .pdf, .png"
                                     style={{ display: "none" }}
                                     ref={hiddenFileInputNib}
                                     id="image"
@@ -534,7 +534,7 @@ const FormDokumenUsahaBadanUsaha = () => {
                                 <input
                                     type="file"
                                     onChange={(e) => handleFileChange(e, "nib")}
-                                    accept=".jpg, .pdf"
+                                    accept=".jpg, .pdf, .png"
                                     style={{ display: "none" }}
                                     ref={hiddenFileInputNib}
                                     id="image"
@@ -547,7 +547,7 @@ const FormDokumenUsahaBadanUsaha = () => {
                                 <input
                                     type="file"
                                     onChange={(e) => handleFileChange(e, "nib")}
-                                    accept=".jpg, .pdf"
+                                    accept=".jpg, .pdf, .png"
                                     style={{ display: "none" }}
                                     ref={hiddenFileInputNib}
                                     id="image"
@@ -563,7 +563,7 @@ const FormDokumenUsahaBadanUsaha = () => {
                                 <input
                                     type="file"
                                     onChange={(e) => handleFileChange(e, "nib")}
-                                    accept=".jpg, .pdf"
+                                    accept=".jpg, .pdf, .png"
                                     style={{ display: "none" }}
                                     ref={hiddenFileInputNib}
                                     id="image"
@@ -573,12 +573,12 @@ const FormDokumenUsahaBadanUsaha = () => {
                             <>
                                 <div className='mt-4 d-flex justify-content-center align-items-center' style={{ color: "#B9121B", fontSize: 12, fontFamily: "Nunito" }}>
                                     <img src={noteIconRed} className="me-2" alt="icon notice" />
-                                    <div>Format harus .jpg atau .pdf</div>
+                                    <div>Format harus .jpg, .pdf atau .png</div>
                                 </div>
                                 <input
                                     type="file"
                                     onChange={(e) => handleFileChange(e, "nib")}
-                                    accept=".jpg, .pdf"
+                                    accept=".jpg, .pdf, .png"
                                     style={{ display: "none" }}
                                     ref={hiddenFileInputNib}
                                     id="image"
@@ -598,7 +598,7 @@ const FormDokumenUsahaBadanUsaha = () => {
                                 <input
                                     type="file"
                                     onChange={(e) => handleFileChange(e, "aktaPerusahaan")}
-                                    accept=".jpg, .pdf"
+                                    accept=".jpg, .pdf, .png"
                                     style={{ display: "none" }}
                                     ref={hiddenFileInputAktaPerusahaan}
                                     id="image"
@@ -610,7 +610,7 @@ const FormDokumenUsahaBadanUsaha = () => {
                                 <input
                                     type="file"
                                     onChange={(e) => handleFileChange(e, "aktaPerusahaan")}
-                                    accept=".jpg, .pdf"
+                                    accept=".jpg, .pdf, .png"
                                     style={{ display: "none" }}
                                     ref={hiddenFileInputAktaPerusahaan}
                                     id="image"
@@ -623,7 +623,7 @@ const FormDokumenUsahaBadanUsaha = () => {
                                 <input
                                     type="file"
                                     onChange={(e) => handleFileChange(e, "aktaPerusahaan")}
-                                    accept=".jpg, .pdf"
+                                    accept=".jpg, .pdf, .png"
                                     style={{ display: "none" }}
                                     ref={hiddenFileInputAktaPerusahaan}
                                     id="image"
@@ -639,7 +639,7 @@ const FormDokumenUsahaBadanUsaha = () => {
                                 <input
                                     type="file"
                                     onChange={(e) => handleFileChange(e, "aktaPerusahaan")}
-                                    accept=".jpg, .pdf"
+                                    accept=".jpg, .pdf, .png"
                                     style={{ display: "none" }}
                                     ref={hiddenFileInputAktaPerusahaan}
                                     id="image"
@@ -649,12 +649,12 @@ const FormDokumenUsahaBadanUsaha = () => {
                             <>
                                 <div className='mt-4 d-flex justify-content-center align-items-center' style={{ color: "#B9121B", fontSize: 12, fontFamily: "Nunito" }}>
                                     <img src={noteIconRed} className="me-2" alt="icon notice" />
-                                    <div>Format harus .jpg atau .pdf</div>
+                                    <div>Format harus .jpg, .pdf atau .png</div>
                                 </div>
                                 <input
                                     type="file"
                                     onChange={(e) => handleFileChange(e, "aktaPerusahaan")}
-                                    accept=".jpg, .pdf"
+                                    accept=".jpg, .pdf, .png"
                                     style={{ display: "none" }}
                                     ref={hiddenFileInputAktaPerusahaan}
                                     id="image"
@@ -674,7 +674,7 @@ const FormDokumenUsahaBadanUsaha = () => {
                                 <input
                                     type="file"
                                     onChange={(e) => handleFileChange(e, "skKementrian")}
-                                    accept=".jpg, .pdf"
+                                    accept=".jpg, .pdf, .png"
                                     style={{ display: "none" }}
                                     ref={hiddenFileInputSkKementrian}
                                     id="image"
@@ -686,7 +686,7 @@ const FormDokumenUsahaBadanUsaha = () => {
                                 <input
                                     type="file"
                                     onChange={(e) => handleFileChange(e, "skKementrian")}
-                                    accept=".jpg, .pdf"
+                                    accept=".jpg, .pdf, .png"
                                     style={{ display: "none" }}
                                     ref={hiddenFileInputSkKementrian}
                                     id="image"
@@ -699,7 +699,7 @@ const FormDokumenUsahaBadanUsaha = () => {
                                 <input
                                     type="file"
                                     onChange={(e) => handleFileChange(e, "skKementrian")}
-                                    accept=".jpg, .pdf"
+                                    accept=".jpg, .pdf, .png"
                                     style={{ display: "none" }}
                                     ref={hiddenFileInputSkKementrian}
                                     id="image"
@@ -715,7 +715,7 @@ const FormDokumenUsahaBadanUsaha = () => {
                                 <input
                                     type="file"
                                     onChange={(e) => handleFileChange(e, "skKementrian")}
-                                    accept=".jpg, .pdf"
+                                    accept=".jpg, .pdf, .png"
                                     style={{ display: "none" }}
                                     ref={hiddenFileInputSkKementrian}
                                     id="image"
@@ -725,12 +725,12 @@ const FormDokumenUsahaBadanUsaha = () => {
                             <>
                                 <div className='mt-4 d-flex justify-content-center align-items-center' style={{ color: "#B9121B", fontSize: 12, fontFamily: "Nunito" }}>
                                     <img src={noteIconRed} className="me-2" alt="icon notice" />
-                                    <div>Format harus .jpg atau .pdf</div>
+                                    <div>Format harus .jpg, .pdf atau .png</div>
                                 </div>
                                 <input
                                     type="file"
                                     onChange={(e) => handleFileChange(e, "skKementrian")}
-                                    accept=".jpg, .pdf"
+                                    accept=".jpg, .pdf, .png"
                                     style={{ display: "none" }}
                                     ref={hiddenFileInputSkKementrian}
                                     id="image"
