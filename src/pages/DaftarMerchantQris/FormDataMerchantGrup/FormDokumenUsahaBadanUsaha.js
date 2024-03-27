@@ -496,7 +496,7 @@ const FormDokumenUsahaBadanUsaha = () => {
                                 />
                             </>
                         }
-                        <div className='pt-3 text-center'>Maks ukuran satu file: 500kb, Format: .jpg atau .pdf</div>
+                        <div className='pt-3 text-center'>Maks ukuran satu file: 500kb, Format: .jpg, .pdf atau .png</div>
                         <div className='d-flex justify-content-center align-items-center mt-2 pb-4 text-center'><div className='upload-file-qris'>Upload file</div></div>
                     </div>
                     <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='mt-3'>No. NPWP</div>
@@ -586,7 +586,7 @@ const FormDokumenUsahaBadanUsaha = () => {
                                 />
                             </>
                         }
-                        <div className='pt-3 text-center'>Maks ukuran satu file: 500kb, Format: .jpg atau .pdf</div>
+                        <div className='pt-3 text-center'>Maks ukuran satu file: 500kb, Format: .jpg, .pdf atau .png</div>
                         <div className='d-flex justify-content-center align-items-center mt-2 pb-4 text-center'><div className='upload-file-qris'>Upload file</div></div>
                     </div>
                     <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='mt-3'>Akta pendirian perusahaan atau perubahan terakhir</div>
@@ -662,7 +662,7 @@ const FormDokumenUsahaBadanUsaha = () => {
                                 />
                             </>
                         }
-                        <div className='pt-3 text-center'>Maks ukuran satu file: 500kb, Format: .jpg atau .pdf</div>
+                        <div className='pt-3 text-center'>Maks ukuran satu file: 500kb, Format: .jpg, .pdf atau .png</div>
                         <div className='d-flex justify-content-center align-items-center mt-2 pb-4 text-center'><div className='upload-file-qris'>Upload file</div></div>
                     </div>
                     <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='mt-3'>SK Kementerian Kehakiman</div>
@@ -738,7 +738,7 @@ const FormDokumenUsahaBadanUsaha = () => {
                                 />
                             </>
                         }
-                        <div className='pt-3 text-center'>Maks ukuran satu file: 500kb, Format: .jpg atau .pdf</div>
+                        <div className='pt-3 text-center'>Maks ukuran satu file: 500kb, Format: .jpg, .pdf atau .png</div>
                         <div className='d-flex justify-content-center align-items-center mt-2 pb-4 text-center'><div className='upload-file-qris'>Upload file</div></div>
                     </div>
                     <div className='d-flex justify-content-between align-items-center mt-4 pb-4' >
