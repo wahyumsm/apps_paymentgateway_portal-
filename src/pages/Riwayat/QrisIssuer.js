@@ -162,7 +162,7 @@ function QrisIssuer() {
         try {
             setActivePageTransactionReportQrisIssuer(currentPage)
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{ "id_trans": null, "jenis_trans": "", "id_penerbit": "", "status_ezee": "1,2,4,6,9", "status_rintis": "00, A0, 03, 05, 12, 13, 14, 30, 51, 57, 58, 59, 61, 62, 65, 68, 90, 91,92, 94, 96, 99", "period": 2, "date_from": "", "date_to": "", "page": 1, "row_per_page": 10 }`)
+            const dataParams = encryptData(`{ "id_trans": null, "jenis_trans": "", "id_penerbit": "", "status_ezee": "1,2,4,6,9", "status_rintis": "00, A0, 03, 05, 12, 13, 14, 30, 31, 51, 57, 58, 59, 61, 62, 65, 68, 90, 91, 92, 94, 96, 99, 0", "period": 2, "date_from": "", "date_to": "", "page": 1, "row_per_page": 10 }`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
@@ -194,7 +194,7 @@ function QrisIssuer() {
             setIsFilterTransactionReportQrisIssuer(true)
             setActivePageTransactionReportQrisIssuer(page)
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{ "id_trans": ${idTrans.length !== 0 ? JSON.stringify(idTrans) : null}, "jenis_trans": "${jenisTrans}", "id_penerbit": "${idPenerbit}", "status_ezee": "${statusEZ.length !== 0 ? statusEZ : "1,2,4,6,9"}", "status_rintis": "${statusRintis.length !== 0 ? statusRintis : "00, A0, 03, 05, 12, 13, 14, 30, 51, 57, 58, 59, 61, 62, 65, 68, 90, 91, 92, 94, 96, 99"}", "period": ${periode !== 0 ? periode : 2}, "date_from": "${dateRange.length !== 0 ? dateRange[0] : ""}", "date_to": "${dateRange.length !== 0 ? dateRange[1] : ""}", "page": ${page}, "row_per_page": 10 }`)
+            const dataParams = encryptData(`{ "id_trans": ${idTrans.length !== 0 ? JSON.stringify(idTrans) : null}, "jenis_trans": "${jenisTrans}", "id_penerbit": "${idPenerbit}", "status_ezee": "${statusEZ.length !== 0 ? statusEZ : "1,2,4,6,9"}", "status_rintis": "${statusRintis.length !== 0 ? statusRintis : "00, A0, 03, 05, 12, 13, 14, 30, 31, 51, 57, 58, 59, 61, 62, 65, 68, 90, 91, 92, 94, 96, 99, 0"}", "period": ${periode !== 0 ? periode : 2}, "date_from": "${dateRange.length !== 0 ? dateRange[0] : ""}", "date_to": "${dateRange.length !== 0 ? dateRange[1] : ""}", "page": ${page}, "row_per_page": 10 }`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
@@ -380,7 +380,7 @@ function QrisIssuer() {
             wrap: true,
             conditionalCellStyles: [
                 {
-                    when: row => row.status_id === 1,
+                    when: row => row.id_ezee === 1,
                     style: { background: "#FEF4E9", color: "#F79421"} //bg: silver
                 },
                 {
@@ -388,7 +388,7 @@ function QrisIssuer() {
                     style: { background: "#077e8614", color: "#077E86"} //bg: biru
                 },
                 {
-                    when: row => row.status_id === 9 || row.status_id === 6 || row.status_id === 4,
+                    when: row => row.id_ezee === 9 || row.id_ezee === 6 || row.id_ezee === 4,
                     style: { background: "#FDEAEA", color: "#EE2E2C"}// bg: merah
                 },
             ]
@@ -409,7 +409,7 @@ function QrisIssuer() {
                     style: { background: "rgba(7, 126, 134, 0.08)", color: "#077E86"}
                 },
                 {
-                    when: row => row.id_rintis === "A0" || row.id_rintis === "03" || row.id_rintis === "05" || row.id_rintis === "12" || row.id_rintis === "13" || row.id_rintis === "14" || row.id_rintis === "30" || row.id_rintis === "51" || row.id_rintis === "57" || row.id_rintis === "58" || row.id_rintis === "59" || row.id_rintis === "61" || row.id_rintis === "62" || row.id_rintis === "65" || row.id_rintis === "91" || row.id_rintis === "92" || row.id_rintis === "94" || row.id_rintis === "96" || row.id_rintis === "99",
+                    when: row => row.id_rintis === "A0" || row.id_rintis === "03" || row.id_rintis === "05" || row.id_rintis === "12" || row.id_rintis === "13" || row.id_rintis === "14" || row.id_rintis === "30" || row.id_rintis === "31" || row.id_rintis === "51" || row.id_rintis === "57" || row.id_rintis === "58" || row.id_rintis === "59" || row.id_rintis === "61" || row.id_rintis === "62" || row.id_rintis === "65" || row.id_rintis === "91" || row.id_rintis === "92" || row.id_rintis === "94" || row.id_rintis === "96" || row.id_rintis === "99" || row.id_rintis === "0",
                     style: { background: "#FDEAEA", color: "#EE2E2C"}
                 },
             ]
@@ -518,6 +518,7 @@ function QrisIssuer() {
                             <option value={"13"}>Invalid Amount</option>
                             <option value={"14"}>Invalid Pan Number</option>
                             <option value={"30"}>Format Error</option>
+                            <option value={"31"}>Declined</option>
                             <option value={"51"}>Insuficient Funds</option>
                             <option value={"57"}>Expired Transaction</option>
                             <option value={"58"}>Terminal Not Permitted</option>
@@ -532,6 +533,7 @@ function QrisIssuer() {
                             <option value={"94"}>Duplicate Transaction/QR</option>
                             <option value={"96"}>System Malfunction</option>
                             <option value={"99"}>QR Already Used</option>
+                            <option value={"0"}>General Error</option>
                         </Form.Select>
                     </Col>
                 </Row>

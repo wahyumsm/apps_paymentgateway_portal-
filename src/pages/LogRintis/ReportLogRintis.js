@@ -102,11 +102,11 @@ const ReportLogRintis = () => {
                 })
                 reader.readAsDataURL(event.target.files[0])
             }
-        }       
+        }
     }
 
-    console.log(imageFileCsv, "imageFileCsv");
-    console.log(imageCsv, "imageCsv");
+    // console.log(imageFileCsv, "imageFileCsv");
+    // console.log(imageCsv, "imageCsv");
 
     const columnsAdmin = [
         {
@@ -117,13 +117,13 @@ const ReportLogRintis = () => {
         {
             name: 'File Name',
             selector: row => row.log_filename,
-            width: "170px", 
+            width: "170px",
             wrap: "true"
         },
         {
             name: 'Partner Trans ID',
             selector: row => row.log_partner_trans_id === null ? "-" : row.log_partner_trans_id,
-            width: "170px", 
+            width: "170px",
             wrap: "true"
         },
         {
@@ -314,7 +314,7 @@ const ReportLogRintis = () => {
     useEffect(() => {
         getListRiwayatLogRintisHandler(activePageReportLogRintis)
     }, [])
-    
+
 
     return (
         <div className='main-content mt-5' style={{ padding: "37px 27px 37px 27px" }}>
@@ -328,7 +328,7 @@ const ReportLogRintis = () => {
                 </span>
                 <div className='viewDragDrop mt-3 mb-3' onClick={handleClickCsv}  style={{cursor: "pointer"}}>
                     {
-                        !imageFileCsv && fileSizeCsv === false ? 
+                        !imageFileCsv && fileSizeCsv === false ?
                         <>
                             <div className='pt-4 text-center'>Masukkan File CSV.</div>
                             <input
@@ -431,7 +431,7 @@ const ReportLogRintis = () => {
                         <Form.Select
                             name="periode"
                             className="input-text-riwayat"
-                            value={inputHandleReportLogRintis.periode} 
+                            value={inputHandleReportLogRintis.periode}
                             onChange={(e) => handleChangePeriodeReportLogRintis(e)}
                         >
                             <option defaultChecked disabled value={0}>Pilih Periode</option>
@@ -474,7 +474,7 @@ const ReportLogRintis = () => {
                         </button>
                     </Col>
                     <Col xs={6} style={{ width: "15%", padding: "0px 15px" }}>
-                        <button 
+                        <button
                             className={(inputHandleReportLogRintis.type.length !== 0 || inputHandleReportLogRintis.fileName.length !== 0 || inputHandleReportLogRintis.rrn.length !== 0 || (inputHandleReportLogRintis.periode === "2" || inputHandleReportLogRintis.periode === "3" || inputHandleReportLogRintis.periode === "4" || inputHandleReportLogRintis.periode === "5" || inputHandleReportLogRintis.periode === "6") || (inputHandleReportLogRintis.periode === "7" && dateRangeReportLogRintis.length !== 0) || inputHandleReportLogRintis.statusLog.length !== 0) ? 'btn-reset' : 'btn-ez-reset'}
                             disabled={(inputHandleReportLogRintis.type.length === 0 && inputHandleReportLogRintis.fileName.length === 0 && inputHandleReportLogRintis.rrn.length === 0 && (inputHandleReportLogRintis.periode === 0 || (inputHandleReportLogRintis.periode === "7" && dateRangeReportLogRintis.length === 0)) && inputHandleReportLogRintis.statusLog.length === 0)}
                             onClick={() => resetButtonReportLogRintis()}
