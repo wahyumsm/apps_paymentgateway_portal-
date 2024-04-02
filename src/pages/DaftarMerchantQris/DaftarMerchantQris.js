@@ -16,7 +16,7 @@ import Pagination from 'react-js-pagination';
 const DaftarMerchantQris = () => {
     const history = useHistory()
     const [isMerchantQris, setIsMerchantQris] = useState("merchantGrup")
-    function disbursementTabs(isTabs){
+    function merchantQrisTabs(isTabs){
         if(isTabs === "merchantGrup"){
             setIsMerchantQris(isTabs)
             setFilterTextBrand('')
@@ -655,13 +655,13 @@ const DaftarMerchantQris = () => {
                 <h2 className="h5 mt-3" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600 }}>Daftar Merchant</h2>
             </div>
             <div className='detail-akun-menu mt-4' style={{display: 'flex', height: 33}}>
-                <div className='detail-akun-tabs menu-detail-akun-hr-active' id="merchantGrup" onClick={() => disbursementTabs("merchantGrup")}>
+                <div className='detail-akun-tabs menu-detail-akun-hr-active' id="merchantGrup" onClick={() => merchantQrisTabs("merchantGrup")}>
                     <span className='menu-detail-akun-span menu-detail-akun-span-active' id="merchantGrupspan">Merchant grup</span>
                 </div>
-                <div className='detail-akun-tabs' style={{marginLeft: 15}} id="merchantBrand" onClick={() => disbursementTabs("merchantBrand")}>
+                <div className='detail-akun-tabs' style={{marginLeft: 15}} id="merchantBrand" onClick={() => merchantQrisTabs("merchantBrand")}>
                     <span className='menu-detail-akun-span' id="merchantBrandspan">Merchant brand</span>
                 </div>
-                <div className='detail-akun-tabs' style={{marginLeft: 15}} id="merchantOutlet" onClick={() => disbursementTabs("merchantOutlet")}>
+                <div className='detail-akun-tabs' style={{marginLeft: 15}} id="merchantOutlet" onClick={() => merchantQrisTabs("merchantOutlet")}>
                     <span className='menu-detail-akun-span' id="merchantOutletspan">Merchant outlet</span>
                 </div>
             </div>
