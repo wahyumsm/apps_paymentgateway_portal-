@@ -129,6 +129,7 @@ import DetailMerchantOutlet from './DaftarMerchantQris/FormDataMerchantOutlet/De
 import FormTambahSettlement from './DaftarMerchantQris/FormDataMerchantGrup/FormTambahSettlement';
 import DetailSettlementGrup from './DaftarMerchantQris/FormDataMerchantGrup/DetailSettlementGrup';
 import QrisIssuer from './Riwayat/QrisIssuer';
+import PengaturanKasir from './DaftarMerchantQris/PengaturanKasir/PengaturanKasir';
 
 const RouteWithLoader = ({ component: Component, ...rest }) => {
   const [loaded, setLoaded] = useState(false);
@@ -287,6 +288,7 @@ export default () => (
     <RouteWithSidebar exact path={Routes.FormDokumenUsahaOutletThirdStep.path} component={FormDokumenUsahaOutletBadanUsaha} />
     <RouteWithSidebar exact path={Routes.FormInfoRekeningOutletFourthStep.path} component={FormInfoRekeningOutlet} />
     <RouteWithSidebar exact path={Routes.DetailMerchantOutlet.path} component={DetailMerchantOutlet} />
+    <RouteWithSidebar exact path={Routes.PengaturanKasir.path} component={PengaturanKasir} />
 
     {/* partner */}
     <RouteWithSidebar exact path={Routes.VaDanPaymentLink.path} component={VaDanPaymentLink} />
