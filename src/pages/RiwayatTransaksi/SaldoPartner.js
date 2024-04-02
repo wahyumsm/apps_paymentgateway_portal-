@@ -666,7 +666,7 @@ function SaldoPartner() {
         {
             name: 'Tipe Top Up',
             selector: row => row.tparttopup_type_name,
-            width: "140px",
+            width: "160px",
         },
         {
             name: 'Reference ID',
@@ -902,7 +902,10 @@ function SaldoPartner() {
                                     <Form.Select name='tipeTopup' className="input-text-ez" value={inputHandle.tipeTopup !== undefined ? inputHandle.tipeTopup : 0} onChange={(e) => handleChange(e)}>
                                         <option defaultChecked disabled  value={0}>Pilih Tipe Topup</option>
                                         <option value={100}>Transfer</option>
-                                        <option value={101}>Refund</option>
+                                        <option value={101}>Refund Disbursement</option>
+                                        <option value={102}>Settlement VA</option>
+                                        <option value={103}>Settlement Emoney</option>
+                                        <option value={104}>Settlement QRIS</option>
                                     </Form.Select>
                                 </Col>
                             </Row>

@@ -576,6 +576,12 @@ const DaftarMerchantQris = () => {
             width: "160px"
         },
         {
+            name: 'Tercetak di QRIS', 
+            selector: row => (row.name_in_qris === null) ? "-" : row.name_in_qris,
+            wrap: true,
+            width: "160px"
+        },
+        {
             name: 'Tujuan settlement',
             selector: row => row.mqrissettlegroup_name,
             wrap: true,

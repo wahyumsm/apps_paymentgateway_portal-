@@ -29,7 +29,8 @@ const ReportLogRintis = () => {
         rrn: "",
         fileName: "",
         statusLog: "",
-        periode: 0
+        periode: 0,
+        partnerTransId: ""
     })
     const hiddenFileInputCsv = useRef(null)
     const [imageFileCsv, setImageFileCsv] = useState(null)
@@ -72,7 +73,7 @@ const ReportLogRintis = () => {
     function handlePageChangeReportLogRintis(page) {
         if (isFilterReportLogRintis) {
             setActivePageReportLogRintis(page)
-            filterListRiwayatLogRintisHandler(inputHandleReportLogRintis.type, inputHandleReportLogRintis.fileName, inputHandleReportLogRintis.rrn, inputHandleReportLogRintis.statusLog, inputHandleReportLogRintis.periode, dateRangeReportLogRintis, page, 10)
+            filterListRiwayatLogRintisHandler(inputHandleReportLogRintis.type, inputHandleReportLogRintis.fileName, inputHandleReportLogRintis.rrn, inputHandleReportLogRintis.partnerTransId, inputHandleReportLogRintis.statusLog, inputHandleReportLogRintis.periode, dateRangeReportLogRintis, page, 10)
         } else {
             // console.log("masuk2");
             // console.log(page);
@@ -234,13 +235,13 @@ const ReportLogRintis = () => {
         }
     }
 
-    async function filterListRiwayatLogRintisHandler(type, fileName, rrn, status, dateId, periode, page, rowPerPage) {
+    async function filterListRiwayatLogRintisHandler(type, fileName, rrn, partnerTransId, status, dateId, periode, page, rowPerPage) {
         try {
             setPendingReportLogRintis(true)
             setIsFilterReportLogRintis(true)
             setActivePageReportLogRintis(page)
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{"type": "${type}", "filename":"${fileName}", "rrn": "${rrn}", "partner_trans_id": "", "tracenumber": "", "status": "${status}", "period": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
+            const dataParams = encryptData(`{"type": "${type}", "filename":"${fileName}", "rrn": "${rrn}", "partner_trans_id": "${partnerTransId}", "tracenumber": "", "status": "${status}", "period": ${dateId}, "date_from": "${(periode.length !== 0) ? periode[0] : ""}", "date_to": "${(periode.length !== 0) ? periode[1] : ""}", "page": ${(page !== 0) ? page : 1}, "row_per_page": ${(rowPerPage !== 0) ? rowPerPage : 10}}`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth,
@@ -275,7 +276,8 @@ const ReportLogRintis = () => {
             rrn: "",
             fileName: "",
             statusLog: "",
-            periode: 0
+            periode: 0, 
+            partnerTransId: ""
         })
         setStateReportLogRintis(null)
         setDateRangeReportLogRintis([])
@@ -393,6 +395,17 @@ const ReportLogRintis = () => {
                 </span>
                 <Row className="">
                     <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
+                        <div>Partner Trans ID</div>
+                        <input
+                            name="partnerTransId"
+                            value={inputHandleReportLogRintis.partnerTransId}
+                            onChange={(e) => handleChangeReportLogRintis(e)}
+                            type="text"
+                            className="input-text-riwayat"
+                            placeholder="Masukkan Partner Trans ID"
+                        />
+                    </Col>
+                    <Col xs={4} className="d-flex justify-content-between align-items-center mt-4">
                         <div>Tipe <span style={{ color: "red" }}>*</span></div>
                         <Form.Select name="type" value={inputHandleReportLogRintis.type} onChange={(e) => handleChangeReportLogRintis(e)} className='input-text-riwayat' style={{ display: "inline" }}>
                             <option defaultChecked disabled value={""}>Pilih Tipe</option>
@@ -468,7 +481,7 @@ const ReportLogRintis = () => {
                         <button
                             className={(((inputHandleReportLogRintis.periode === "2" || inputHandleReportLogRintis.periode === "3" || inputHandleReportLogRintis.periode === "4" || inputHandleReportLogRintis.periode === "5" || inputHandleReportLogRintis.periode === "6") && inputHandleReportLogRintis.type.length !== 0) || ((inputHandleReportLogRintis.periode === "7" && dateRangeReportLogRintis.length !== 0) && inputHandleReportLogRintis.type.length !== 0)) ? 'btn-ez-on' : 'btn-ez'}
                             disabled={((inputHandleReportLogRintis.periode === 0 || (inputHandleReportLogRintis.periode === "7" && dateRangeReportLogRintis.length === 0)) || inputHandleReportLogRintis.type.length === 0)}
-                            onClick={() => filterListRiwayatLogRintisHandler(inputHandleReportLogRintis.type, inputHandleReportLogRintis.fileName, inputHandleReportLogRintis.rrn, inputHandleReportLogRintis.statusLog, inputHandleReportLogRintis.periode, dateRangeReportLogRintis, activePageReportLogRintis, 10)}
+                            onClick={() => filterListRiwayatLogRintisHandler(inputHandleReportLogRintis.type, inputHandleReportLogRintis.fileName, inputHandleReportLogRintis.rrn, inputHandleReportLogRintis.partnerTransId, inputHandleReportLogRintis.statusLog, inputHandleReportLogRintis.periode, dateRangeReportLogRintis, activePageReportLogRintis, 10)}
                         >
                             Terapkan
                         </button>
