@@ -248,7 +248,7 @@ function UnSettledTransaction() {
     }
 
     useEffect(() => {
-        if (user_role === "100") {
+        if (user_role === "100" || user_role === "101") {
             getListPartner()
             getListEWallet()
             getBankNameHandler()
