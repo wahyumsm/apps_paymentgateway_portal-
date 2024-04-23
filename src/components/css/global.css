@@ -2274,3 +2274,16 @@ input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
+.custom-style-desc-data-terminal {
+    color: #888888;
+    font-size: 12px;
+    font-family: "Nunito";
+}
+
+.lihat-pin-style {
+    color: #077E86;
+    font-family: "Exo";
+    font-size: 14px;
+    font-weight: 700;
+} 

@@ -29,6 +29,7 @@ const FormInfoUsahaOutlet = () => {
         emailPerusahaan: "",
         namaBrand: "",
         namaYangDicetakQris: "",
+        namaYangTampil: "",
         jumlahKasir: 0,
         pendapatanPertahun: 0,
         alamatUsaha: "",
@@ -61,6 +62,18 @@ const FormInfoUsahaOutlet = () => {
                 })
             }
         } else if (e.target.name === "namaYangDicetakQris") {
+            if (e.target.value.length > 25) {
+                setInputHandle({
+                    ...inputHandle,
+                    [e.target.name]: (e.target.value).slice(0,25)
+                })
+            } else {
+                setInputHandle({
+                    ...inputHandle,
+                    [e.target.name]: e.target.value
+                })
+            }
+        } else if (e.target.name === "namaYangTampil") {
             if (e.target.value.length > 25) {
                 setInputHandle({
                     ...inputHandle,
@@ -632,6 +645,10 @@ const FormInfoUsahaOutlet = () => {
                     <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Nama yang dicetak dalam QRIS</div>
                     <div className='pt-2 d-flex justify-content-end align-items-center'>
                         <input name="namaYangDicetakQris" value={inputHandle.namaYangDicetakQris} onChange={(e) => handleChange(e)} className='input-text-form' placeholder='Masukkan nama yang dicetak dalam QRIS' type='text' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838", height: 45 }} /*placeholder='Masukkan Nama Perusahaan'*/ />
+                    </div>
+                    <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Nama yang tampil saat di scan</div>
+                    <div className='pt-2 d-flex justify-content-end align-items-center'>
+                        <input name="namaYangTampil" value={inputHandle.namaYangTampil} onChange={(e) => handleChange(e)} className='input-text-form' placeholder='Masukkan nama yang tampil saat di scan' type='text' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838", height: 45 }} /*placeholder='Masukkan Nama Perusahaan'*/ />
                     </div>
                     <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>Jumlah kasir (counter pembayaran)</div>
                     <div className='pt-2 d-flex justify-content-end align-items-center' style={{ width:"7%" }}>

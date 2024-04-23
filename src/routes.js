@@ -114,6 +114,10 @@ export const Routes = {
     FormInfoRekeningOutletFourthStep: {path: "/form-info-rekening-outlet/:settleGroup/:merchantNou/:userNou/:id"},
     DetailMerchantOutlet: {path: "/detail-merchant-outlet/:profileId"},
     PengaturanKasir: {path: "/pengaturan-kasir"},
+    TambahManualKasir: {path: "/tambah-manual-kasir"},
+    TambahManualTerminal: {path: "/tambah-manual-terminal"},
+    TambahDataKasirManual: {path: "/tambah-manual-data-kasir"},
+    TambahDataTerminalManual: {path: "/tambah-manual-data-terminal"},
 
     // partner
     VaDanPaymentLink: {path: "/riwayat-transaksi/va-dan-paylink"},

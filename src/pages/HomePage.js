@@ -130,6 +130,9 @@ import FormTambahSettlement from './DaftarMerchantQris/FormDataMerchantGrup/Form
 import DetailSettlementGrup from './DaftarMerchantQris/FormDataMerchantGrup/DetailSettlementGrup';
 import QrisIssuer from './Riwayat/QrisIssuer';
 import PengaturanKasir from './DaftarMerchantQris/PengaturanKasir/PengaturanKasir';
+import TambahManualKasirAtauTerminal from './DaftarMerchantQris/PengaturanKasir/TambahManualKasirAtauTerminal';
+import TambahDataKasirManual from './DaftarMerchantQris/PengaturanKasir/TambahDataKasirManual';
+import TambahDataTerminalManual from './DaftarMerchantQris/PengaturanKasir/TambahDataTerminalManual';
 
 const RouteWithLoader = ({ component: Component, ...rest }) => {
   const [loaded, setLoaded] = useState(false);
@@ -289,6 +292,10 @@ export default () => (
     <RouteWithSidebar exact path={Routes.FormInfoRekeningOutletFourthStep.path} component={FormInfoRekeningOutlet} />
     <RouteWithSidebar exact path={Routes.DetailMerchantOutlet.path} component={DetailMerchantOutlet} />
     <RouteWithSidebar exact path={Routes.PengaturanKasir.path} component={PengaturanKasir} />
+    <RouteWithSidebar exact path={Routes.TambahManualKasir.path} component={TambahManualKasirAtauTerminal} />
+    <RouteWithSidebar exact path={Routes.TambahManualTerminal.path} component={TambahManualKasirAtauTerminal} />
+    <RouteWithSidebar exact path={Routes.TambahDataKasirManual.path} component={TambahDataKasirManual} />
+    <RouteWithSidebar exact path={Routes.TambahDataTerminalManual.path} component={TambahDataTerminalManual} />
 
     {/* partner */}
     <RouteWithSidebar exact path={Routes.VaDanPaymentLink.path} component={VaDanPaymentLink} />

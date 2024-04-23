@@ -54,6 +54,7 @@ export const removeUserSession = () => {
 	sessionStorage.removeItem("token");
 	sessionStorage.removeItem("role");
 	sessionStorage.removeItem("lang")
+	sessionStorage.removeItem("storeId")
 };
 
 export function convertToRupiah(money, isRupiah, fractionDigits) {
