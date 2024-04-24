@@ -113,7 +113,7 @@ export const Routes = {
     FormDokumenUsahaOutletThirdStep: {path: "/form-dokumen-usaha-outlet/:profileId"},
     FormInfoRekeningOutletFourthStep: {path: "/form-info-rekening-outlet/:settleGroup/:merchantNou/:userNou/:id"},
     DetailMerchantOutlet: {path: "/detail-merchant-outlet/:profileId"},
-    PengaturanKasir: {path: "/pengaturan-kasir"},
+    PengaturanKasir: {path: "/daftar-merchant-qris/pengaturan-kasir"},
     TambahManualKasir: {path: "/tambah-manual-kasir"},
     TambahManualTerminal: {path: "/tambah-manual-terminal"},
     TambahDataKasirManual: {path: "/tambah-manual-data-kasir"},
