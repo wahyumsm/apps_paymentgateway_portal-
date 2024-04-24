@@ -53,7 +53,7 @@ const DetailMerchantOutlet = () => {
     };
 
     const handleFileChangeKtp = (event) => {
-        if ((event.target.files[0].name).slice(-3) === "JPG" || (event.target.files[0].name).slice(-3) === "jpg") {
+        if ((event.target.files[0].name).slice(-3) === "JPG" || (event.target.files[0].name).slice(-3) === "jpg" || (event.target.files[0].name).slice(-3) === "JPEG" || (event.target.files[0].name).slice(-3) === "jpeg" || (event.target.files[0].name).slice(-3) === "PNG" || (event.target.files[0].name).slice(-3) === "png") {
             setFormatEktp(false)
             if(event.target.files[0]) {
                 setImageKtp(event.target.files[0])
@@ -242,7 +242,7 @@ const DetailMerchantOutlet = () => {
             </div>
         );
     };
-  
+
     const customStylesSelectedOption = {
         option: (provided, state) => ({
             ...provided,
@@ -255,12 +255,12 @@ const DetailMerchantOutlet = () => {
         getListDataDetailOutletQrisHandler(profileId)
         getDataGrupHandler()
     }, [])
-    
+
 
     return (
         <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
             <span className='breadcrumbs-span'><span onClick={() => history.push('/')} style={{ cursor: "pointer" }}>Beranda</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span onClick={() => history.push('/daftar-merchant-qris')} style={{ cursor: "pointer" }}>Daftar merchant</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Merchant Outlet</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Info Merchant Outlet</span></span>
-            <div className="head-title"> 
+            <div className="head-title">
                 <h2 className="h5 mt-4" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600 }}>Info Merchant Outlet</h2>
             </div>
             <div className='base-content mt-4 pb-4'>
@@ -301,7 +301,7 @@ const DetailMerchantOutlet = () => {
                     </Col>
                 </Row>
             </div>
-            
+
             <div className='base-content my-2 pb-4'>
                     <div className='my-1' style={{ fontFamily: "Nunito", fontSize: 14}}>Apa Jenis Usaha Merchant? </div>
                     <div className='d-flex justify-content-start align-items-center py-2'>
@@ -373,7 +373,7 @@ const DetailMerchantOutlet = () => {
                         />
                     </div>
                     {
-                        inputHandle.jenisUsaha === 1 && 
+                        inputHandle.jenisUsaha === 1 &&
                         <>
                             <div className='mt-3 mb-1' style={{ fontFamily: "Nunito", fontSize: 14}}>Peran pendaftar</div>
                             <div className='d-flex justify-content-start align-items-center py-2'>
@@ -476,7 +476,7 @@ const DetailMerchantOutlet = () => {
                                 <input
                                     type="file"
                                     onChange={handleFileChangeKtp}
-                                    accept=".jpg"
+                                    accept=".jpg, .jpeg, .png"
                                     style={{ display: "none" }}
                                     ref={hiddenFileInputKtp}
                                     id="image"
@@ -490,7 +490,7 @@ const DetailMerchantOutlet = () => {
                                 <input
                                     type="file"
                                     onChange={handleFileChangeKtp}
-                                    accept=".jpg"
+                                    accept=".jpg, .jpeg, .png"
                                     style={{ display: "none" }}
                                     ref={hiddenFileInputKtp}
                                     id="image"
@@ -502,7 +502,7 @@ const DetailMerchantOutlet = () => {
                         }
                     </div>
                     {/* {
-                        inputHandle.jenisUsaha === 2 && 
+                        inputHandle.jenisUsaha === 2 &&
                         <>
                             <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='mt-3'>Selfie dengan {inputHandle.kewarganegaraan === 101 ? `KITAS` : `eKTP`}</div>
                             <div className='viewDragDrop  mt-2' onClick={handleClickSelfieKtp} style={{cursor: "pointer"}}>
@@ -551,4 +551,4 @@ const DetailMerchantOutlet = () => {
     )
 }
 
-export default DetailMerchantOutlet 
+export default DetailMerchantOutlet

@@ -91,7 +91,7 @@ const FormInfoPemilikBadanUsaha = () => {
             }
         } else {
             setUploadPdfKtp(false)
-            if ((event.target.files[0].name).slice(-3) === "JPG" || (event.target.files[0].name).slice(-3) === "jpg") {
+            if ((event.target.files[0].name).slice(-3) === "JPG" || (event.target.files[0].name).slice(-3) === "jpg" || (event.target.files[0].name).slice(-4) === "JPEG" || (event.target.files[0].name).slice(-4) === "jpeg" || (event.target.files[0].name).slice(-3) === "PNG" || (event.target.files[0].name).slice(-3) === "png") {
                 setFormatEktp(false)
                 if(event.target.files[0]) {
                     setImageKtp(event.target.files[0])
@@ -131,12 +131,12 @@ const FormInfoPemilikBadanUsaha = () => {
             const getData = await axios.post(BaseURL + "/QRIS/GetFirstStepData", { data: dataParams }, { headers: headers })
             if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token === null) {
                 setInputHandle({
-                    ...getData.data.response_data.results, 
+                    ...getData.data.response_data.results,
                     merchantNou: getData.data.response_data.results.mmerchant_nou,
-                    peranPendaftar: getData.data.response_data.results.mprofdtl_register_role === null ? 0 : getData.data.response_data.results.mprofdtl_register_role, 
-                    namaUser: getData.data.response_data.results.mprofdtl_name, 
-                    nomorKtp: getData.data.response_data.results.mprofdtl_identity_no, 
-                    kewarganegaraan: getData.data.response_data.results.mprofdtl_identity_type_id, 
+                    peranPendaftar: getData.data.response_data.results.mprofdtl_register_role === null ? 0 : getData.data.response_data.results.mprofdtl_register_role,
+                    namaUser: getData.data.response_data.results.mprofdtl_name,
+                    nomorKtp: getData.data.response_data.results.mprofdtl_identity_no,
+                    kewarganegaraan: getData.data.response_data.results.mprofdtl_identity_type_id,
                     noTelp: getData.data.response_data.results.mprofdtl_mobile
                 })
                 setImageFileKtp(getData.data.response_data.results.mprofdtl_identity_url)
@@ -153,12 +153,12 @@ const FormInfoPemilikBadanUsaha = () => {
             } else if (getData.status === 200 && getData.data.response_code === 200 && getData.data.response_new_token !== null) {
                 setUserSession(getData.data.response_new_token)
                 setInputHandle({
-                    ...getData.data.response_data.results, 
+                    ...getData.data.response_data.results,
                     merchantNou: getData.data.response_data.results.mmerchant_nou,
-                    peranPendaftar: getData.data.response_data.results.mprofdtl_register_role === null ? 0 : getData.data.response_data.results.mprofdtl_register_role, 
-                    namaUser: getData.data.response_data.results.mprofdtl_name, 
-                    nomorKtp: getData.data.response_data.results.mprofdtl_identity_no, 
-                    kewarganegaraan: getData.data.response_data.results.mprofdtl_identity_type_id, 
+                    peranPendaftar: getData.data.response_data.results.mprofdtl_register_role === null ? 0 : getData.data.response_data.results.mprofdtl_register_role,
+                    namaUser: getData.data.response_data.results.mprofdtl_name,
+                    nomorKtp: getData.data.response_data.results.mprofdtl_identity_no,
+                    kewarganegaraan: getData.data.response_data.results.mprofdtl_identity_type_id,
                     noTelp: getData.data.response_data.results.mprofdtl_mobile
                 })
                 setImageFileKtp(getData.data.response_data.results.mprofdtl_identity_url)
@@ -238,13 +238,13 @@ const FormInfoPemilikBadanUsaha = () => {
             getDataFirstStepInfoPemilikBadanUsaha(profileId)
         }
     }, [])
-    
+
 
     return (
         <>
             <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
                 <span className='breadcrumbs-span'><span onClick={() => history.push('/')} style={{ cursor: "pointer" }}>Beranda</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span onClick={() => breadCrumbsMerchant(inputHandle.namaUser)} style={{ cursor: "pointer" }}>Daftar merchant</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Tambah merchant</span></span>
-                <div className="d-flex justify-content-start align-items-center head-title"> 
+                <div className="d-flex justify-content-start align-items-center head-title">
                     <FontAwesomeIcon onClick={() => backPage(inputHandle.namaUser)} icon={faChevronLeft} className="me-3 mt-1" style={{cursor: "pointer"}} />
                     <h2 className="h5 mt-3" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600 }}>Formulir data merchant</h2>
                 </div>
@@ -359,7 +359,7 @@ const FormInfoPemilikBadanUsaha = () => {
                                 <input
                                     type="file"
                                     onChange={handleFileChangeKtp}
-                                    accept=".jpg, .pdf"
+                                    accept=".jpg, .jpeg, .png, .pdf"
                                     style={{ display: "none" }}
                                     ref={hiddenFileInputKtp}
                                     id="image"
@@ -372,7 +372,7 @@ const FormInfoPemilikBadanUsaha = () => {
                                 <input
                                     type="file"
                                     onChange={handleFileChangeKtp}
-                                    accept=".jpg, .pdf"
+                                    accept=".jpg, .jpeg, .png, .pdf"
                                     style={{ display: "none" }}
                                     ref={hiddenFileInputKtp}
                                     id="image"
@@ -386,7 +386,7 @@ const FormInfoPemilikBadanUsaha = () => {
                                 <input
                                     type="file"
                                     onChange={handleFileChangeKtp}
-                                    accept=".jpg, .pdf"
+                                    accept=".jpg, .jpeg, .png, .pdf"
                                     style={{ display: "none" }}
                                     ref={hiddenFileInputKtp}
                                     id="image"
@@ -403,7 +403,7 @@ const FormInfoPemilikBadanUsaha = () => {
                                 <input
                                     type="file"
                                     onChange={handleFileChangeKtp}
-                                    accept=".jpg, .pdf"
+                                    accept=".jpg, .jpeg, .png, .pdf"
                                     style={{ display: "none" }}
                                     ref={hiddenFileInputKtp}
                                     id="image"
@@ -414,12 +414,12 @@ const FormInfoPemilikBadanUsaha = () => {
                             <>
                                 <div className='mt-4 d-flex justify-content-center align-items-center' style={{ color: "#B9121B", fontSize: 12, fontFamily: "Nunito" }}>
                                     <img src={noteIconRed} className="me-2" alt="icon notice" />
-                                    <div>Format harus .jpg atau .pdf</div>
+                                    <div>Format harus .jpg, .jpeg, .png atau .pdf</div>
                                 </div>
                                 <input
                                     type="file"
                                     onChange={handleFileChangeKtp}
-                                    accept=".jpg, .pdf"
+                                    accept=".jpg, .jpeg, .png, .pdf"
                                     style={{ display: "none" }}
                                     ref={hiddenFileInputKtp}
                                     id="image"
@@ -427,7 +427,7 @@ const FormInfoPemilikBadanUsaha = () => {
                                 />
                             </>
                         }
-                        <div className='pt-3 text-center'>Maks ukuran satu file: 500kb, Format .jpg atau .pdf</div>
+                        <div className='pt-3 text-center'>Maks ukuran satu file: 500kb, Format .jpg, .jpeg, .png atau .pdf</div>
                         <div className='d-flex justify-content-center align-items-center mt-2 pb-4 text-center'><div className='upload-file-qris'>Upload file</div></div>
                     </div>
                     <div style={{ fontFamily: 'Nunito', fontWeight: 400, fontSize: 14, color: "#383838" }} className='pt-3'>No telepon pemilik usaha</div>
@@ -435,7 +435,7 @@ const FormInfoPemilikBadanUsaha = () => {
                         <input name="noTelp" value={inputHandle.noTelp} onChange={(e) => handleChange(e, inputHandle.kewarganegaraan)} type='number' onKeyDown={(evt) => ["e", "E", "+", "-", ".", ","].includes(evt.key) && evt.preventDefault()} className='input-text-form' placeholder='Masukan no telepon' style={{ fontFamily: 'Nunito', fontSize: 14, color: "#383838" }} /*placeholder='Masukkan Nama Perusahaan'*/ />
                     </div>
                     <div className='text-end mt-4'>
-                        <button 
+                        <button
                             className={((inputHandle.peranPendaftar === 1 || inputHandle.peranPendaftar === 2) && (inputHandle.kewarganegaraan === 100 || inputHandle.kewarganegaraan === 101) && inputHandle.namaUser.length !== 0 && inputHandle.nomorKtp.length !== 0 && (uploadPdfKtp !== false || (imageKtp !== null || imageFileKtp !== null)) && inputHandle.noTelp.length !== 0 && fileSizeKtp === false) ? 'btn-next-active mb-4' : 'btn-next-inactive mb-4'}
                             disabled={(inputHandle.peranPendaftar !== 1 && inputHandle.peranPendaftar !== 2) || (inputHandle.kewarganegaraan !== 100 && inputHandle.kewarganegaraan !== 101) || inputHandle.namaUser.length === 0 || inputHandle.nomorKtp.length === 0 || (uploadPdfKtp === false && (imageKtp === null && imageFileKtp === null)) || inputHandle.noTelp.length === 0 || fileSizeKtp !== false}
                             onClick={() => formDataFirstStepInfoPemilikBadanUsaha(inputHandle.merchantNou, inputHandle.peranPendaftar, inputHandle.namaUser, inputHandle.nomorKtp, inputHandle.kewarganegaraan, inputHandle.noTelp, imageKtp, 2, 1, "next", profileId === undefined ? 0 : profileId)}
@@ -460,10 +460,10 @@ const FormInfoPemilikBadanUsaha = () => {
                     </div>
                     <div style={{ display: "flex", justifyContent: "center", marginTop: 15, marginBottom: 16 }}>
                         <p style={{ fontFamily: "Nunito", fontSize: 16, fontWeight: 400, marginBottom: "unset", color: "var(--palet-pengembangan-shades-hitam-62-grey, #888)" }} className="text-center">Data anda akan terhapus apabila anda keluar tanpa menyimpan data anda</p>
-                    </div>             
+                    </div>
                     <div className="d-flex justify-content-center mt-2 mb-3">
                         <Button onClick={() => setShowModalSimpanData(false)} style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;", borderColor: "#EBEBEB",  fontWeight: 700 }} className="mx-2">Kembali</Button>
-                        <Button 
+                        <Button
                             onClick={() => formDataFirstStepInfoPemilikBadanUsaha(inputHandle.merchantNou, inputHandle.peranPendaftar, inputHandle.namaUser, inputHandle.nomorKtp, inputHandle.kewarganegaraan, inputHandle.noTelp, imageKtp, 1, 1, "back", profileId === undefined ? 0 : profileId)} style={{ fontFamily: "Exo", color: "black", background: "var(--palet-gradient-gold, linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%))", maxHeight: 45, width: "100%", height: "100%", fontWeight: 700, border: "0.6px solid var(--palet-pengembangan-shades-hitam-80, #383838)" }}>
                             {isLoadingInfoPemilikBadanUsaha ? (<>Mohon tunggu... <FontAwesomeIcon icon={faSpinner} spin /></>) : `Simpan`}
                         </Button>
