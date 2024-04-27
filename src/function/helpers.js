@@ -405,3 +405,8 @@ export const firstDayThisMonth = new Date(new Date().getFullYear(), new Date().g
 export const lastDayThisMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1).toISOString().split('T')[0]
 export const firstDayLastMonth = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 2).toISOString().split('T')[0]
 export const lastDayLastMonth = new Date(new Date().getFullYear(), new Date().getMonth()).toISOString().split('T')[0]
+export const currentDateTemplate = new Date().toLocaleDateString("id-ID", {
+	day: "2-digit",
+	month: "long",
+	year: "numeric",
+});

@@ -133,6 +133,7 @@ import PengaturanKasir from './DaftarMerchantQris/PengaturanKasir/PengaturanKasi
 import TambahManualKasirAtauTerminal from './DaftarMerchantQris/PengaturanKasir/TambahManualKasirAtauTerminal';
 import TambahDataKasirManual from './DaftarMerchantQris/PengaturanKasir/TambahDataKasirManual';
 import TambahDataTerminalManual from './DaftarMerchantQris/PengaturanKasir/TambahDataTerminalManual';
+import LihatDanUbahPinTerminal from './DaftarMerchantQris/PengaturanKasir/LihatDanUbahPinTerminal';
 
 const RouteWithLoader = ({ component: Component, ...rest }) => {
   const [loaded, setLoaded] = useState(false);
@@ -296,6 +297,7 @@ export default () => (
     <RouteWithSidebar exact path={Routes.TambahManualTerminal.path} component={TambahManualKasirAtauTerminal} />
     <RouteWithSidebar exact path={Routes.TambahDataKasirManual.path} component={TambahDataKasirManual} />
     <RouteWithSidebar exact path={Routes.TambahDataTerminalManual.path} component={TambahDataTerminalManual} />
+    <RouteWithSidebar exact path={Routes.LihatDanUbahPinTerminal.path} component={LihatDanUbahPinTerminal} />
 
     {/* partner */}
     <RouteWithSidebar exact path={Routes.VaDanPaymentLink.path} component={VaDanPaymentLink} />

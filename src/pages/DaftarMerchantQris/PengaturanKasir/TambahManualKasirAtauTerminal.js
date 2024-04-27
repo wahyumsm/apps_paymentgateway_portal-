@@ -177,7 +177,7 @@ const TambahManualKasirAtauTerminal = (props) => {
 
     return (
         <div className="main-content mt-5" style={{padding: "37px 27px 37px 27px"}}>
-            <span className='breadcrumbs-span'><span style={{ cursor: "pointer" }}>Beranda</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Pengaturan Kasir</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Daftar Kasir</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Tambah {pengaturanKasirPathname === "/tambah-manual-kasir" ? "Kasir" : "Terminal"} Manual</span></span>
+            <span className='breadcrumbs-span'><span style={{ cursor: "pointer" }}>Beranda</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Pengaturan Kasir</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Daftar {pengaturanKasirPathname === "/tambah-manual-kasir" ? "Kasir" : "Terminal"}</span> &nbsp;<img alt="" src={breadcrumbsIcon} /> &nbsp;<span style={{ cursor: "pointer" }}>Tambah {pengaturanKasirPathname === "/tambah-manual-kasir" ? "Kasir" : "Terminal"} Manual</span></span>
             <div className="head-title"> 
                 <h2 className="h5 mt-4" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700 }}>Tambah {pengaturanKasirPathname === "/tambah-manual-kasir" ? "Kasir" : "Terminal"} Manual</h2>
             </div>
@@ -221,7 +221,7 @@ const TambahManualKasirAtauTerminal = (props) => {
                 />
             </div>
             <button 
-                className='btn-ez-transfer mt-4'
+                className={selectedDataGrup.length !== 0 && selectedDataBrand.length !== 0 && selectedDataOutlet.length !== 0 ? 'btn-ez-transfer mt-4' : 'btn-noez-transfer mt-4'} disabled={selectedDataGrup.length === 0 || selectedDataBrand.length === 0 || selectedDataOutlet.length === 0}
                 onClick={() => handleClick(pengaturanKasirPathname === "/tambah-manual-kasir" ? "Kasir" : "Terminal")}
             >
                 Tambah {pengaturanKasirPathname === "/tambah-manual-kasir" ? "Kasir" : "Terminal"}
