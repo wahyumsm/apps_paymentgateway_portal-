@@ -387,9 +387,9 @@ const FormInfoUsahaBadanUsaha = () => {
         } catch (error) {
             // console.log(error)
             history.push(errorCatch(error.response.status))
-            if (error.response.data.response_code === 400) {
-                alert(error.response.data.response_message)
-            }
+            // if (error.response.data.response_code === 400) {
+            //     alert(error.response.data.response_message)
+            // }
         }
     }
 
@@ -696,7 +696,7 @@ const FormInfoUsahaBadanUsaha = () => {
                                             <input
                                                 type="file"
                                                 onChange={handleFileChangeTempatUsaha}
-                                                accept=".jpg"
+                                                accept=".jpg, .jpeg, .png"
                                                 style={{ display: "none" }}
                                                 ref={hiddenFileInputTempatUsaha}
                                                 id="image"
@@ -723,7 +723,7 @@ const FormInfoUsahaBadanUsaha = () => {
                                             <input
                                                 type="file"
                                                 onChange={handleFileChangeTempatUsaha}
-                                                accept=".jpg"
+                                                accept=".jpg, .jpeg, .png"
                                                 style={{ display: "none" }}
                                                 ref={hiddenFileInputTempatUsaha}
                                                 id="image"

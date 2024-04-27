@@ -437,9 +437,9 @@ const FormInfoUsaha = () => {
         } catch (error) {
             // console.log(error)
             history.push(errorCatch(error.response.status))
-            if (error.response.data.response_code === 400) {
-                alert(error.response.data.response_message)
-            }
+            // if (error.response.data.response_code === 400) {
+            //     alert(error.response.data.response_message)
+            // }
         }
     }
 
@@ -804,7 +804,7 @@ const FormInfoUsaha = () => {
                                             <input
                                                 type="file"
                                                 onChange={handleFileChangeTempatUsaha}
-                                                accept=".jpg"
+                                                accept=".jpg, .jpeg, .png"
                                                 style={{ display: "none" }}
                                                 ref={hiddenFileInputTempatUsaha}
                                                 id="image"
@@ -831,7 +831,7 @@ const FormInfoUsaha = () => {
                                             <input
                                                 type="file"
                                                 onChange={handleFileChangeTempatUsaha}
-                                                accept=".jpg"
+                                                accept=".jpg, .jpeg, .png"
                                                 style={{ display: "none" }}
                                                 ref={hiddenFileInputTempatUsaha}
                                                 id="image"
@@ -845,7 +845,7 @@ const FormInfoUsaha = () => {
                                 </div>
                                 {
                                     uploadTempatUsaha === true ? (
-                                        <div className='mt-2 d-flex justify-content-start align-items-center' style={{ color: "#B9121B", fontSize: 12, fontFamily: "nUNITO" }}>
+                                        <div className='mt-2 d-flex justify-content-start align-items-center' style={{ color: "#B9121B", fontSize: 12, fontFamily: "Nunito" }}>
                                             <img src={noteIconRed} className="me-2" alt="icon notice" />
                                             <div>Salah satu file lebih dari 500kb</div>
                                         </div>
@@ -853,7 +853,7 @@ const FormInfoUsaha = () => {
                                 }
                                 {
                                     alertMaxFile === true ? (
-                                        <div className='mt-2 d-flex justify-content-start align-items-center' style={{ color: "#B9121B", fontSize: 12, fontFamily: "nUNITO" }}>
+                                        <div className='mt-2 d-flex justify-content-start align-items-center' style={{ color: "#B9121B", fontSize: 12, fontFamily: "Nunito" }}>
                                             <img src={noteIconRed} className="me-2" alt="icon notice" />
                                             <div>file lebih dari 3</div>
                                         </div>
