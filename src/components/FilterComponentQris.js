@@ -199,7 +199,7 @@ export const FilterComponentQrisTerminal = ({ filterText, onFilter, onClear, tit
     </div>
 );
 export const FilterComponentQrisTerminalDanKasir = ({ filterText, onFilter, onClear, title, placeholder, onClickAddMerchant, addMerchant }) => (
-    <div className="d-flex justify-content-between align-items-center pt-4" style={{ width: "inherit", backgroundColor: "#F3F4F5" }}>
+    <div className="d-flex justify-content-between align-items-center pt-4" style={{ width: "inherit", }}>
         <div className="d-flex justify-content-center align-items-center mb-4">
             <div style={{fontSize: 16, fontWeight: 400,fontFamily: "Nunito", colr: "#383838"}}>{title} </div>
             <div className="d-flex justify-content-between align-items-center ms-3 position-relative" style={{width: 300}}>
@@ -216,7 +216,7 @@ export const FilterComponentQrisTerminalDanKasir = ({ filterText, onFilter, onCl
             </div>
         </div>
         <div className="d-flex justify-content-end align-items-center mb-4">
-            <button className="me-3" style={{ color: "#077E86", fontFamily: "Exo", fontSize: 14, fontWeight: 700, alignItems: "center", padding: "12px 24px", gap: 8, width: 200, height: 48, border: "1px solid #077E86", borderRadius: 6 }}>
+            <button className="me-3" style={{ color: "#077E86", fontFamily: "Exo", fontSize: 14, fontWeight: 700, alignItems: "center", padding: "12px 24px", gap: 8, width: 200, height: 48, border: "1px solid #077E86", borderRadius: 6, background: "none" }}>
                 <img
                     src={uploadIcon}
                     // onClick={() => editInTableHandler(row.number)}

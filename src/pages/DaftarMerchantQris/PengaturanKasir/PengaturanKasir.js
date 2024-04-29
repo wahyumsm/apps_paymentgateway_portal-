@@ -152,10 +152,12 @@ const PengaturanKasir = () => {
         {
             name: 'Nama Grup',
             selector: row => row.mmerchant_name,
+            wrap: true
         },
         {
             name: 'Nama Brand',
             selector: row => row.moutlet_name,
+            wrap: true
         },
         {
             name: 'Nama Outlet', 
@@ -295,9 +297,9 @@ const PengaturanKasir = () => {
             {
                 isPengaturanKasir === "daftarKasir" ? 
                     dataListKasir.length !== 0 ? (
-                        <>
-                            <div className="head-title mt-3"> 
-                                <h2 className="h5 mt-4" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600 }}>Daftar kasir yang ditambahkan</h2>
+                        <div className='base-content mt-3'>
+                            <div className="head-title"> 
+                                <h2 className="h5" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600 }}>Daftar kasir yang ditambahkan</h2>
                             </div>  
                             <div className="div-table">
                                 <DataTable
@@ -324,7 +326,7 @@ const PengaturanKasir = () => {
                                     onChange={handlePageChangeListKasir}
                                 />
                             </div>
-                        </>
+                        </div>
                     ) : (
                         <div className='d-flex justify-content-center align-items-center flex-column mt-5'>
                             <img src={fotoIcon} alt="fotoIcon" />
@@ -349,9 +351,9 @@ const PengaturanKasir = () => {
                     )
                 : (
                     dataListTerminal.length !== 0 ? (
-                        <>
-                            <div className="head-title mt-3"> 
-                                <h2 className="h5 mt-4" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600 }}>Daftar terminal yang ditambahkan</h2>
+                        <div className='base-content mt-3'>
+                            <div className="head-title"> 
+                                <h2 className="h5" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600 }}>Daftar terminal yang ditambahkan</h2>
                             </div>  
                             <div className="div-table">
                                 <DataTable
@@ -378,7 +380,7 @@ const PengaturanKasir = () => {
                                     onChange={handlePageChangeListTerminal}
                                 />
                             </div>
-                        </>
+                        </div>
                     ) : (
                         <div className='d-flex justify-content-center align-items-center flex-column mt-5'>
                             <img src={fotoIcon} alt="fotoIcon" />
