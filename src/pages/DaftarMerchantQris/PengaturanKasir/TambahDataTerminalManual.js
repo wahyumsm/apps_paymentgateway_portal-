@@ -42,6 +42,7 @@ function TambahDataTerminalManual () {
     const [expanded, setExpanded] = useState(true);
     const [showModal, setShowModal] = useState("");
     const [showStatusTambahTerminal, setShowStatusTambahTerminal] = useState(false)
+    const [dataLastActive, setDataLastActive] = useState("")
 
     const showCheckboxes = () => {
         if (!expanded) {
@@ -107,7 +108,10 @@ function TambahDataTerminalManual () {
         setDataTerminalIdQris(terminalId)
     }
 
-    function showModalTerminalNonAktif (e, terminalId) {
+
+    function showModalTerminalNonAktif (e, terminalId, lastActive) {
+        console.log(lastActive, "lastActive");
+        setDataLastActive(lastActive)
         setShowModal("down")
         setShowModalStatusTerminalNonAktif(true)
         setDataTerminalIdQris(terminalId)
@@ -138,6 +142,7 @@ function TambahDataTerminalManual () {
                     getListTerminalHandler(storeId, 1, activePageListTerminalAktif)
                     getDataDetailTerminal(storeId)
                     setDataTerminalIdQris(0)
+                    setDataLastActive("")
                     setShowModalStatusTerminal(false)
 
                 } else if (dataTerminal.status === 200 && dataTerminal.data.response_code === 200 && dataTerminal.data.response_new_token !== null) {
@@ -145,6 +150,7 @@ function TambahDataTerminalManual () {
                     getListTerminalHandler(storeId, 1, activePageListTerminalAktif)
                     getDataDetailTerminal(storeId)
                     setDataTerminalIdQris(0)
+                    setDataLastActive("")
                     setShowModalStatusTerminal(false)
 
                 }
@@ -295,7 +301,7 @@ function TambahDataTerminalManual () {
         },
         {
             name: 'Status',
-            cell: row => <Form.Check type='switch' id='custom-switch' checked={inputStatusTerminalNonAktifInListPaging?.[`status${row.rowNumber}`] !== undefined ? inputStatusTerminalNonAktifInListPaging?.[`status${row.rowNumber}`] : row.mterminalqris_is_active} onChange={(e) => showModalTerminalNonAktif(e, row.mterminalqris_id)} name='activeStatusNonAktif' />,
+            cell: row => <Form.Check type='switch' id='custom-switch' checked={inputStatusTerminalNonAktifInListPaging?.[`status${row.rowNumber}`] !== undefined ? inputStatusTerminalNonAktifInListPaging?.[`status${row.rowNumber}`] : row.mterminalqris_is_active} onChange={(e) => showModalTerminalNonAktif(e, row.mterminalqris_id, row.terminal_last_active_pop_up)} name='activeStatusNonAktif' />,
         },
         {
             name: 'Aksi',
@@ -806,7 +812,7 @@ function TambahDataTerminalManual () {
                         <p style={{ fontFamily: "Exo", fontSize: 26, fontWeight: 700, marginBottom: "unset" }} className="text-center">Yakin ingin mengaktifkan terminal?</p>
                     </div>
                     <div style={{ display: "flex", justifyContent: "center", marginTop: 15, marginBottom: 16 }}>
-                        <p style={{ fontFamily: "Nunito", fontSize: 16, fontWeight: 400, marginBottom: "unset", color: "var(--palet-pengembangan-shades-hitam-62-grey, #888)" }} className="text-center">tanggal dinonaktifkan <b>{currentDateTemplate}</b>, masih ingin melanjutkan ?</p>
+                        <p style={{ fontFamily: "Nunito", fontSize: 16, fontWeight: 400, marginBottom: "unset", color: "var(--palet-pengembangan-shades-hitam-62-grey, #888)" }} className="text-center">tanggal dinonaktifkan <b>{dataLastActive}</b>, masih ingin melanjutkan ?</p>
                     </div>             
                     <div className="d-flex justify-content-center mb-3">
                         <Button onClick={() => setShowModalStatusTerminalNonAktif(false)} style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;", borderColor: "#EBEBEB",  fontWeight: 700 }} className="mx-2">Batal</Button>
