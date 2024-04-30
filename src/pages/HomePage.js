@@ -134,6 +134,7 @@ import TambahManualKasirAtauTerminal from './DaftarMerchantQris/PengaturanKasir/
 import TambahDataKasirManual from './DaftarMerchantQris/PengaturanKasir/TambahDataKasirManual';
 import TambahDataTerminalManual from './DaftarMerchantQris/PengaturanKasir/TambahDataTerminalManual';
 import LihatDanUbahPinTerminal from './DaftarMerchantQris/PengaturanKasir/LihatDanUbahPinTerminal';
+import LihatDanUbahPinKasir from './DaftarMerchantQris/PengaturanKasir/LihatDanUbahPinKasir';
 // import InfoKasir from './DaftarMerchantQris/PengaturanKasir/InfoKasir';
 
 const RouteWithLoader = ({ component: Component, ...rest }) => {
@@ -299,6 +300,7 @@ export default () => (
     <RouteWithSidebar exact path={Routes.TambahDataKasirManual.path} component={TambahDataKasirManual} />
     <RouteWithSidebar exact path={Routes.TambahDataTerminalManual.path} component={TambahDataTerminalManual} />
     <RouteWithSidebar exact path={Routes.LihatDanUbahPinTerminal.path} component={LihatDanUbahPinTerminal} />
+    <RouteWithSidebar exact path={Routes.LihatDanUbahPinKasir.path} component={LihatDanUbahPinKasir} />
     {/* <RouteWithSidebar exact path={Routes.KasirLihat.path} component={KasirLihat}/> */}
     {/* <RouteWithSidebar exact path={Routes.InfoKasir.path} component={InfoKasir}/> */}
 

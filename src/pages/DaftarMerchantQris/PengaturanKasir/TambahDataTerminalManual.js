@@ -3,7 +3,7 @@ import breadcrumbsIcon from "../../../assets/icon/breadcrumbs_icon.svg";
 import HideEye from "../../../assets/img/HideEye.png";
 import ShowEye from "../../../assets/img/ShowEye.png";
 import { Button, Col, Form, Modal, OverlayTrigger, Row, Toast, Tooltip } from '@themesberg/react-bootstrap';
-import { BaseURL, CustomLoader, currentDateTemplate, errorCatch, getToken, setUserSession } from '../../../function/helpers';
+import { BaseURL, CustomLoader, errorCatch, getToken, setUserSession } from '../../../function/helpers';
 import encryptData from '../../../function/encryptData';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
@@ -652,7 +652,7 @@ function TambahDataTerminalManual () {
                                 className='mt-2'
                                 onChange={() => showModalAddDataTerminal(inputStatusTerminal)}
                             />
-                            <div className='mt-2'>Terminal Kasir</div>
+                            <div className='mt-2' style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 600 }}>Terminal Kasir</div>
                             <div className="dropdown dropInfoPemilikBrand mt-2">
                                 <ReactSelect
                                     closeMenuOnSelect={true}
@@ -666,7 +666,7 @@ function TambahDataTerminalManual () {
                                     isOptionDisabled={(option) => option.isdisabled}
                                 />
                             </div>
-                            <div className='mt-2'>PIN Terminal Kasir</div>
+                            <div className='mt-2' style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 600 }}>PIN Terminal Kasir</div>
                             <OtpInput
                                 isInputSecure={isSecurePin === true ? true : false}
                                 isInputNum={true}

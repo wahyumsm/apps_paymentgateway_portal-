@@ -211,7 +211,7 @@ const PengaturanKasir = () => {
             // filterListDataListKasirQrisHandler(e.target.value, activePageDataListKasirQris, 10)
         }
         return (
-            <FilterComponentQrisTerminalDanKasir onFilter={e => handleChangeFilterQris(e)} onClear={handleClear} filterText={filterTextListKasir} title="Pencarian :" placeholder="Cari Grup, brand, outlet" onClickAddMerchant={() => history.push(`/tambah-manual-kasir`)} addMerchant="Tambah kasir" />
+            <FilterComponentQrisTerminalDanKasir onFilter={e => handleChangeFilterQris(e)} onClear={handleClear} filterText={filterTextListKasir} title="Pencarian :" placeholder="Cari admin kasir" onClickAddMerchant={() => history.push(`/tambah-manual-kasir`)} addMerchant="Tambah kasir" />
         );	}, [filterTextListKasir, resetPaginationToggleListKasir]
     );
 

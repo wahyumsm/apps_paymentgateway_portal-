@@ -119,6 +119,7 @@ export const Routes = {
     TambahDataKasirManual: {path: "/tambah-manual-data-kasir"},
     TambahDataTerminalManual: {path: "/tambah-manual-data-terminal"},
     LihatDanUbahPinTerminal: {path: "/ubah-pin-terminal/:terminalId/:statusPage"},
+    LihatDanUbahPinKasir: {path: "/ubah-pin-kasir/:kasirId/:statusPage"},
     // KasirLihat: { path: "/kasirlihat" },
     // InfoKasir: { path: "/infokasir" },
 

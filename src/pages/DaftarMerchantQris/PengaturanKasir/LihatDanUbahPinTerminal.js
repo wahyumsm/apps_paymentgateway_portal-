@@ -1,6 +1,6 @@
 import { Button, Col, Form, Modal, Row, Toast } from '@themesberg/react-bootstrap'
 import React, { useEffect, useState } from 'react'
-import { BaseURL, currentDateTemplate, errorCatch, getToken, setUserSession } from '../../../function/helpers'
+import { BaseURL, errorCatch, getToken, setUserSession } from '../../../function/helpers'
 import encryptData from '../../../function/encryptData'
 import axios from 'axios'
 import { useHistory, useParams } from 'react-router-dom'

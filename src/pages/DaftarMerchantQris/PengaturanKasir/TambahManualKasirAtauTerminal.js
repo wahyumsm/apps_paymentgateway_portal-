@@ -142,7 +142,7 @@ const TambahManualKasirAtauTerminal = (props) => {
 
     function handleClick(pathname) {
         if (pathname === "Kasir") {
-            history.push('/infokasir');
+            history.push('/tambah-manual-data-kasir');
             sessionStorage.setItem("storeId", String(selectedDataOutlet.map(item => item.value)))
             console.log("masuk1");
         } else {
