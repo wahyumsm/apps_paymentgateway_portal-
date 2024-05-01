@@ -15,7 +15,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import Checklist from '../../../assets/icon/checklist_icon.svg';
 import validator from "validator";
-import ChecklistGreenIcon from '../../../assets/icon/checklist_green_icon.svg';
+import noteIconRed from "../../../assets/icon/note_icon_red.svg";
 
 function TambahDataKasirManual () {
     const history = useHistory()
@@ -38,6 +38,7 @@ function TambahDataKasirManual () {
     const [showModal, setShowModal] = useState("");
     const [showStatusTambahKasir, setShowStatusTambahKasir] = useState(false)
     const [dataLastActive, setDataLastActive] = useState("")
+    const [errMsgEmail, setErrMsgEmail] = useState(false)
     const [inputHandleTambahKasir, setInputHandleTambahKasir] = useState({
         namaKasir: "",
         emailKasir: "",
@@ -45,11 +46,21 @@ function TambahDataKasirManual () {
     })
 
     function handleChangeTambahKasir (e) {
-        setInputHandleTambahKasir({
-            ...inputHandleTambahKasir,
-            [e.target.name] : e.target.value
-        })
+        if (e.target.name === "emailKasir") {
+            setErrMsgEmail(false)
+            setInputHandleTambahKasir({
+                ...inputHandleTambahKasir,
+                [e.target.name] : e.target.value
+            })
+        } else {
+            setInputHandleTambahKasir({
+                ...inputHandleTambahKasir,
+                [e.target.name] : e.target.value
+            })
+        }
     }
+
+    console.log(errMsgEmail, "errMsgEmail");
 
     const showCheckboxes = () => {
         if (!expanded) {
@@ -94,8 +105,6 @@ function TambahDataKasirManual () {
             setShowModalStatusKasirNonAktif(true)
         }
     }
-
-    console.log(inputStatusKasir, "inputStatusKasir");
 
     function handleChangeOtp (value) {
         setPinKasir(value)
@@ -376,8 +385,13 @@ function TambahDataKasirManual () {
         }
     }
 
-    async function addAndSaveDataKasirHandler(namaKasir, storeNou, email, role, isActive, pin) {
+    async function addAndSaveDataKasirHandler(e, namaKasir, storeNou, email, role, isActive, pin) {
         try {
+            e.preventDefault()
+            if (validator.isEmail(email) === false) {
+                setErrMsgEmail(true)
+                return
+            }
             const auth = "Bearer " + getToken()
             const dataParams = encryptData(`{"name": "${namaKasir}", "user_id": 0, "store_nou": ${storeNou}, "email": "${email}", "role" : ${role}, "is_active": ${isActive}, "pin": "${pin}"}`)
             const headers = {
@@ -396,7 +410,7 @@ function TambahDataKasirManual () {
                     emailKasir: "",
                     role: 0
                 })
-                setInputStatusKasir(false)
+                setInputStatusKasir(true)
                 getListKasirHandler(storeId, 1, activePageListKasirAktif)
                 setTimeout(() => {
                     setShowStatusTambahKasir(false)
@@ -412,7 +426,7 @@ function TambahDataKasirManual () {
                     emailKasir: "",
                     role: 0
                 })
-                setInputStatusKasir(false)
+                setInputStatusKasir(true)
                 getListKasirHandler(storeId, 1, activePageListKasirAktif)
                 setTimeout(() => {
                     setShowStatusTambahKasir(false)
@@ -577,6 +591,14 @@ function TambahDataKasirManual () {
                                 <input name="namaKasir" value={inputHandleTambahKasir.namaKasir} onChange={(e) => handleChangeTambahKasir(e)} type='text'className='input-text-tambah-manual-qris mt-2' placeholder='Masukkan Nama Kasir'/>
                                 <div className='mt-2' style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 600 }}>Email Kasir</div>
                                 <input name="emailKasir" value={inputHandleTambahKasir.emailKasir} onChange={(e) => handleChangeTambahKasir(e)} type='text'className='input-text-tambah-manual-qris mt-2' placeholder='contoh : Farida@gmail.com'/>
+                                {
+                                    errMsgEmail ? (
+                                        <div style={{ color: "#B9121B", fontSize: 12 }} className="mt-1">
+                                            <img src={noteIconRed} className="me-2" alt="icon notice" />
+                                            Format email salah!
+                                        </div>
+                                    ) : ""
+                                }
                                 <div className='mt-2' style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 600 }}>Role</div>
                                 <Form.Select name='role' value={inputHandleTambahKasir.role} onChange={(e) => handleChangeTambahKasir(e)} className='input-text-tambah-manual-qris' style={{ display: "inline" }} >
                                     <option defaultValue disabled value={0}>Pilih Role</option>
@@ -624,6 +646,14 @@ function TambahDataKasirManual () {
                             <input name="namaKasir" value={inputHandleTambahKasir.namaKasir} onChange={(e) => handleChangeTambahKasir(e)} type='text'className='input-text-tambah-manual-qris mt-2' placeholder='Masukkan Nama Kasir'/>
                             <div className='mt-2' style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 600 }}>Email Kasir</div>
                             <input name="emailKasir" value={inputHandleTambahKasir.emailKasir} onChange={(e) => handleChangeTambahKasir(e)} type='text'className='input-text-tambah-manual-qris mt-2' placeholder='contoh : Farida@gmail.com'/>
+                            {
+                                errMsgEmail ? (
+                                    <div style={{ color: "#B9121B", fontSize: 12 }} className="mt-1">
+                                        <img src={noteIconRed} className="me-2" alt="icon notice" />
+                                        Format email salah!
+                                    </div>
+                                ) : ""
+                            }
                             <div className='mt-2' style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 600 }}>Role</div>
                             <Form.Select name='role' value={inputHandleTambahKasir.role} onChange={(e) => handleChangeTambahKasir(e)} className='input-text-tambah-manual-qris' style={{ display: "inline" }} >
                                 <option defaultValue disabled value={0}>Pilih Role</option>
@@ -664,7 +694,7 @@ function TambahDataKasirManual () {
                             <button 
                                 className={inputHandleTambahKasir.namaKasir.length !== 0 && inputHandleTambahKasir.emailKasir.length !== 0 && inputHandleTambahKasir.role !== 0 && pinKasir.length !== 0 && pinKasir.length === 6 ? 'btn-ez-transfer mt-4' : 'btn-noez-transfer mt-4'}
                                 disabled={inputHandleTambahKasir.namaKasir.length === 0 || inputHandleTambahKasir.emailKasir.length === 0 || inputHandleTambahKasir.role === 0 || pinKasir.length === 0 || (pinKasir.length !== 0 && pinKasir.length !== 6) }
-                                onClick={() => addAndSaveDataKasirHandler(inputHandleTambahKasir.namaKasir, dataDetailKasir?.mobile_store_nou, inputHandleTambahKasir.emailKasir, inputHandleTambahKasir.role, inputStatusKasir === true ? 1 : 0, pinKasir)}
+                                onClick={(e) => addAndSaveDataKasirHandler(e, inputHandleTambahKasir.namaKasir, dataDetailKasir?.mobile_store_nou, inputHandleTambahKasir.emailKasir, inputHandleTambahKasir.role, inputStatusKasir === true ? 1 : 0, pinKasir)}
                             >
                                 Tambah Kasir
                             </button>
@@ -737,7 +767,7 @@ function TambahDataKasirManual () {
                         </div>
                     </>
                         :
-                    <button className='btn-ez-transfer mt-4' onClick={() => addAndSaveDataKasirHandler(inputHandleTambahKasir.namaKasir, dataDetailKasir?.mobile_store_nou, inputHandleTambahKasir.emailKasir, inputHandleTambahKasir.role, inputStatusKasir === true ? 1 : 0, pinKasir)}>Simpan</button>
+                    <button className='btn-ez-transfer mt-4' onClick={(e) => addAndSaveDataKasirHandler(e, inputHandleTambahKasir.namaKasir, dataDetailKasir?.mobile_store_nou, inputHandleTambahKasir.emailKasir, inputHandleTambahKasir.role, inputStatusKasir === true ? 1 : 0, pinKasir)}>Simpan</button>
                 }
             </div>
 
