@@ -38,6 +38,7 @@ function TambahDataKasirManual () {
     const [showModal, setShowModal] = useState("");
     const [showStatusTambahKasir, setShowStatusTambahKasir] = useState(false)
     const [dataLastActive, setDataLastActive] = useState("")
+    const [errorTextKasir, setErrorTextKasir] = useState(false)
     const [errMsgEmail, setErrMsgEmail] = useState(false)
     const [isLoadingTambahKasir, setIsLoadingTambahKasir] = useState(false)
     const [inputHandleTambahKasir, setInputHandleTambahKasir] = useState({
@@ -49,6 +50,7 @@ function TambahDataKasirManual () {
     function handleChangeTambahKasir (e) {
         if (e.target.name === "emailKasir") {
             setErrMsgEmail(false)
+            setErrorTextKasir(false)
             setInputHandleTambahKasir({
                 ...inputHandleTambahKasir,
                 [e.target.name] : e.target.value
@@ -291,7 +293,6 @@ function TambahDataKasirManual () {
     const [pageNumberListKasirNonAktif, setPageNumberListKasirNonAktif] = useState({})
     const [totalPageListKasirNonAktif, setTotalPageListKasirNonAktif] = useState(0)
     const [activePageListKasirNonAktif, setActivePageListKasirNonAktif] = useState(1)
-
     const [filterTextKasirNonAktif, setFilterTextKasirNonAktif] = React.useState('');
     const [resetPaginationToggleKasirNonAktif, setResetPaginationToggleKasirNonAktif] = React.useState(false);
     const filteredItemsKasirNonAktif = dataListKasirNonAktif.filter(
@@ -423,6 +424,8 @@ function TambahDataKasirManual () {
                     role: 0
                 })
                 setInputStatusKasir(true)
+                setErrMsgEmail(false)
+                setErrorTextKasir(false)
                 getListKasirHandler(filterTextKasirAktif, storeId, 1, activePageListKasirAktif)
                 setTimeout(() => {
                     setShowStatusTambahKasir(false)
@@ -440,6 +443,8 @@ function TambahDataKasirManual () {
                     role: 0
                 })
                 setInputStatusKasir(true)
+                setErrMsgEmail(false)
+                setErrorTextKasir(false)
                 getListKasirHandler(filterTextKasirAktif, storeId, 1, activePageListKasirAktif)
                 setTimeout(() => {
                     setShowStatusTambahKasir(false)
@@ -448,6 +453,10 @@ function TambahDataKasirManual () {
         }
         } catch (error) {
             // console.log(error);
+            if (error.response.data.response_data.error_id === "0001") {
+                setErrorTextKasir(true)
+                setIsLoadingTambahKasir(false)
+            }
             history.push(errorCatch(error.response.status))
         }
     }
@@ -613,6 +622,14 @@ function TambahDataKasirManual () {
                                             Format email salah!
                                         </div>
                                     ) : ""
+                                }
+                                {
+                                    errorTextKasir && (
+                                        <div style={{ color: "#B9121B", fontSize: 12 }} className="mt-1">
+                                            <img src={noteIconRed} className="me-2" alt="icon notice" />
+                                            Email Sudah Digunakan. Silahkan Coba Email Lain!
+                                        </div>
+                                    )
                                 }
                                 <div className='mt-2' style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 600 }}>Role</div>
                                 <Form.Select name='role' value={inputHandleTambahKasir.role} onChange={(e) => handleChangeTambahKasir(e)} className='input-text-tambah-manual-qris' style={{ display: "inline" }} >

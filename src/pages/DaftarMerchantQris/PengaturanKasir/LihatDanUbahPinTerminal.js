@@ -100,7 +100,7 @@ const LihatDanUbahPinTerminal = () => {
                 setTimeout(() => {
                     setShowStatusTambahTerminal(false)
                     history.push("/tambah-manual-data-terminal")
-                }, 5000);
+                }, 1000);
             } else if (dataTerminal.status === 200 && dataTerminal.data.response_code === 200 && dataTerminal.data.response_new_token !== null) {
                 setUserSession(dataTerminal.data.response_new_token)
                 setShowStatusTambahTerminal(true)
@@ -113,7 +113,7 @@ const LihatDanUbahPinTerminal = () => {
                 setTimeout(() => {
                     setShowStatusTambahTerminal(false)
                     history.push("/tambah-manual-data-terminal")
-                }, 5000);
+                }, 1000);
             }
         } catch (error) {
             // console.log(error);

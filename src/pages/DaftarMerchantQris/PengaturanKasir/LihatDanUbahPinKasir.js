@@ -9,6 +9,8 @@ import OtpInput from 'react-otp-input'
 import Checklist from '../../../assets/icon/checklist_icon.svg'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSpinner } from '@fortawesome/free-solid-svg-icons'
+import noteIconRed from "../../../assets/icon/note_icon_red.svg";
+import validator from "validator";
 
 const LihatDanUbahPinKasir = () => {
     const history = useHistory()
@@ -22,6 +24,8 @@ const LihatDanUbahPinKasir = () => {
     const [showModalStatusKasirNonAktif, setShowModalStatusKasirNonAktif] = useState(false)
     const [showStatusTambahKasir, setShowStatusTambahKasir] = useState(false)
     const [isLoadingKasir, setIsLoadingKasir] = useState(false)
+    const [errorTextKasir, setErrorTextKasir] = useState(false)
+    const [errMsgEmail, setErrMsgEmail] = useState(false)
 
     function lihatDanUbahPin (kasirId, statusPage) {
         if (Number(statusPage) === 0) {
@@ -39,10 +43,19 @@ const LihatDanUbahPinKasir = () => {
     })
 
     function handleChangeTambahKasir (e) {
-        setInputHandleTambahKasir({
-            ...inputHandleTambahKasir,
-            [e.target.name] : e.target.value
-        })
+        if (e.target.name === "emailKasir") {
+            setErrMsgEmail(false)
+            setErrorTextKasir(false)
+            setInputHandleTambahKasir({
+                ...inputHandleTambahKasir,
+                [e.target.name] : e.target.value
+            })
+        } else {
+            setInputHandleTambahKasir({
+                ...inputHandleTambahKasir,
+                [e.target.name] : e.target.value
+            })
+        }
     }
 
     function showModalHandler () {
@@ -99,9 +112,14 @@ const LihatDanUbahPinKasir = () => {
         }
     }
 
-    async function addAndSaveDataKasirHandler(namaKasir, userId, storeNou, email, role, isActive, pin) {
+    async function addAndSaveDataKasirHandler(e, namaKasir, userId, storeNou, email, role, isActive, pin) {
         try {
             setIsLoadingKasir(true)
+            e.preventDefault()
+            if (validator.isEmail(email) === false) {
+                setErrMsgEmail(true)
+                return
+            }
             const auth = "Bearer " + getToken()
             const dataParams = encryptData(`{"name": "${namaKasir}", "user_id": ${userId}, "store_nou": ${storeNou}, "email": "${email}", "role" : ${role}, "is_active": ${isActive}, "pin": "${pin}"}`)
             const headers = {
@@ -117,11 +135,12 @@ const LihatDanUbahPinKasir = () => {
                 setInputStatusKasir(false)
                 getDataDetailKasir(kasirId)
                 setShowModalStatusUbahPin(false)
+                setErrMsgEmail(false)
                 setIsLoadingKasir(false)
                 setTimeout(() => {
                     setShowStatusTambahKasir(false)
                     history.push("/tambah-manual-data-kasir")
-                }, 5000);
+                }, 1000);
             } else if (dataKasir.status === 200 && dataKasir.data.response_code === 200 && dataKasir.data.response_new_token !== null) {
                 setUserSession(dataKasir.data.response_new_token)
                 setShowStatusTambahKasir(true)
@@ -130,14 +149,21 @@ const LihatDanUbahPinKasir = () => {
                 setInputStatusKasir(false)
                 getDataDetailKasir(kasirId)
                 setShowModalStatusUbahPin(false)
+                setErrMsgEmail(false)
                 setIsLoadingKasir(false)
                 setTimeout(() => {
                     setShowStatusTambahKasir(false)
                     history.push("/tambah-manual-data-kasir")
-                }, 5000);
+                }, 1000);
             }
         } catch (error) {
             // console.log(error);
+            if (error.response.data.response_data.error_id === "0001") {
+                setErrorTextKasir(true)
+                setIsLoadingKasir(false)
+                setShowStatusTambahKasir(false)
+                setShowModalStatusUbahPin(false)
+            }
             history.push(errorCatch(error.response.status))
         }
     }
@@ -198,6 +224,22 @@ const LihatDanUbahPinKasir = () => {
                 <input name="namaKasir" value={inputHandleTambahKasir.namaKasir} onChange={(e) => handleChangeTambahKasir(e)} disabled={Number(statusPage) === 0} type='text'className='input-text-user mt-2' placeholder='Masukkan Nama Kasir'/>
                 <div className='mt-2' style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 600 }}>Email Kasir</div>
                 <input name="emailKasir" value={inputHandleTambahKasir.emailKasir} onChange={(e) => handleChangeTambahKasir(e)} disabled={Number(statusPage) === 0} type='text'className='input-text-user mt-2' placeholder='contoh : Farida@gmail.com'/>
+                {
+                    errMsgEmail ? (
+                        <div style={{ color: "#B9121B", fontSize: 12 }} className="mt-1">
+                            <img src={noteIconRed} className="me-2" alt="icon notice" />
+                            Format email salah!
+                        </div>
+                    ) : ""
+                }
+                {
+                    errorTextKasir && (
+                        <div style={{ color: "#B9121B", fontSize: 12 }} className="mt-1">
+                            <img src={noteIconRed} className="me-2" alt="icon notice" />
+                            Email Sudah Digunakan. Silahkan Coba Email Lain!
+                        </div>
+                    )
+                }
                 <div className='mt-2' style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 600 }}>Role</div>
                 <Form.Select name='role' value={inputHandleTambahKasir.role} onChange={(e) => handleChangeTambahKasir(e)} disabled={Number(statusPage) === 0} className='input-text-user' style={{ display: "inline" }} >
                     <option defaultValue disabled value={0}>Pilih Role</option>
@@ -262,7 +304,8 @@ const LihatDanUbahPinKasir = () => {
                     <div className="d-flex justify-content-center mb-3">
                         <Button onClick={() => setShowModalStatusUbahPin(false)} style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;", borderColor: "#EBEBEB",  fontWeight: 700 }} className="mx-2">Batal</Button>
                         <Button 
-                            onClick={() => addAndSaveDataKasirHandler(inputHandleTambahKasir.namaKasir, kasirId, dataDetailKasir?.store_nou, inputHandleTambahKasir.emailKasir, inputHandleTambahKasir.role, inputStatusKasir ? 1 : 0, pinKasir)} 
+                            disabled={isLoadingKasir}
+                            onClick={(e) => addAndSaveDataKasirHandler(e, inputHandleTambahKasir.namaKasir, kasirId, dataDetailKasir?.store_nou, inputHandleTambahKasir.emailKasir, inputHandleTambahKasir.role, inputStatusKasir ? 1 : 0, pinKasir)} 
                             style={{ fontFamily: "Exo", color: "black", background: "var(--palet-gradient-gold, linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%))", maxHeight: 45, width: "100%", height: "100%", fontWeight: 700, border: "0.6px solid var(--palet-pengembangan-shades-hitam-80, #383838)" }}
                         >
                             {isLoadingKasir ? (<>Mohon tunggu... <FontAwesomeIcon icon={faSpinner} spin /></>) : `Ya`}
