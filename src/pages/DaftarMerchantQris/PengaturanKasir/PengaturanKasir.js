@@ -19,12 +19,18 @@ const PengaturanKasir = () => {
     function pengaturanKasirTabs(isTabs){
         if(isTabs === "daftarKasir"){
             setIsPengaturanKasir(isTabs)
+            setFilterTextListTerminal("")
+            getAllDataDetailTerminal("", activePageDataListTerminal)
+            getAllDataDetailKasir("", activePageDataListKasir)
             $('#daftarKasir').addClass('menu-detail-akun-hr-active')
             $('#daftarKasirspan').addClass('menu-detail-akun-span-active')
             $('#daftarTerminal').removeClass('menu-detail-akun-hr-active')
             $('#daftarTerminalspan').removeClass('menu-detail-akun-span-active')
         } else {
             setIsPengaturanKasir(isTabs)
+            setFilterTextListKasir("")
+            getAllDataDetailTerminal("", activePageDataListTerminal)
+            getAllDataDetailKasir("", activePageDataListKasir)
             $('#daftarKasir').removeClass('menu-detail-akun-hr-active')
             $('#daftarKasirspan').removeClass('menu-detail-akun-span-active')
             $('#daftarTerminal').addClass('menu-detail-akun-hr-active')
@@ -98,7 +104,7 @@ const PengaturanKasir = () => {
 
         function handleChangeFilterQris (e) {
             setFilterTextListTerminal(e.target.value)
-            // filterListDataListTerminalQrisHandler(e.target.value, activePageDataListTerminalQris, 10)
+            getAllDataDetailTerminal(e.target.value ,activePageDataListTerminal)
         }
         return (
             <FilterComponentQrisTerminalDanKasir onFilter={e => handleChangeFilterQris(e)} onClear={handleClear} filterText={filterTextListTerminal} title="Pencarian :" placeholder="Cari Grup, brand, outlet" onClickAddMerchant={() => history.push(`/tambah-manual-terminal`)} addMerchant="Tambah manual" />
@@ -107,7 +113,7 @@ const PengaturanKasir = () => {
 
     function handlePageChangeListTerminal(page) {
         setActivePageDataListTerminal(page)
-        getAllDataDetailTerminal(page)
+        getAllDataDetailTerminal(filterTextListTerminal, page)
     }
 
     function toTambahTerminal (storeId) {
@@ -115,10 +121,10 @@ const PengaturanKasir = () => {
         sessionStorage.setItem("storeId", storeId)
     }
 
-    async function getAllDataDetailTerminal(currentPage) {
+    async function getAllDataDetailTerminal(filterName, currentPage) {
         try {
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{"page": ${currentPage}, "row_per_page": 10}`)
+            const dataParams = encryptData(`{"filter_name" : "${filterName.length !== 0 ? filterName : ""}", "page": ${currentPage}, "row_per_page": 10}`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
@@ -188,6 +194,7 @@ const PengaturanKasir = () => {
         },
     ];
 
+    const [isDataKasir, setIsDataKasir] = useState("")
     const [dataListKasir, setDataListKasir] = useState([])
     const [pageNumberDataListKasir, setPageNumberDataListKasir] = useState({})
     const [totalPageDataListKasir, setTotalPageDataListKasir] = useState(0)
@@ -208,7 +215,7 @@ const PengaturanKasir = () => {
 
         function handleChangeFilterQris (e) {
             setFilterTextListKasir(e.target.value)
-            // filterListDataListKasirQrisHandler(e.target.value, activePageDataListKasirQris, 10)
+            getAllDataDetailKasir(e.target.value, activePageDataListKasir)
         }
         return (
             <FilterComponentQrisTerminalDanKasir onFilter={e => handleChangeFilterQris(e)} onClear={handleClear} filterText={filterTextListKasir} title="Pencarian :" placeholder="Cari admin kasir" onClickAddMerchant={() => history.push(`/tambah-manual-kasir`)} addMerchant="Tambah kasir" />
@@ -217,7 +224,7 @@ const PengaturanKasir = () => {
 
     function handlePageChangeListKasir(page) {
         setActivePageDataListKasir(page)
-        getAllDataDetailKasir(page)
+        getAllDataDetailKasir(filterTextListKasir, page)
     }
 
     function toTambahKasir (storeId) {
@@ -225,10 +232,10 @@ const PengaturanKasir = () => {
         sessionStorage.setItem("storeId", storeId)
     }
 
-    async function getAllDataDetailKasir(currentPage) {
+    async function getAllDataDetailKasir(filterName, currentPage) {
         try {
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{"page": ${currentPage}, "row_per_page": 10}`)
+            const dataParams = encryptData(`{"filter_name" : "${filterName.length !== 0 ? filterName : ""}", "page": ${currentPage}, "row_per_page": 10}`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
@@ -239,12 +246,14 @@ const PengaturanKasir = () => {
                 setDataListKasir(dataKasir.data.response_data.results)
                 setPageNumberDataListKasir(dataKasir.data.response_data)
                 setTotalPageDataListKasir(dataKasir.data.response_data.max_page)
+                setIsDataKasir(dataKasir.data.response_data.error_text)
                 setPendingDataListKasir(false)
             } else if (dataKasir.status === 200 && dataKasir.data.response_code === 200 && dataKasir.data.response_new_token.length !== 0) {
                 setUserSession(dataKasir.data.response_new_token)
                 setDataListKasir(dataKasir.data.response_data.results)
                 setPageNumberDataListKasir(dataKasir.data.response_data)
                 setTotalPageDataListKasir(dataKasir.data.response_data.max_page)
+                setIsDataKasir(dataKasir.data.response_data.error_text)
                 setPendingDataListKasir(false)
             }
     } catch (error) {
@@ -274,8 +283,8 @@ const PengaturanKasir = () => {
 
     useEffect(() => {
         removeUserSession()
-        getAllDataDetailTerminal(1)
-        getAllDataDetailKasir(1)
+        getAllDataDetailTerminal(filterTextListTerminal, 1)
+        getAllDataDetailKasir(filterTextListKasir, 1)
     }, [])
     
 
@@ -296,7 +305,7 @@ const PengaturanKasir = () => {
             <hr className='hr-style' style={{marginTop: -2}}/>
             {
                 isPengaturanKasir === "daftarKasir" ? 
-                    dataListKasir.length !== 0 ? (
+                    isDataKasir === "Success" ? (
                         <div className='base-content mt-3'>
                             <div className="head-title"> 
                                 <h2 className="h5" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600 }}>Daftar kasir yang ditambahkan</h2>

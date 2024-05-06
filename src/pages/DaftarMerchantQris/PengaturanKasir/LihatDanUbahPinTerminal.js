@@ -7,6 +7,8 @@ import { useHistory, useParams } from 'react-router-dom'
 import breadcrumbsIcon from "../../../assets/icon/breadcrumbs_icon.svg";
 import OtpInput from 'react-otp-input'
 import Checklist from '../../../assets/icon/checklist_icon.svg'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSpinner } from '@fortawesome/free-solid-svg-icons'
 
 const LihatDanUbahPinTerminal = () => {
     const history = useHistory()
@@ -19,9 +21,15 @@ const LihatDanUbahPinTerminal = () => {
     const [showModalStatusTerminal, setShowModalStatusTerminal] = useState(false)
     const [showModalStatusTerminalNonAktif, setShowModalStatusTerminalNonAktif] = useState(false)
     const [showStatusTambahTerminal, setShowStatusTambahTerminal] = useState(false)
+    const [isLoadingTerminal, setIsLoadingTerminal] = useState(false)
 
     function lihatDanUbahPin (terminalId, statusPage) {
-        history.push(`/ubah-pin-terminal/${terminalId}/${statusPage}`)
+        if (Number(statusPage) === 0) {
+            getDataDetailTerminal(terminalId)
+            history.push(`/ubah-pin-terminal/${terminalId}/${statusPage}`)
+        } else {
+            history.push(`/ubah-pin-terminal/${terminalId}/${statusPage}`)
+        }
     }
 
     function showModalHandler () {
@@ -72,6 +80,7 @@ const LihatDanUbahPinTerminal = () => {
 
     async function addAndSaveDataTerminalHandler(terminalId, isActive, pin) {
         try {
+            setIsLoadingTerminal(true)
             const auth = "Bearer " + getToken()
             const dataParams = encryptData(`{"terminal_id": ${terminalId}, "is_active": ${isActive}, "pin": "${pin}"}`)
             const headers = {
@@ -87,6 +96,7 @@ const LihatDanUbahPinTerminal = () => {
                 setInputStatusTerminal(false)
                 getDataDetailTerminal(terminalId)
                 setShowModalStatusUbahPin(false)
+                setIsLoadingTerminal(false)
                 setTimeout(() => {
                     setShowStatusTambahTerminal(false)
                     history.push("/tambah-manual-data-terminal")
@@ -99,6 +109,7 @@ const LihatDanUbahPinTerminal = () => {
                 setInputStatusTerminal(false)
                 getDataDetailTerminal(terminalId)
                 setShowModalStatusUbahPin(false)
+                setIsLoadingTerminal(false)
                 setTimeout(() => {
                     setShowStatusTambahTerminal(false)
                     history.push("/tambah-manual-data-terminal")
@@ -132,7 +143,7 @@ const LihatDanUbahPinTerminal = () => {
                     <h2 className="h5 mt-4" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700 }}>Ubah PIN Terminal</h2> 
                 </div>
                 <div className='base-content mt-3'>
-                    <div className="nama-merchant-in-detail">{dataDetailTerminal?.merchant_name}</div>
+                    <div className="nama-merchant-in-detail">{dataDetailTerminal?.store_name}</div>
                     <Row className='mt-3'>
                         <Col xs={6} className='sub-title-detail-merchant'>Group</Col>
                         <Col xs={6} className='sub-title-detail-merchant'>Brand</Col>
@@ -219,7 +230,13 @@ const LihatDanUbahPinTerminal = () => {
                     </div>             
                     <div className="d-flex justify-content-center mb-3">
                         <Button onClick={() => setShowModalStatusUbahPin(false)} style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;", borderColor: "#EBEBEB",  fontWeight: 700 }} className="mx-2">Batal</Button>
-                        <Button onClick={() => addAndSaveDataTerminalHandler(terminalId, inputStatusTerminal ? 1 : 0, pinTerminalKasir)} style={{ fontFamily: "Exo", color: "black", background: "var(--palet-gradient-gold, linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%))", maxHeight: 45, width: "100%", height: "100%", fontWeight: 700, border: "0.6px solid var(--palet-pengembangan-shades-hitam-80, #383838)" }}>Ya</Button>
+                        <Button 
+                            disabled={isLoadingTerminal}
+                            onClick={() => addAndSaveDataTerminalHandler(terminalId, inputStatusTerminal ? 1 : 0, pinTerminalKasir)} 
+                            style={{ fontFamily: "Exo", color: "black", background: "var(--palet-gradient-gold, linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%))", maxHeight: 45, width: "100%", height: "100%", fontWeight: 700, border: "0.6px solid var(--palet-pengembangan-shades-hitam-80, #383838)" }}
+                        >
+                            {isLoadingTerminal ? (<>Mohon tunggu... <FontAwesomeIcon icon={faSpinner} spin /></>) : `Ya`}
+                        </Button>
                     </div>
                 </Modal.Body>
             </Modal>

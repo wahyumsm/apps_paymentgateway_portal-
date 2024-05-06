@@ -12,7 +12,7 @@ import { FilterComponentQrisTerminal } from '../../../components/FilterComponent
 import Pagination from 'react-js-pagination';
 import edit from "../../../assets/icon/pencil_green_icon.svg";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
+import { faChevronDown, faChevronUp, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import Checklist from '../../../assets/icon/checklist_icon.svg';
 import validator from "validator";
 import noteIconRed from "../../../assets/icon/note_icon_red.svg";
@@ -39,6 +39,7 @@ function TambahDataKasirManual () {
     const [showStatusTambahKasir, setShowStatusTambahKasir] = useState(false)
     const [dataLastActive, setDataLastActive] = useState("")
     const [errMsgEmail, setErrMsgEmail] = useState(false)
+    const [isLoadingTambahKasir, setIsLoadingTambahKasir] = useState(false)
     const [inputHandleTambahKasir, setInputHandleTambahKasir] = useState({
         namaKasir: "",
         emailKasir: "",
@@ -60,8 +61,6 @@ function TambahDataKasirManual () {
         }
     }
 
-    console.log(errMsgEmail, "errMsgEmail");
-
     const showCheckboxes = () => {
         if (!expanded) {
             setExpanded(true);
@@ -73,7 +72,7 @@ function TambahDataKasirManual () {
     const [filterTextKasirAktif, setFilterTextKasirAktif] = React.useState('');
     const [resetPaginationToggleKasirAktif, setResetPaginationToggleKasirAktif] = React.useState(false);
     const filteredItemsKasirAktif = dataListKasirAktif.filter(
-        item => item.muserqris_username && item.muserqris_username.toLowerCase().includes(filterTextKasirAktif.toLowerCase()),
+        item => (item.muserqris_username && item.muserqris_username.toLowerCase().includes(filterTextKasirAktif.toLowerCase())) || (item.muserqris_name && item.muserqris_name.toLowerCase().includes(filterTextKasirAktif.toLowerCase())),
     );
     const subHeaderComponentMemoKasirAktif = useMemo(() => {
         const handleClear = () => {
@@ -84,7 +83,7 @@ function TambahDataKasirManual () {
         };
         function handleChangeFilterQris (e) {
             setFilterTextKasirAktif(e.target.value)
-            getListKasirHandler(storeId, 1, activePageListKasirAktif)
+            getListKasirHandler(e.target.value, storeId, 1, activePageListKasirAktif)
         }
         return (
             <FilterComponentQrisTerminal onFilter={e => handleChangeFilterQris(e)} onClear={handleClear} filterText={filterTextKasirAktif} title="Pencarian :" placeholder="Cari kasir" />
@@ -93,8 +92,8 @@ function TambahDataKasirManual () {
     
     function handleChangeStatus () {
         setInputStatusKasir(!inputStatusKasir);
-        setShowModalStatusKasir(false)
-        setShowModalStatusKasirNonAktif(false)
+        // setShowModalStatusKasir(false)
+        // setShowModalStatusKasirNonAktif(false)
     }
 
     function showModalAddDataKasir (isActive) {
@@ -131,12 +130,12 @@ function TambahDataKasirManual () {
 
     function handlePageChangeDataKasirAktif(page) {
         setActivePageListKasirAktif(page)
-        getListKasirHandler(storeId, 1, activePageListKasirAktif)
+        getListKasirHandler(filterTextKasirAktif, storeId, 1, page)
     }
 
     function handlePageChangeDataKasirNonAktif(page) {
         setActivePageListKasirNonAktif(page)
-        getListKasirHandler(storeId, 0, activePageListKasirNonAktif)
+        getListKasirHandler(filterTextKasirNonAktif, storeId, 0, page)
     }
 
     async function handleChangeStatusInListPaging (isKasirActive, userId) {
@@ -151,8 +150,8 @@ function TambahDataKasirManual () {
                 const dataKasir = await axios.post(BaseURL + "/QRIS/UpdateCashierActiveStatus", { data: dataParams }, { headers: headers })
                 // console.log(dataKasir, 'ini user detal funct');
                 if (dataKasir.status === 200 && dataKasir.data.response_code === 200 && dataKasir.data.response_new_token === null) {
-                    getListKasirHandler(storeId, 1, activePageListKasirAktif)
-                    getListKasirHandler(storeId, 0, activePageListKasirAktif)
+                    getListKasirHandler(filterTextKasirAktif, storeId, 1, activePageListKasirAktif)
+                    getListKasirHandler(filterTextKasirNonAktif, storeId, 0, activePageListKasirAktif)
                     getDataDetailKasir(storeId)
                     setDataKasirIdQris(0)
                     setDataLastActive("")
@@ -160,8 +159,8 @@ function TambahDataKasirManual () {
 
                 } else if (dataKasir.status === 200 && dataKasir.data.response_code === 200 && dataKasir.data.response_new_token !== null) {
                     setUserSession(dataKasir.data.response_new_token)
-                    getListKasirHandler(storeId, 1, activePageListKasirAktif)
-                    getListKasirHandler(storeId, 0, activePageListKasirAktif)
+                    getListKasirHandler(filterTextKasirAktif, storeId, 1, activePageListKasirAktif)
+                    getListKasirHandler(filterTextKasirNonAktif, storeId, 0, activePageListKasirAktif)
                     getDataDetailKasir(storeId)
                     setDataKasirIdQris(0)
                     setDataLastActive("")
@@ -183,16 +182,16 @@ function TambahDataKasirManual () {
                 const dataKasir = await axios.post(BaseURL + "/QRIS/UpdateCashierActiveStatus", { data: dataParams }, { headers: headers })
                 // console.log(dataKasir, 'ini user detal funct');
                 if (dataKasir.status === 200 && dataKasir.data.response_code === 200 && dataKasir.data.response_new_token === null) {
-                    getListKasirHandler(storeId, 1, activePageListKasirAktif)
-                    getListKasirHandler(storeId, 0, activePageListKasirAktif)
+                    getListKasirHandler(filterTextKasirAktif, storeId, 1, activePageListKasirAktif)
+                    getListKasirHandler(filterTextKasirNonAktif, storeId, 0, activePageListKasirAktif)
                     getDataDetailKasir(storeId)
                     setDataKasirIdQris(0)
                     setShowModalStatusKasirNonAktif(false)
 
                 } else if (dataKasir.status === 200 && dataKasir.data.response_code === 200 && dataKasir.data.response_new_token !== null) {
                     setUserSession(dataKasir.data.response_new_token)
-                    getListKasirHandler(storeId, 1, activePageListKasirAktif)
-                    getListKasirHandler(storeId, 0, activePageListKasirAktif)
+                    getListKasirHandler(filterTextKasirAktif, storeId, 1, activePageListKasirAktif)
+                    getListKasirHandler(filterTextKasirNonAktif, storeId, 0, activePageListKasirAktif)
                     getDataDetailKasir(storeId)
                     setDataKasirIdQris(0)         
                     setShowModalStatusKasirNonAktif(false)
@@ -207,19 +206,28 @@ function TambahDataKasirManual () {
     function terminalTabs(isTabs){
         setTabKasir(isTabs)
         if(!isTabs) {
-            getListKasirHandler(storeId, 0, activePageListKasirNonAktif)
+            setFilterTextKasirNonAktif("")
+            setFilterTextKasirAktif("")
+            getListKasirHandler("", storeId, 0, activePageListKasirNonAktif)
+            getListKasirHandler("", storeId, 1, activePageListKasirAktif)
             $('#terminalAktiftab').removeClass('menu-detail-akun-hr-active')
             $('#terminalAktifspan').removeClass('menu-detail-akun-span-active')
             $('#terminalNonaktiftab').addClass('menu-detail-akun-hr-active')
             $('#terminalNonaktifspan').addClass('menu-detail-akun-span-active')
         } else {
-            getListKasirHandler(storeId, 1, activePageListKasirAktif)
+            setFilterTextKasirNonAktif("")
+            setFilterTextKasirAktif("")
+            getListKasirHandler("", storeId, 0, activePageListKasirNonAktif)
+            getListKasirHandler("", storeId, 1, activePageListKasirAktif)
             $('#terminalNonaktiftab').removeClass('menu-detail-akun-hr-active')
             $('#terminalNonaktifspan').removeClass('menu-detail-akun-span-active')
             $('#terminalAktiftab').addClass('menu-detail-akun-hr-active')
             $('#terminalAktifspan').addClass('menu-detail-akun-span-active')
         }
     }
+
+    console.log(filterTextKasirAktif, "filterTextKasirAktif");
+    console.log(dataListKasirAktif, "dataListKasirAktif");
 
     const columnsKasirAktif = [
         {
@@ -243,7 +251,7 @@ function TambahDataKasirManual () {
         },
         {
             name: 'Terakhir Aktif',
-            selector: row => row.last_active,
+            selector: row => row.last_active_paging,
             width: "160px"
         },
         {
@@ -287,7 +295,7 @@ function TambahDataKasirManual () {
     const [filterTextKasirNonAktif, setFilterTextKasirNonAktif] = React.useState('');
     const [resetPaginationToggleKasirNonAktif, setResetPaginationToggleKasirNonAktif] = React.useState(false);
     const filteredItemsKasirNonAktif = dataListKasirNonAktif.filter(
-        item => item.muserqris_username && item.muserqris_username.toLowerCase().includes(filterTextKasirNonAktif.toLowerCase()),
+        item => (item.muserqris_username && item.muserqris_username.toLowerCase().includes(filterTextKasirNonAktif.toLowerCase())) || (item.muserqris_name && item.muserqris_name.toLowerCase().includes(filterTextKasirNonAktif.toLowerCase())),
     );
     const subHeaderComponentMemoKasirNonAktif = useMemo(() => {
         const handleClear = () => {
@@ -298,12 +306,15 @@ function TambahDataKasirManual () {
         };
         function handleChangeFilterQris (e) {
             setFilterTextKasirNonAktif(e.target.value)
-            getListKasirHandler(storeId, 1, activePageListKasirNonAktif)
+            getListKasirHandler(e.target.value, storeId, 0, activePageListKasirNonAktif)
         }
         return (
             <FilterComponentQrisTerminal onFilter={e => handleChangeFilterQris(e)} onClear={handleClear} filterText={filterTextKasirNonAktif} title="Pencarian :" placeholder="Cari kasir" />
         );	}, [filterTextKasirNonAktif, resetPaginationToggleKasirNonAktif]
     );
+
+    console.log(filterTextKasirNonAktif, "filterTextKasirNonAktif");
+    console.log(dataListKasirNonAktif, "dataListKasirNonAktif");
 
     const columnsKasirNonAktif = [
         {
@@ -327,7 +338,7 @@ function TambahDataKasirManual () {
         },
         {
             name: 'Terakhir Aktif',
-            selector: row => row.last_active,
+            selector: row => row.last_active_paging,
             width: "160px"
         },
         {
@@ -387,6 +398,7 @@ function TambahDataKasirManual () {
 
     async function addAndSaveDataKasirHandler(e, namaKasir, storeNou, email, role, isActive, pin) {
         try {
+            setIsLoadingTambahKasir(true)
             e.preventDefault()
             if (validator.isEmail(email) === false) {
                 setErrMsgEmail(true)
@@ -411,11 +423,12 @@ function TambahDataKasirManual () {
                     role: 0
                 })
                 setInputStatusKasir(true)
-                getListKasirHandler(storeId, 1, activePageListKasirAktif)
+                getListKasirHandler(filterTextKasirAktif, storeId, 1, activePageListKasirAktif)
                 setTimeout(() => {
                     setShowStatusTambahKasir(false)
                 }, 5000);
-            } else if (dataKasir.status === 200 && dataKasir.data.response_code === 200 && dataKasir.data.response_new_token !== null) {
+                setIsLoadingTambahKasir(false)
+        } else if (dataKasir.status === 200 && dataKasir.data.response_code === 200 && dataKasir.data.response_new_token !== null) {
                 setUserSession(dataKasir.data.response_new_token)
                 setShowStatusTambahKasir(true)
                 window.scrollTo(0,0)
@@ -427,21 +440,22 @@ function TambahDataKasirManual () {
                     role: 0
                 })
                 setInputStatusKasir(true)
-                getListKasirHandler(storeId, 1, activePageListKasirAktif)
+                getListKasirHandler(filterTextKasirAktif, storeId, 1, activePageListKasirAktif)
                 setTimeout(() => {
                     setShowStatusTambahKasir(false)
                 }, 5000);
-            }
+                setIsLoadingTambahKasir(false)
+        }
         } catch (error) {
             // console.log(error);
             history.push(errorCatch(error.response.status))
         }
     }
 
-    async function getListKasirHandler(storeId, userIsActive, currentPage) {
+    async function getListKasirHandler(filterName, storeId, userIsActive, currentPage) {
         try {
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{"store_id": "${storeId}", "user_is_active": ${userIsActive}, "date_from": "", "date_to": "", "page": ${currentPage}, "row_per_page": 10}`)
+            const dataParams = encryptData(`{"filter_name": "${filterName.length !== 0 ? filterName : ""}", "store_id": "${storeId}", "user_is_active": ${userIsActive}, "date_from": "", "date_to": "", "page": ${currentPage}, "row_per_page": 10}`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
@@ -499,8 +513,8 @@ function TambahDataKasirManual () {
 
     useEffect(() => {
         getDataDetailKasir(storeId)
-        getListKasirHandler(storeId, 1, activePageListKasirAktif)
-        getListKasirHandler(storeId, 0, activePageListKasirNonAktif)
+        getListKasirHandler(filterTextKasirAktif, storeId, 1, activePageListKasirAktif)
+        getListKasirHandler(filterTextKasirNonAktif, storeId, 0, activePageListKasirNonAktif)
     }, [])
     
 
@@ -526,7 +540,7 @@ function TambahDataKasirManual () {
                     }
                 </div>
                 <div className='base-content mt-3'>
-                    <div className="nama-merchant-in-detail">{dataDetailKasir?.merchant_name}</div>
+                    <div className="nama-merchant-in-detail">{dataDetailKasir?.store_name}</div>
                     <Row className='mt-3'>
                         <Col xs={6} className='sub-title-detail-merchant'>Group</Col>
                         <Col xs={6} className='sub-title-detail-merchant'>Brand</Col>
@@ -585,7 +599,8 @@ function TambahDataKasirManual () {
                                     }
                                     name="active"
                                     className='mt-2'
-                                    onChange={() => showModalAddDataKasir(inputStatusKasir)}
+                                    onChange={handleChangeStatus}
+                                    // onChange={() => showModalAddDataKasir(inputStatusKasir)}
                                 />
                                 <div className='mt-2' style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 600 }}>Nama Kasir</div>
                                 <input name="namaKasir" value={inputHandleTambahKasir.namaKasir} onChange={(e) => handleChangeTambahKasir(e)} type='text'className='input-text-tambah-manual-qris mt-2' placeholder='Masukkan Nama Kasir'/>
@@ -640,7 +655,8 @@ function TambahDataKasirManual () {
                                 }
                                 name="active"
                                 className='mt-2'
-                                onChange={() => showModalAddDataKasir(inputStatusKasir)}
+                                onChange={handleChangeStatus}
+                                // onChange={() => showModalAddDataKasir(inputStatusKasir)}
                             />
                             <div className='mt-2' style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 600 }}>Nama Kasir</div>
                             <input name="namaKasir" value={inputHandleTambahKasir.namaKasir} onChange={(e) => handleChangeTambahKasir(e)} type='text'className='input-text-tambah-manual-qris mt-2' placeholder='Masukkan Nama Kasir'/>
@@ -693,10 +709,10 @@ function TambahDataKasirManual () {
                             expanded &&
                             <button 
                                 className={inputHandleTambahKasir.namaKasir.length !== 0 && inputHandleTambahKasir.emailKasir.length !== 0 && inputHandleTambahKasir.role !== 0 && pinKasir.length !== 0 && pinKasir.length === 6 ? 'btn-ez-transfer mt-4' : 'btn-noez-transfer mt-4'}
-                                disabled={inputHandleTambahKasir.namaKasir.length === 0 || inputHandleTambahKasir.emailKasir.length === 0 || inputHandleTambahKasir.role === 0 || pinKasir.length === 0 || (pinKasir.length !== 0 && pinKasir.length !== 6) }
+                                disabled={inputHandleTambahKasir.namaKasir.length === 0 || inputHandleTambahKasir.emailKasir.length === 0 || inputHandleTambahKasir.role === 0 || pinKasir.length === 0 || (pinKasir.length !== 0 && pinKasir.length !== 6) || isLoadingTambahKasir}
                                 onClick={(e) => addAndSaveDataKasirHandler(e, inputHandleTambahKasir.namaKasir, dataDetailKasir?.mobile_store_nou, inputHandleTambahKasir.emailKasir, inputHandleTambahKasir.role, inputStatusKasir === true ? 1 : 0, pinKasir)}
                             >
-                                Tambah Kasir
+                                {isLoadingTambahKasir ? (<>Mohon tunggu... <FontAwesomeIcon icon={faSpinner} spin /></>) : `Tambah Kasir`}
                             </button>
                         }
                         <div className='base-content mt-4'>
@@ -767,7 +783,13 @@ function TambahDataKasirManual () {
                         </div>
                     </>
                         :
-                    <button className='btn-ez-transfer mt-4' onClick={(e) => addAndSaveDataKasirHandler(e, inputHandleTambahKasir.namaKasir, dataDetailKasir?.mobile_store_nou, inputHandleTambahKasir.emailKasir, inputHandleTambahKasir.role, inputStatusKasir === true ? 1 : 0, pinKasir)}>Simpan</button>
+                    <button 
+                        className={inputHandleTambahKasir.namaKasir.length !== 0 && inputHandleTambahKasir.emailKasir.length !== 0 && inputHandleTambahKasir.role !== 0 && pinKasir.length !== 0 && pinKasir.length === 6 ? 'btn-ez-transfer mt-4' : 'btn-noez-transfer mt-4'}
+                        disabled={inputHandleTambahKasir.namaKasir.length === 0 || inputHandleTambahKasir.emailKasir.length === 0 || inputHandleTambahKasir.role === 0 || pinKasir.length === 0 || (pinKasir.length !== 0 && pinKasir.length !== 6) || isLoadingTambahKasir}
+                        onClick={(e) => addAndSaveDataKasirHandler(e, inputHandleTambahKasir.namaKasir, dataDetailKasir?.mobile_store_nou, inputHandleTambahKasir.emailKasir, inputHandleTambahKasir.role, inputStatusKasir === true ? 1 : 0, pinKasir)}
+                    >
+                        {isLoadingTambahKasir ? (<>Mohon tunggu... <FontAwesomeIcon icon={faSpinner} spin /></>) : `Simpan`}
+                    </button>
                 }
             </div>
 

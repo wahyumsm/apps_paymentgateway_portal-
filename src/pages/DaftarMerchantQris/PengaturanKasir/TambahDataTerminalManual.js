@@ -15,7 +15,7 @@ import { FilterComponentQrisTerminal } from '../../../components/FilterComponent
 import Pagination from 'react-js-pagination';
 import edit from "../../../assets/icon/pencil_green_icon.svg";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
+import { faChevronDown, faChevronUp, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import Checklist from '../../../assets/icon/checklist_icon.svg'
 import ChecklistGreenIcon from '../../../assets/icon/checklist_green_icon.svg'
 
@@ -43,6 +43,7 @@ function TambahDataTerminalManual () {
     const [showModal, setShowModal] = useState("");
     const [showStatusTambahTerminal, setShowStatusTambahTerminal] = useState(false)
     const [dataLastActive, setDataLastActive] = useState("")
+    const [isLoadingTambahTerminal, setIsLoadingTambahTerminal] = useState(false)
 
     const showCheckboxes = () => {
         if (!expanded) {
@@ -66,7 +67,7 @@ function TambahDataTerminalManual () {
         };
         function handleChangeFilterQris (e) {
             setFilterTextTerminalAktif(e.target.value)
-            getListTerminalHandler(storeId, 1, activePageListTerminalAktif)
+            getListTerminalHandler(e.target.value, storeId, 1, activePageListTerminalAktif)
         }
         return (
             <FilterComponentQrisTerminal onFilter={e => handleChangeFilterQris(e)} onClear={handleClear} filterText={filterTextTerminalAktif} title="Pencarian :" placeholder="Cari terminal" />
@@ -79,8 +80,8 @@ function TambahDataTerminalManual () {
     
     function handleChangeStatus () {
         setInputStatusTerminal(!inputStatusTerminal);
-        setShowModalStatusTerminal(false)
-        setShowModalStatusTerminalNonAktif(false)
+        // setShowModalStatusTerminal(false)
+        // setShowModalStatusTerminalNonAktif(false)
     }
 
     function showModalAddDataTerminal (isActive) {
@@ -110,7 +111,6 @@ function TambahDataTerminalManual () {
 
 
     function showModalTerminalNonAktif (e, terminalId, lastActive) {
-        console.log(lastActive, "lastActive");
         setDataLastActive(lastActive)
         setShowModal("down")
         setShowModalStatusTerminalNonAktif(true)
@@ -119,12 +119,12 @@ function TambahDataTerminalManual () {
 
     function handlePageChangeDataTerminalAktif(page) {
         setActivePageListTerminalAktif(page)
-        getListTerminalHandler(storeId, 1, activePageListTerminalAktif)
+        getListTerminalHandler(filterTextTerminalAktif, storeId, 1, page)
     }
 
     function handlePageChangeDataTerminalNonAktif(page) {
         setActivePageListTerminalNonAktif(page)
-        getListTerminalHandler(storeId, 0, activePageListTerminalNonAktif)
+        getListTerminalHandler(filterTextTerminalNonAktif, storeId, 0, page)
     }
 
     async function handleChangeStatusInListPaging (isTerminalActive, terminalId) {
@@ -139,7 +139,8 @@ function TambahDataTerminalManual () {
                 const dataTerminal = await axios.post(BaseURL + "/QRIS/UpdateTerminalActiveStatus", { data: dataParams }, { headers: headers })
                 // console.log(dataTerminal, 'ini user detal funct');
                 if (dataTerminal.status === 200 && dataTerminal.data.response_code === 200 && dataTerminal.data.response_new_token === null) {
-                    getListTerminalHandler(storeId, 1, activePageListTerminalAktif)
+                    getListTerminalHandler(filterTextTerminalAktif, storeId, 1, activePageListTerminalAktif)
+                    getListTerminalHandler(filterTextTerminalNonAktif, storeId, 0, activePageListTerminalAktif)
                     getDataDetailTerminal(storeId)
                     setDataTerminalIdQris(0)
                     setDataLastActive("")
@@ -147,7 +148,8 @@ function TambahDataTerminalManual () {
 
                 } else if (dataTerminal.status === 200 && dataTerminal.data.response_code === 200 && dataTerminal.data.response_new_token !== null) {
                     setUserSession(dataTerminal.data.response_new_token)
-                    getListTerminalHandler(storeId, 1, activePageListTerminalAktif)
+                    getListTerminalHandler(filterTextTerminalAktif, storeId, 1, activePageListTerminalAktif)
+                    getListTerminalHandler(filterTextTerminalNonAktif, storeId, 0, activePageListTerminalAktif)
                     getDataDetailTerminal(storeId)
                     setDataTerminalIdQris(0)
                     setDataLastActive("")
@@ -169,14 +171,14 @@ function TambahDataTerminalManual () {
                 const dataTerminal = await axios.post(BaseURL + "/QRIS/UpdateTerminalActiveStatus", { data: dataParams }, { headers: headers })
                 // console.log(dataTerminal, 'ini user detal funct');
                 if (dataTerminal.status === 200 && dataTerminal.data.response_code === 200 && dataTerminal.data.response_new_token === null) {
-                    getListTerminalHandler(storeId, 0, activePageListTerminalAktif)
+                    getListTerminalHandler(filterTextTerminalNonAktif, storeId, 0, activePageListTerminalAktif)
                     getDataDetailTerminal(storeId)
                     setDataTerminalIdQris(0)
                     setShowModalStatusTerminalNonAktif(false)
 
                 } else if (dataTerminal.status === 200 && dataTerminal.data.response_code === 200 && dataTerminal.data.response_new_token !== null) {
                     setUserSession(dataTerminal.data.response_new_token)
-                    getListTerminalHandler(storeId, 0, activePageListTerminalAktif)
+                    getListTerminalHandler(filterTextTerminalNonAktif, storeId, 0, activePageListTerminalAktif)
                     getDataDetailTerminal(storeId)
                     setDataTerminalIdQris(0)         
                     setShowModalStatusTerminalNonAktif(false)
@@ -192,13 +194,19 @@ function TambahDataTerminalManual () {
     function terminalTabs(isTabs){
         setTabTerminal(isTabs)
         if(!isTabs) {
-            getListTerminalHandler(storeId, 0, activePageListTerminalNonAktif)
+            setFilterTextTerminalAktif("")
+            setFilterTextTerminalNonAktif("")
+            getListTerminalHandler("", storeId, 0, activePageListTerminalNonAktif)
+            getListTerminalHandler("", storeId, 1, activePageListTerminalAktif)
             $('#terminalAktiftab').removeClass('menu-detail-akun-hr-active')
             $('#terminalAktifspan').removeClass('menu-detail-akun-span-active')
             $('#terminalNonaktiftab').addClass('menu-detail-akun-hr-active')
             $('#terminalNonaktifspan').addClass('menu-detail-akun-span-active')
         } else {
-            getListTerminalHandler(storeId, 1, activePageListTerminalAktif)
+            setFilterTextTerminalAktif("")
+            setFilterTextTerminalNonAktif("")
+            getListTerminalHandler("", storeId, 0, activePageListTerminalNonAktif)
+            getListTerminalHandler("", storeId, 1, activePageListTerminalAktif)
             $('#terminalNonaktiftab').removeClass('menu-detail-akun-hr-active')
             $('#terminalNonaktifspan').removeClass('menu-detail-akun-span-active')
             $('#terminalAktiftab').addClass('menu-detail-akun-hr-active')
@@ -270,7 +278,7 @@ function TambahDataTerminalManual () {
         };
         function handleChangeFilterQris (e) {
             setFilterTextTerminalNonAktif(e.target.value)
-            getListTerminalHandler(storeId, 1, activePageListTerminalNonAktif)
+            getListTerminalHandler(e.target.value, storeId, 0, activePageListTerminalNonAktif)
         }
         return (
             <FilterComponentQrisTerminal onFilter={e => handleChangeFilterQris(e)} onClear={handleClear} filterText={filterTextTerminalNonAktif} title="Pencarian :" placeholder="Cari terminal" />
@@ -384,6 +392,7 @@ function TambahDataTerminalManual () {
 
     async function addAndSaveDataTerminalHandler(terminalId, isActive, pin) {
         try {
+            setIsLoadingTambahTerminal(true)
             const auth = "Bearer " + getToken()
             const dataParams = encryptData(`{"terminal_id": ${terminalId}, "is_active": ${isActive}, "pin": "${pin}"}`)
             const headers = {
@@ -396,56 +405,48 @@ function TambahDataTerminalManual () {
                 setShowStatusTambahTerminal(true)
                 window.scrollTo(0,0)
                 setPinTerminalKasir("")
-                setInputStatusTerminal(false)
+                setInputStatusTerminal(true)
                 setSelectedDataTerminalByStore([])
-                getListTerminalHandler(storeId, 1, activePageListTerminalAktif)
+                getListTerminalHandler(filterTextTerminalAktif, storeId, 1, activePageListTerminalAktif)
                 getDataTerminalHandler(storeId)
                 setTimeout(() => {
                     setShowStatusTambahTerminal(false)
                 }, 5000);
-            } else if (dataTerminal.status === 200 && dataTerminal.data.response_code === 200 && dataTerminal.data.response_new_token !== null) {
+                setIsLoadingTambahTerminal(false)
+        } else if (dataTerminal.status === 200 && dataTerminal.data.response_code === 200 && dataTerminal.data.response_new_token !== null) {
                 setUserSession(dataTerminal.data.response_new_token)
                 setShowStatusTambahTerminal(true)
                 window.scrollTo(0,0)
                 setPinTerminalKasir("")
-                setInputStatusTerminal(false)
+                setInputStatusTerminal(true)
                 setSelectedDataTerminalByStore([])
-                getListTerminalHandler(storeId, 1, activePageListTerminalAktif)
+                getListTerminalHandler(filterTextTerminalAktif, storeId, 1, activePageListTerminalAktif)
                 getDataTerminalHandler(storeId)
                 setTimeout(() => {
                     setShowStatusTambahTerminal(false)
                 }, 5000);
-            }
+                setIsLoadingTambahTerminal(false)
+        }
         } catch (error) {
             // console.log(error);
             history.push(errorCatch(error.response.status))
         }
     }
 
-    async function getListTerminalHandler(storeId, terminalIsActive, currentPage) {
+    async function getListTerminalHandler(filterName, storeId, terminalIsActive, currentPage) {
         try {
             const auth = "Bearer " + getToken()
-            const dataParams = encryptData(`{"store_id": "${storeId}", "terminal_is_active": ${terminalIsActive}, "date_from": "", "date_to": "", "page": ${currentPage}, "row_per_page": 10}`)
+            const dataParams = encryptData(`{"filter_name": "${filterName.length !== 0 ? filterName : ""}", "store_id": "${storeId}", "terminal_is_active": ${terminalIsActive}, "date_from": "", "date_to": "", "page": ${currentPage}, "row_per_page": 10}`)
             const headers = {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
             const dataTerminal = await axios.post(BaseURL + "/QRIS/GetListTerminalQrisPaging", { data: dataParams }, { headers: headers })
             // console.log(dataTerminal, 'ini user detal funct');
-            if (dataTerminal.status === 200 && dataTerminal.data.response_code === 200 && dataTerminal.data.response_new_token.length === 0) {
-                if (terminalIsActive === 1) {
-                    setDataListTerminalAktif(dataTerminal.data.response_data.results)
-                    setPageNumberListTerminalAktif(dataTerminal.data.response_data)
-                    setTotalPageListTerminalAktif(dataTerminal.data.response_data.max_page)
-                    setInputStatusTerminalInListPaging(dataTerminal.data.response_data.results.mterminalqris_is_active)
-                } else {
-                    setDataListTerminalNonAktif(dataTerminal.data.response_data.results)
-                    setPageNumberListTerminalNonAktif(dataTerminal.data.response_data)
-                    setTotalPageListTerminalNonAktif(dataTerminal.data.response_data.max_page)
-                    setInputStatusTerminalNonAktifInListPaging(dataTerminal.data.response_data.results.mterminalqris_is_active)
+            if (dataTerminal.status === 200 && dataTerminal.data.response_code === 200) {
+                if (dataTerminal.data.response_new_token.length !== 0) {
+                    setUserSession(dataTerminal.data.response_new_token)
                 }
-            } else if (dataTerminal.status === 200 && dataTerminal.data.response_code === 200 && dataTerminal.data.response_new_token.length !== 0) {
-                setUserSession(dataTerminal.data.response_new_token)
                 if (terminalIsActive === 1) {
                     setDataListTerminalAktif(dataTerminal.data.response_data.results)
                     setPageNumberListTerminalAktif(dataTerminal.data.response_data)
@@ -513,8 +514,8 @@ function TambahDataTerminalManual () {
     useEffect(() => {
         getDataDetailTerminal(storeId)
         getDataTerminalHandler(storeId)
-        getListTerminalHandler(storeId, 1, activePageListTerminalAktif)
-        getListTerminalHandler(storeId, 0, activePageListTerminalNonAktif)
+        getListTerminalHandler(filterTextTerminalAktif, storeId, 1, activePageListTerminalAktif)
+        getListTerminalHandler(filterTextTerminalNonAktif, storeId, 0, activePageListTerminalNonAktif)
     }, [])
     
 
@@ -540,7 +541,7 @@ function TambahDataTerminalManual () {
                     }
                 </div>
                 <div className='base-content mt-3'>
-                    <div className="nama-merchant-in-detail">{dataDetailTerminal?.merchant_name}</div>
+                    <div className="nama-merchant-in-detail">{dataDetailTerminal?.store_name}</div>
                     <Row className='mt-3'>
                         <Col xs={6} className='sub-title-detail-merchant'>Group</Col>
                         <Col xs={6} className='sub-title-detail-merchant'>Brand</Col>
@@ -599,7 +600,8 @@ function TambahDataTerminalManual () {
                                     }
                                     name="active"
                                     className='mt-2'
-                                    onChange={() => showModalAddDataTerminal(inputStatusTerminal)}
+                                    onChange={handleChangeStatus}
+                                    // onChange={() => showModalAddDataTerminal(inputStatusTerminal)}
                                 />
                                 <div className='mt-2'>Terminal Kasir</div>
                                 <div className="dropdown dropPartnerAddUser mt-2">
@@ -650,7 +652,8 @@ function TambahDataTerminalManual () {
                                 }
                                 name="active"
                                 className='mt-2'
-                                onChange={() => showModalAddDataTerminal(inputStatusTerminal)}
+                                onChange={handleChangeStatus}
+                                // onChange={() => showModalAddDataTerminal(inputStatusTerminal)}
                             />
                             <div className='mt-2' style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 600 }}>Terminal Kasir</div>
                             <div className="dropdown dropInfoPemilikBrand mt-2">
@@ -699,10 +702,10 @@ function TambahDataTerminalManual () {
                             expanded &&
                             <button 
                                 className={selectedDataTerminalByStore.length !== 0 && pinTerminalKasir.length !== 0 && pinTerminalKasir.length === 6 ? 'btn-ez-transfer mt-4' : 'btn-noez-transfer mt-4'}
-                                disabled={selectedDataTerminalByStore.length === 0 || pinTerminalKasir.length === 0 || (pinTerminalKasir.length !== 0 && pinTerminalKasir.length !== 6) }
+                                disabled={selectedDataTerminalByStore.length === 0 || pinTerminalKasir.length === 0 || (pinTerminalKasir.length !== 0 && pinTerminalKasir.length !== 6) || isLoadingTambahTerminal }
                                 onClick={() => addAndSaveDataTerminalHandler(selectedDataTerminalByStore.length !== 0 ? selectedDataTerminalByStore[0].value : 0, inputStatusTerminal === true ? 1 : 0, pinTerminalKasir)}
                             >
-                                Tambah Terminal
+                                {isLoadingTambahTerminal ? (<>Mohon tunggu... <FontAwesomeIcon icon={faSpinner} spin /></>) : `Tambah Terminal`}
                             </button>
                         }
                         <div className='base-content mt-4'>
@@ -773,7 +776,13 @@ function TambahDataTerminalManual () {
                         </div>
                     </>
                         :
-                    <button className='btn-ez-transfer mt-4' onClick={() => addAndSaveDataTerminalHandler(selectedDataTerminalByStore.length !== 0 ? selectedDataTerminalByStore[0].value : 0, inputStatusTerminal === true ? 1 : 0, pinTerminalKasir)}>Simpan</button>
+                    <button 
+                        className={selectedDataTerminalByStore.length !== 0 && pinTerminalKasir.length !== 0 && pinTerminalKasir.length === 6 ? 'btn-ez-transfer mt-4' : 'btn-noez-transfer mt-4'}
+                        disabled={selectedDataTerminalByStore.length === 0 || pinTerminalKasir.length === 0 || (pinTerminalKasir.length !== 0 && pinTerminalKasir.length !== 6) || isLoadingTambahTerminal }
+                        onClick={() => addAndSaveDataTerminalHandler(selectedDataTerminalByStore.length !== 0 ? selectedDataTerminalByStore[0].value : 0, inputStatusTerminal === true ? 1 : 0, pinTerminalKasir)}
+                    >
+                        {isLoadingTambahTerminal ? (<>Mohon tunggu... <FontAwesomeIcon icon={faSpinner} spin /></>) : `Simpan`}
+                    </button>
                 }
             </div>
 

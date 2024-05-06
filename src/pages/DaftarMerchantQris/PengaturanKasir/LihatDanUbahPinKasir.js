@@ -7,6 +7,8 @@ import { useHistory, useParams } from 'react-router-dom'
 import breadcrumbsIcon from "../../../assets/icon/breadcrumbs_icon.svg";
 import OtpInput from 'react-otp-input'
 import Checklist from '../../../assets/icon/checklist_icon.svg'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSpinner } from '@fortawesome/free-solid-svg-icons'
 
 const LihatDanUbahPinKasir = () => {
     const history = useHistory()
@@ -19,9 +21,15 @@ const LihatDanUbahPinKasir = () => {
     const [showModalStatusKasir, setShowModalStatusKasir] = useState(false)
     const [showModalStatusKasirNonAktif, setShowModalStatusKasirNonAktif] = useState(false)
     const [showStatusTambahKasir, setShowStatusTambahKasir] = useState(false)
+    const [isLoadingKasir, setIsLoadingKasir] = useState(false)
 
     function lihatDanUbahPin (kasirId, statusPage) {
-        history.push(`/ubah-pin-kasir/${kasirId}/${statusPage}`)
+        if (Number(statusPage) === 0) {
+            getDataDetailKasir(kasirId)
+            history.push(`/ubah-pin-kasir/${kasirId}/${statusPage}`)
+        } else {
+            history.push(`/ubah-pin-kasir/${kasirId}/${statusPage}`)
+        }
     }
 
     const [inputHandleTambahKasir, setInputHandleTambahKasir] = useState({
@@ -44,8 +52,6 @@ const LihatDanUbahPinKasir = () => {
             setShowModalStatusKasirNonAktif(true)
         }
     }
-
-    console.log(inputStatusKasir, "inputStatusKasir");
 
     function handleChangeStatus () {
         setInputStatusKasir(!inputStatusKasir);
@@ -95,6 +101,7 @@ const LihatDanUbahPinKasir = () => {
 
     async function addAndSaveDataKasirHandler(namaKasir, userId, storeNou, email, role, isActive, pin) {
         try {
+            setIsLoadingKasir(true)
             const auth = "Bearer " + getToken()
             const dataParams = encryptData(`{"name": "${namaKasir}", "user_id": ${userId}, "store_nou": ${storeNou}, "email": "${email}", "role" : ${role}, "is_active": ${isActive}, "pin": "${pin}"}`)
             const headers = {
@@ -110,6 +117,7 @@ const LihatDanUbahPinKasir = () => {
                 setInputStatusKasir(false)
                 getDataDetailKasir(kasirId)
                 setShowModalStatusUbahPin(false)
+                setIsLoadingKasir(false)
                 setTimeout(() => {
                     setShowStatusTambahKasir(false)
                     history.push("/tambah-manual-data-kasir")
@@ -122,6 +130,7 @@ const LihatDanUbahPinKasir = () => {
                 setInputStatusKasir(false)
                 getDataDetailKasir(kasirId)
                 setShowModalStatusUbahPin(false)
+                setIsLoadingKasir(false)
                 setTimeout(() => {
                     setShowStatusTambahKasir(false)
                     history.push("/tambah-manual-data-kasir")
@@ -155,7 +164,7 @@ const LihatDanUbahPinKasir = () => {
                     <h2 className="h5 mt-4" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 700 }}>Ubah Data Info Kasir</h2> 
                 </div>
                 <div className='base-content mt-3'>
-                    <div className="nama-merchant-in-detail">{dataDetailKasir?.merchant_name}</div>
+                    <div className="nama-merchant-in-detail">{dataDetailKasir?.store_name}</div>
                     <Row className='mt-3'>
                         <Col xs={6} className='sub-title-detail-merchant'>Group</Col>
                         <Col xs={6} className='sub-title-detail-merchant'>Brand</Col>
@@ -186,11 +195,11 @@ const LihatDanUbahPinKasir = () => {
                     onChange={() => showModalHandler()}
                 />
                 <div className='mt-2' style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 600 }}>Nama Kasir</div>
-                <input name="namaKasir" value={inputHandleTambahKasir.namaKasir} onChange={(e) => handleChangeTambahKasir(e)} type='text'className='input-text-user mt-2' placeholder='Masukkan Nama Kasir'/>
+                <input name="namaKasir" value={inputHandleTambahKasir.namaKasir} onChange={(e) => handleChangeTambahKasir(e)} disabled={Number(statusPage) === 0} type='text'className='input-text-user mt-2' placeholder='Masukkan Nama Kasir'/>
                 <div className='mt-2' style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 600 }}>Email Kasir</div>
-                <input name="emailKasir" value={inputHandleTambahKasir.emailKasir} onChange={(e) => handleChangeTambahKasir(e)} type='text'className='input-text-user mt-2' placeholder='contoh : Farida@gmail.com'/>
+                <input name="emailKasir" value={inputHandleTambahKasir.emailKasir} onChange={(e) => handleChangeTambahKasir(e)} disabled={Number(statusPage) === 0} type='text'className='input-text-user mt-2' placeholder='contoh : Farida@gmail.com'/>
                 <div className='mt-2' style={{ fontFamily: "Nunito", fontSize: 14, fontWeight: 600 }}>Role</div>
-                <Form.Select name='role' value={inputHandleTambahKasir.role} onChange={(e) => handleChangeTambahKasir(e)} className='input-text-user' style={{ display: "inline" }} >
+                <Form.Select name='role' value={inputHandleTambahKasir.role} onChange={(e) => handleChangeTambahKasir(e)} disabled={Number(statusPage) === 0} className='input-text-user' style={{ display: "inline" }} >
                     <option defaultValue disabled value={0}>Pilih Role</option>
                     <option value={103}>Kepala Outlet</option>
                     <option value={104}>Kasir</option>
@@ -252,7 +261,12 @@ const LihatDanUbahPinKasir = () => {
                     </div>             
                     <div className="d-flex justify-content-center mb-3">
                         <Button onClick={() => setShowModalStatusUbahPin(false)} style={{ fontFamily: "Exo", color: "#888888", background: "#FFFFFF", maxHeight: 45, width: "100%", height: "100%", border: "1px solid #EBEBEB;", borderColor: "#EBEBEB",  fontWeight: 700 }} className="mx-2">Batal</Button>
-                        <Button onClick={() => addAndSaveDataKasirHandler(inputHandleTambahKasir.namaKasir, kasirId, dataDetailKasir?.store_nou, inputHandleTambahKasir.emailKasir, inputHandleTambahKasir.role, inputStatusKasir ? 1 : 0, pinKasir)} style={{ fontFamily: "Exo", color: "black", background: "var(--palet-gradient-gold, linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%))", maxHeight: 45, width: "100%", height: "100%", fontWeight: 700, border: "0.6px solid var(--palet-pengembangan-shades-hitam-80, #383838)" }}>Ya</Button>
+                        <Button 
+                            onClick={() => addAndSaveDataKasirHandler(inputHandleTambahKasir.namaKasir, kasirId, dataDetailKasir?.store_nou, inputHandleTambahKasir.emailKasir, inputHandleTambahKasir.role, inputStatusKasir ? 1 : 0, pinKasir)} 
+                            style={{ fontFamily: "Exo", color: "black", background: "var(--palet-gradient-gold, linear-gradient(180deg, #F1D3AC 0%, #E5AE66 100%))", maxHeight: 45, width: "100%", height: "100%", fontWeight: 700, border: "0.6px solid var(--palet-pengembangan-shades-hitam-80, #383838)" }}
+                        >
+                            {isLoadingKasir ? (<>Mohon tunggu... <FontAwesomeIcon icon={faSpinner} spin /></>) : `Ya`}
+                        </Button>
                     </div>
                 </Modal.Body>
             </Modal>
