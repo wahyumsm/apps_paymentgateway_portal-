@@ -83,7 +83,8 @@ const PengaturanKasir = () => {
             ),
         },
     ];
-    
+
+    const [isDataTerminal, setIsDataTerminal] = useState("")
     const [dataListTerminal, setDataListTerminal] = useState([])
     const [pageNumberDataListTerminal, setPageNumberDataListTerminal] = useState({})
     const [totalPageDataListTerminal, setTotalPageDataListTerminal] = useState(0)
@@ -135,12 +136,14 @@ const PengaturanKasir = () => {
                 setDataListTerminal(dataTerminal.data.response_data.results)
                 setPageNumberDataListTerminal(dataTerminal.data.response_data)
                 setTotalPageDataListTerminal(dataTerminal.data.response_data.max_page)
+                setIsDataTerminal(dataTerminal.data.response_data.error_text)
                 setPendingDataListTerminal(false)
             } else if (dataTerminal.status === 200 && dataTerminal.data.response_code === 200 && dataTerminal.data.response_new_token.length !== 0) {
                 setUserSession(dataTerminal.data.response_new_token)
                 setDataListTerminal(dataTerminal.data.response_data.results)
                 setPageNumberDataListTerminal(dataTerminal.data.response_data)
                 setTotalPageDataListTerminal(dataTerminal.data.response_data.max_page)
+                setIsDataTerminal(dataTerminal.data.response_data.error_text)
                 setPendingDataListTerminal(false)
             }
     } catch (error) {
@@ -305,7 +308,28 @@ const PengaturanKasir = () => {
             <hr className='hr-style' style={{marginTop: -2}}/>
             {
                 isPengaturanKasir === "daftarKasir" ? 
-                    isDataKasir === "Success" ? (
+                    isDataKasir === "Data not found!" ? (
+                        <div className='d-flex justify-content-center align-items-center flex-column mt-5'>
+                            <img src={fotoIcon} alt="fotoIcon" />
+                            <div className='mt-3' style={{ fontFamily: "Exo", color: "#393939", fontSize: 18, fontWeight: 700 }}>Belum Ada Data Kasir</div>
+                            <div className='mt-3' style={{ fontFamily: "Nunito", color: "#848484", fontSize: 14 }}>Semua data kasir yang ditambahkan akan tampil disini</div>
+                            <button 
+                                className='btn-next-active mt-3'
+                                style={{ width: 450, height: 44 }}
+                                onClick={() => history.push('/tambah-manual-kasir')}
+                            >
+                                Tambah Manual
+                            </button>
+                            <button className="mt-4" style={{ color: "#077E86", fontFamily: "Exo", fontSize: 14, fontWeight: 700, alignItems: "center",  gap: 8, width: 450, height: 44, border: "1px solid var(--contoh-secondary-40-warna-utama, #077E86)", borderRadius: 4 }}>
+                                <img
+                                    src={uploadIcon}
+                                    onClick={() => history.push('/tambah-manual-kasir')}
+                                    style={{ cursor: "pointer" }}
+                                    alt="icon edit"
+                                /> Upload dokumen
+                            </button>
+                        </div>
+                    ) : (
                         <div className='base-content mt-3'>
                             <div className="head-title"> 
                                 <h2 className="h5" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600 }}>Daftar kasir yang ditambahkan</h2>
@@ -336,30 +360,30 @@ const PengaturanKasir = () => {
                                 />
                             </div>
                         </div>
-                    ) : (
+                    )
+                : (
+                    isDataTerminal === "Data not found!" ? (
                         <div className='d-flex justify-content-center align-items-center flex-column mt-5'>
                             <img src={fotoIcon} alt="fotoIcon" />
-                            <div className='mt-3' style={{ fontFamily: "Exo", color: "#393939", fontSize: 18, fontWeight: 700 }}>Belum Ada Data Kasir</div>
-                            <div className='mt-3' style={{ fontFamily: "Nunito", color: "#848484", fontSize: 14 }}>Semua data kasir yang ditambahkan akan tampil disini</div>
+                            <div className='mt-3' style={{ fontFamily: "Exo", color: "#393939", fontSize: 18, fontWeight: 700 }}>Belum Ada Data Terminal</div>
+                            <div className='mt-3' style={{ fontFamily: "Nunito", color: "#848484", fontSize: 14 }}>Semua data terminal yang ditambahkan akan tampil disini</div>
                             <button 
                                 className='btn-next-active mt-3'
                                 style={{ width: 450, height: 44 }}
-                                onClick={() => history.push('/tambah-manual-kasir')}
+                                onClick={() => history.push('/tambah-manual-terminal')}
                             >
                                 Tambah Manual
                             </button>
                             <button className="mt-4" style={{ color: "#077E86", fontFamily: "Exo", fontSize: 14, fontWeight: 700, alignItems: "center",  gap: 8, width: 450, height: 44, border: "1px solid var(--contoh-secondary-40-warna-utama, #077E86)", borderRadius: 4 }}>
                                 <img
                                     src={uploadIcon}
-                                    onClick={() => history.push('/tambah-manual-kasir')}
+                                    // onClick={() => editInTableHandler(row.number)}
                                     style={{ cursor: "pointer" }}
                                     alt="icon edit"
                                 /> Upload dokumen
                             </button>
                         </div>
-                    )
-                : (
-                    dataListTerminal.length !== 0 ? (
+                    ) : (
                         <div className='base-content mt-3'>
                             <div className="head-title"> 
                                 <h2 className="h5" style={{ fontFamily: "Exo", fontSize: 16, fontWeight: 600 }}>Daftar terminal yang ditambahkan</h2>
@@ -389,27 +413,6 @@ const PengaturanKasir = () => {
                                     onChange={handlePageChangeListTerminal}
                                 />
                             </div>
-                        </div>
-                    ) : (
-                        <div className='d-flex justify-content-center align-items-center flex-column mt-5'>
-                            <img src={fotoIcon} alt="fotoIcon" />
-                            <div className='mt-3' style={{ fontFamily: "Exo", color: "#393939", fontSize: 18, fontWeight: 700 }}>Belum Ada Data Terminal</div>
-                            <div className='mt-3' style={{ fontFamily: "Nunito", color: "#848484", fontSize: 14 }}>Semua data terminal yang ditambahkan akan tampil disini</div>
-                            <button 
-                                className='btn-next-active mt-3'
-                                style={{ width: 450, height: 44 }}
-                                onClick={() => history.push('/tambah-manual-terminal')}
-                            >
-                                Tambah Manual
-                            </button>
-                            <button className="mt-4" style={{ color: "#077E86", fontFamily: "Exo", fontSize: 14, fontWeight: 700, alignItems: "center",  gap: 8, width: 450, height: 44, border: "1px solid var(--contoh-secondary-40-warna-utama, #077E86)", borderRadius: 4 }}>
-                                <img
-                                    src={uploadIcon}
-                                    // onClick={() => editInTableHandler(row.number)}
-                                    style={{ cursor: "pointer" }}
-                                    alt="icon edit"
-                                /> Upload dokumen
-                            </button>
                         </div>
                     )
                 )
