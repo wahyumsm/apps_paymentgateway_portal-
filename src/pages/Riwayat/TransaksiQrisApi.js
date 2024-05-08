@@ -167,14 +167,15 @@ const TransaksiQrisApi = () => {
                 'Content-Type':'application/json',
                 'Authorization' : auth
             }
-            const dataIdKasirQris = await axios.post(BaseURL + "/QRIS/MasterCashier", { data: dataParams }, { headers: headers })
+            // const dataIdKasirQris = await axios.post(BaseURL + "/QRIS/MasterCashier", { data: dataParams }, { headers: headers })
+            const dataIdKasirQris = await axios.post(BaseURL + "/QRIS/MasterTerminal", { data: dataParams }, { headers: headers })
             // console.log(dataIdKasirQris, 'ini user detal funct');
             if (dataIdKasirQris.status === 200 && dataIdKasirQris.data.response_code === 200 && dataIdKasirQris.data.response_new_token === null) {
                 let newArr = []
                 dataIdKasirQris.data.response_data.results.forEach(e => {
                     let obj = {}
-                    obj.value = e.id
-                    obj.label = e.id
+                    obj.value = e.mterminalqris_id
+                    obj.label = e.mterminalqris_terminal_name
                     newArr.push(obj)
                 })
                 setDataIdKasirInQris(newArr)
@@ -183,8 +184,8 @@ const TransaksiQrisApi = () => {
                 let newArr = []
                 dataIdKasirQris.data.response_data.results.forEach(e => {
                     let obj = {}
-                    obj.value = e.id
-                    obj.label = e.id
+                    obj.value = e.mterminalqris_id
+                    obj.label = e.mterminalqris_terminal_name
                     newArr.push(obj)
                 })
                 setDataIdKasirInQris(newArr)
@@ -1255,8 +1256,8 @@ const TransaksiQrisApi = () => {
                                         <Col xs={6} style={{ width: "40%", padding: "0px 15px" }}>
                                             <button
                                                 onClick={() => resetButtonTransactionQrisApi("admin")}
-                                                className={(inputHandleTransactionApiAdmin.periode !== 0 || dateRangeTransactionQrisApiAdmin.length !== 0 || inputHandleTransactionApiAdmin.idTransaksi.length !== 0 || inputHandleTransactionApiAdmin.partnerTransId.length !== 0 || inputHandleTransactionApiAdmin.rrn.length !== 0 || inputHandleTransactionApiAdmin.statusQris.length !== 0 || selectedGrupName.length !== 0 || selectedBrandNameAdmin.length !== 0 || selectedOutletNameAdmin.length !== 0 || selectedIdKasirAdmin.length !== 0) ? 'btn-reset' : 'btn-ez-reset'}
-                                                disabled={inputHandleTransactionApiAdmin.periode === 0 && dateRangeTransactionQrisApiAdmin.length === 0 && inputHandleTransactionApiAdmin.idTransaksi.length === 0 && inputHandleTransactionApiAdmin.partnerTransId.length === 0 && inputHandleTransactionApiAdmin.rrn.length === 0 && inputHandleTransactionApiAdmin.statusQris.length === 0 && selectedGrupName.length === 0 && selectedBrandNameAdmin.length === 0 && selectedOutletNameAdmin.length === 0 && selectedIdKasirAdmin.length === 0}
+                                                className={(inputHandleTransactionApiAdmin.periode !== 0 || dateRangeTransactionQrisApiAdmin.length !== 0 || (dateRangeTransactionQrisApiAdmin.length !== 0 && inputHandleTransactionApiAdmin.idTransaksi.length !== 0) || (dateRangeTransactionQrisApiAdmin.length !== 0 && inputHandleTransactionApiAdmin.partnerTransId.length !== 0) || (dateRangeTransactionQrisApiAdmin.length !== 0 && inputHandleTransactionApiAdmin.rrn.length !== 0) || (dateRangeTransactionQrisApiAdmin.length !== 0 && inputHandleTransactionApiAdmin.statusQris.length !== 0) ? 'btn-reset' : 'btn-ez-reset')}
+                                                disabled={inputHandleTransactionApiAdmin.periode === 0 || (inputHandleTransactionApiAdmin.periode === 0 && inputHandleTransactionApiAdmin.idTransaksi.length === 0) || (inputHandleTransactionApiAdmin.periode === 0 && inputHandleTransactionApiAdmin.partnerTransId.length === 0) || (inputHandleTransactionApiAdmin.periode === 0 && inputHandleTransactionApiAdmin.rrn.length === 0) || (inputHandleTransactionApiAdmin.periode === 0 && inputHandleTransactionApiAdmin.rrn.length === 0) || (inputHandleTransactionApiAdmin.periode === 0 && inputHandleTransactionApiAdmin.statusQris.length === 0)}
                                             >
                                                 Atur Ulang
                                             </button>
