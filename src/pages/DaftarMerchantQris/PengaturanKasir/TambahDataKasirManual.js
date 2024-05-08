@@ -85,7 +85,8 @@ function TambahDataKasirManual () {
         };
         function handleChangeFilterQris (e) {
             setFilterTextKasirAktif(e.target.value)
-            getListKasirHandler(e.target.value, storeId, 1, activePageListKasirAktif)
+            setActivePageListKasirAktif(1)
+            getListKasirHandler(e.target.value, storeId, 1, 1)
         }
         return (
             <FilterComponentQrisTerminal onFilter={e => handleChangeFilterQris(e)} onClear={handleClear} filterText={filterTextKasirAktif} title="Pencarian :" placeholder="Cari kasir" />
@@ -154,20 +155,18 @@ function TambahDataKasirManual () {
                 if (dataKasir.status === 200 && dataKasir.data.response_code === 200 && dataKasir.data.response_new_token === null) {
                     getListKasirHandler(filterTextKasirAktif, storeId, 1, activePageListKasirAktif)
                     getListKasirHandler(filterTextKasirNonAktif, storeId, 0, activePageListKasirAktif)
-                    getDataDetailKasir(storeId)
                     setDataKasirIdQris(0)
                     setDataLastActive("")
                     setShowModalStatusKasir(false)
-
+                    window.location.reload()
                 } else if (dataKasir.status === 200 && dataKasir.data.response_code === 200 && dataKasir.data.response_new_token !== null) {
                     setUserSession(dataKasir.data.response_new_token)
                     getListKasirHandler(filterTextKasirAktif, storeId, 1, activePageListKasirAktif)
                     getListKasirHandler(filterTextKasirNonAktif, storeId, 0, activePageListKasirAktif)
-                    getDataDetailKasir(storeId)
                     setDataKasirIdQris(0)
                     setDataLastActive("")
                     setShowModalStatusKasir(false)
-
+                    window.location.reload()
                 }
             } catch (error) {
                 // console.log(error);
@@ -186,17 +185,16 @@ function TambahDataKasirManual () {
                 if (dataKasir.status === 200 && dataKasir.data.response_code === 200 && dataKasir.data.response_new_token === null) {
                     getListKasirHandler(filterTextKasirAktif, storeId, 1, activePageListKasirAktif)
                     getListKasirHandler(filterTextKasirNonAktif, storeId, 0, activePageListKasirAktif)
-                    getDataDetailKasir(storeId)
                     setDataKasirIdQris(0)
                     setShowModalStatusKasirNonAktif(false)
-
+                    window.location.reload()
                 } else if (dataKasir.status === 200 && dataKasir.data.response_code === 200 && dataKasir.data.response_new_token !== null) {
                     setUserSession(dataKasir.data.response_new_token)
                     getListKasirHandler(filterTextKasirAktif, storeId, 1, activePageListKasirAktif)
                     getListKasirHandler(filterTextKasirNonAktif, storeId, 0, activePageListKasirAktif)
-                    getDataDetailKasir(storeId)
                     setDataKasirIdQris(0)         
                     setShowModalStatusKasirNonAktif(false)
+                    window.location.reload()
                 }
             } catch (error) {
                 // console.log(error);
@@ -210,17 +208,17 @@ function TambahDataKasirManual () {
         if(!isTabs) {
             setFilterTextKasirNonAktif("")
             setFilterTextKasirAktif("")
-            getListKasirHandler("", storeId, 0, activePageListKasirNonAktif)
-            getListKasirHandler("", storeId, 1, activePageListKasirAktif)
+            getListKasirHandler("", storeId, 0, 1)
+            getListKasirHandler("", storeId, 1, 1)
             $('#terminalAktiftab').removeClass('menu-detail-akun-hr-active')
             $('#terminalAktifspan').removeClass('menu-detail-akun-span-active')
             $('#terminalNonaktiftab').addClass('menu-detail-akun-hr-active')
             $('#terminalNonaktifspan').addClass('menu-detail-akun-span-active')
         } else {
-            setFilterTextKasirNonAktif("")
             setFilterTextKasirAktif("")
-            getListKasirHandler("", storeId, 0, activePageListKasirNonAktif)
-            getListKasirHandler("", storeId, 1, activePageListKasirAktif)
+            setFilterTextKasirNonAktif("")
+            getListKasirHandler("", storeId, 1, 1)
+            getListKasirHandler("", storeId, 0, 1)
             $('#terminalNonaktiftab').removeClass('menu-detail-akun-hr-active')
             $('#terminalNonaktifspan').removeClass('menu-detail-akun-span-active')
             $('#terminalAktiftab').addClass('menu-detail-akun-hr-active')
@@ -228,8 +226,7 @@ function TambahDataKasirManual () {
         }
     }
 
-    console.log(filterTextKasirAktif, "filterTextKasirAktif");
-    console.log(dataListKasirAktif, "dataListKasirAktif");
+    console.log(tabKasir, "tabKasir");
 
     const columnsKasirAktif = [
         {
@@ -244,7 +241,8 @@ function TambahDataKasirManual () {
         {
             name: 'Email Admin Kasir',
             selector: row => row.muserqris_username,
-            width: "160px"
+            width: "160px",
+            wrap: true
         },
         {
             name: 'Tanggal Daftar',
@@ -307,15 +305,13 @@ function TambahDataKasirManual () {
         };
         function handleChangeFilterQris (e) {
             setFilterTextKasirNonAktif(e.target.value)
-            getListKasirHandler(e.target.value, storeId, 0, activePageListKasirNonAktif)
+            setActivePageListKasirNonAktif(1)
+            getListKasirHandler(e.target.value, storeId, 0, 1)
         }
         return (
             <FilterComponentQrisTerminal onFilter={e => handleChangeFilterQris(e)} onClear={handleClear} filterText={filterTextKasirNonAktif} title="Pencarian :" placeholder="Cari kasir" />
         );	}, [filterTextKasirNonAktif, resetPaginationToggleKasirNonAktif]
     );
-
-    console.log(filterTextKasirNonAktif, "filterTextKasirNonAktif");
-    console.log(dataListKasirNonAktif, "dataListKasirNonAktif");
 
     const columnsKasirNonAktif = [
         {
@@ -330,7 +326,8 @@ function TambahDataKasirManual () {
         {
             name: 'Email Admin Kasir',
             selector: row => row.muserqris_username,
-            width: "160px"
+            width: "160px",
+            wrap: true
         },
         {
             name: 'Tanggal Daftar',

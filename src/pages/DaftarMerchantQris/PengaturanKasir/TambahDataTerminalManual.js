@@ -141,20 +141,18 @@ function TambahDataTerminalManual () {
                 if (dataTerminal.status === 200 && dataTerminal.data.response_code === 200 && dataTerminal.data.response_new_token === null) {
                     getListTerminalHandler(filterTextTerminalAktif, storeId, 1, activePageListTerminalAktif)
                     getListTerminalHandler(filterTextTerminalNonAktif, storeId, 0, activePageListTerminalAktif)
-                    getDataDetailTerminal(storeId)
                     setDataTerminalIdQris(0)
                     setDataLastActive("")
                     setShowModalStatusTerminal(false)
-
+                    window.location.reload()
                 } else if (dataTerminal.status === 200 && dataTerminal.data.response_code === 200 && dataTerminal.data.response_new_token !== null) {
                     setUserSession(dataTerminal.data.response_new_token)
                     getListTerminalHandler(filterTextTerminalAktif, storeId, 1, activePageListTerminalAktif)
                     getListTerminalHandler(filterTextTerminalNonAktif, storeId, 0, activePageListTerminalAktif)
-                    getDataDetailTerminal(storeId)
                     setDataTerminalIdQris(0)
                     setDataLastActive("")
                     setShowModalStatusTerminal(false)
-
+                    window.location.reload()
                 }
             } catch (error) {
                 // console.log(error);
@@ -175,14 +173,14 @@ function TambahDataTerminalManual () {
                     getDataDetailTerminal(storeId)
                     setDataTerminalIdQris(0)
                     setShowModalStatusTerminalNonAktif(false)
-
+                    window.location.reload()
                 } else if (dataTerminal.status === 200 && dataTerminal.data.response_code === 200 && dataTerminal.data.response_new_token !== null) {
                     setUserSession(dataTerminal.data.response_new_token)
                     getListTerminalHandler(filterTextTerminalNonAktif, storeId, 0, activePageListTerminalAktif)
                     getDataDetailTerminal(storeId)
                     setDataTerminalIdQris(0)         
                     setShowModalStatusTerminalNonAktif(false)
-
+                    window.location.reload()
                 }
             } catch (error) {
                 // console.log(error);
