@@ -456,7 +456,7 @@ const DetailMerchantGrup = () => {
                             <div className='title-sub-content-detail-merchant'>Info pemilik</div>
                             <Row className='mt-3'>
                                 <Col xs={6} className='sub-title-detail-merchant'>Nama pemilik usaha sesuai akta pendirian/perubahan terakhir</Col>
-                                <Col xs={6} className='sub-title-detail-merchant'>Nomor eKTP pemilik usaha sesuai akta pendirian/perubahan terakhir</Col>
+                                <Col xs={6} className='sub-title-detail-merchant'>Nomor eKTP / KITAS pemilik usaha sesuai akta pendirian/perubahan terakhir</Col>
                             </Row>
                             <Row className='mt-1'>
                                 <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofdtl_name}</Col>
@@ -472,7 +472,7 @@ const DetailMerchantGrup = () => {
                             </Row>
                             <Row className='mt-3'>
                                 <Col xs={6} className='sub-title-detail-merchant'>No telepon pemilik usaha</Col>
-                                <Col xs={6} className='sub-title-detail-merchant'>Foto eKTP pemilik usaha sesuai akta pendirian/perubahan terakhir</Col>
+                                <Col xs={6} className='sub-title-detail-merchant'>Foto eKTP / KITAS pemilik usaha sesuai akta pendirian/perubahan terakhir</Col>
                             </Row>
                             <Row className='mt-1'>
                                 <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofdtl_mobile}</Col>
@@ -617,8 +617,8 @@ const DetailMerchantGrup = () => {
                                 <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofdtl_identity_type_name}</Col>
                             </Row>
                             <Row className='mt-3'>
-                                <Col xs={6} className='sub-title-detail-merchant'>Nomor eKTP pemilik usaha sesuai akta pendirian/perubahan terakhir</Col>
-                                <Col xs={6} className='sub-title-detail-merchant'>Foto eKTP pemilik usaha sesuai akta pendirian/perubahan terakhir</Col>
+                                <Col xs={6} className='sub-title-detail-merchant'>Nomor eKTP / KITAS pemilik usaha sesuai akta pendirian/perubahan terakhir</Col>
+                                <Col xs={6} className='sub-title-detail-merchant'>Foto eKTP / KITAS pemilik usaha sesuai akta pendirian/perubahan terakhir</Col>
                             </Row>
                             <Row className='mt-1'>
                                 <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofdtl_identity_no}</Col>
@@ -725,7 +725,7 @@ const DetailMerchantGrup = () => {
                             <div className='title-sub-content-detail-merchant'>Info pemilik</div>
                             <Row className='mt-3'>
                                 <Col xs={6} className='sub-title-detail-merchant'>Nama pemilik usaha sesuai akta pendirian/perubahan terakhir</Col>
-                                <Col xs={6} className='sub-title-detail-merchant'>Nomor eKTP pemilik usaha sesuai akta pendirian/perubahan terakhir</Col>
+                                <Col xs={6} className='sub-title-detail-merchant'>Nomor eKTP / KITAS pemilik usaha sesuai akta pendirian/perubahan terakhir</Col>
                             </Row>
                             <Row className='mt-1'>
                                 <Col xs={6} className='isi-content-detail-merchant'>{dataDetailGrup?.mprofdtl_name}</Col>

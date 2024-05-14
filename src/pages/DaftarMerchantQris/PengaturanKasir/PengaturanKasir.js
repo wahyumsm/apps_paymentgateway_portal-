@@ -51,18 +51,25 @@ const PengaturanKasir = () => {
         {
             name: 'Nama Grup',
             selector: row => row.mmerchant_name,
+            wrap: true,
+            width: '150px'
         },
         {
             name: 'Nama Brand',
             selector: row => row.moutlet_name,
+            wrap: true,
+            width: '150px'
         },
         {
             name: 'Nama Outlet', 
             selector: row => row.mstore_name,
+            wrap: true,
+            width: '150px'
         },
         {
             name: 'Jumlah Terminal', 
             selector: row => row.total_user,
+            width: '150px'
         },
         {
             name: 'Terminal Aktif',
@@ -162,17 +169,20 @@ const PengaturanKasir = () => {
         {
             name: 'Nama Grup',
             selector: row => row.mmerchant_name,
-            wrap: true
+            wrap: true,
+            width: '150px'
         },
         {
             name: 'Nama Brand',
             selector: row => row.moutlet_name,
-            wrap: true
+            wrap: true,
+            width: '150px'
         },
         {
             name: 'Nama Outlet', 
             selector: row => row.mstore_name,
-            wrap: true
+            wrap: true,
+            width: '150px'
         },
         {
             name: 'Jumlah Kasir', 
@@ -274,7 +284,6 @@ const PengaturanKasir = () => {
                 border: '12px',
                 fontWeight: 'bold',
                 fontSize: '16px',
-                
             },
         },
     };
