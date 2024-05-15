@@ -87,7 +87,7 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
                 }
             } else {
                 setUploadPdfNpwp(false)
-                if ((event.target.files[0].name).slice(-3) === "JPG" || (event.target.files[0].name).slice(-3) === "jpg" || (event.target.files[0].name).slice(-4) === "JPEG" || (event.target.files[0].name).slice(-3) === "jpeg" || (event.target.files[0].name).slice(-3) === "PNG" || (event.target.files[0].name).slice(-3) === "png") {
+                if ((event.target.files[0].name).slice(-3) === "JPG" || (event.target.files[0].name).slice(-3) === "jpg" || (event.target.files[0].name).slice(-4) === "JPEG" || (event.target.files[0].name).slice(-4) === "jpeg" || (event.target.files[0].name).slice(-3) === "PNG" || (event.target.files[0].name).slice(-3) === "png") {
                     setFormatJpgNpwp(false)
                     if(event.target.files[0]) {
                         setImageNpwp(event.target.files[0])
@@ -129,7 +129,7 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
                 }
             } else {
                 setUploadPdfNib(false)
-                if ((event.target.files[0].name).slice(-3) === "JPG" || (event.target.files[0].name).slice(-3) === "jpg" || (event.target.files[0].name).slice(-4) === "JPEG" || (event.target.files[0].name).slice(-3) === "jpeg" || (event.target.files[0].name).slice(-3) === "PNG" || (event.target.files[0].name).slice(-3) === "png") {
+                if ((event.target.files[0].name).slice(-3) === "JPG" || (event.target.files[0].name).slice(-3) === "jpg" || (event.target.files[0].name).slice(-4) === "JPEG" || (event.target.files[0].name).slice(-4) === "jpeg" || (event.target.files[0].name).slice(-3) === "PNG" || (event.target.files[0].name).slice(-3) === "png") {
                     setFormatJpgNib(false)
                     if(event.target.files[0]) {
                         setImageNib(event.target.files[0])
@@ -170,7 +170,7 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
                 }
             } else {
                 setUploadPdfAktaPerusahaan(false)
-                if ((event.target.files[0].name).slice(-3) === "JPG" || (event.target.files[0].name).slice(-3) === "jpg" || (event.target.files[0].name).slice(-4) === "JPEG" || (event.target.files[0].name).slice(-3) === "jpeg" || (event.target.files[0].name).slice(-3) === "PNG" || (event.target.files[0].name).slice(-3) === "png") {
+                if ((event.target.files[0].name).slice(-3) === "JPG" || (event.target.files[0].name).slice(-3) === "jpg" || (event.target.files[0].name).slice(-4) === "JPEG" || (event.target.files[0].name).slice(-4) === "jpeg" || (event.target.files[0].name).slice(-3) === "PNG" || (event.target.files[0].name).slice(-3) === "png") {
                     setFormatJpgAktaPerusahaan(false)
                     if(event.target.files[0]) {
                         setImageAktaPerusahaan(event.target.files[0])
@@ -211,7 +211,7 @@ const FormDokumenUsahaBrandBadanUsaha = () => {
                 }
             } else {
                 setUploadPdfSkKementrian(false)
-                if ((event.target.files[0].name).slice(-3) === "JPG" || (event.target.files[0].name).slice(-3) === "jpg" || (event.target.files[0].name).slice(-4) === "JPEG" || (event.target.files[0].name).slice(-3) === "jpeg" || (event.target.files[0].name).slice(-3) === "PNG" || (event.target.files[0].name).slice(-3) === "png") {
+                if ((event.target.files[0].name).slice(-3) === "JPG" || (event.target.files[0].name).slice(-3) === "jpg" || (event.target.files[0].name).slice(-4) === "JPEG" || (event.target.files[0].name).slice(-4) === "jpeg" || (event.target.files[0].name).slice(-3) === "PNG" || (event.target.files[0].name).slice(-3) === "png") {
                     setFormatJpgSkKementrian(false)
                     if(event.target.files[0]) {
                         setImageSkKementrian(event.target.files[0])

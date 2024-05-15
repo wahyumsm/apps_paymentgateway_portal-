@@ -120,7 +120,7 @@ const FormInfoPemilik = (props) => {
             }
         } else {
             setUploadPdfKtp(false)
-            if ((event.target.files[0].name).slice(-3) === "JPG" || (event.target.files[0].name).slice(-3) === "jpg" || (event.target.files[0].name).slice(-3) === "JPEG" || (event.target.files[0].name).slice(-3) === "jpeg" || (event.target.files[0].name).slice(-3) === "PNG" || (event.target.files[0].name).slice(-3) === "png") {
+            if ((event.target.files[0].name).slice(-3) === "JPG" || (event.target.files[0].name).slice(-3) === "jpg" || (event.target.files[0].name).slice(-4) === "JPEG" || (event.target.files[0].name).slice(-4) === "jpeg" || (event.target.files[0].name).slice(-3) === "PNG" || (event.target.files[0].name).slice(-3) === "png") {
                 setFormatKtp(false)
                 if(event.target.files[0]) {
                     setImageKtp(event.target.files[0])
