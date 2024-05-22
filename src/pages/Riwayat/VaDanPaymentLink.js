@@ -1542,7 +1542,7 @@ const VaDanPaymentLink = () => {
       const dataParams = encryptData(
         `{"statusID": [${
           statusId.length !== 0 ? statusId : [1, 2, 7, 9]
-        }], "transID" : ${transId.length !== 0 ? transId : 0}, "partnerID":"${
+        }], "transaction_code" : "${transId.length !== 0 ? transId : "0"}", "partnerID":"${
           partnerId !== undefined ? partnerId : ""
         }", "subPartnerID": "${
           subPartnerId !== undefined ? subPartnerId : ""
